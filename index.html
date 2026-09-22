@@ -164,7 +164,7 @@ table.sched td.c-common{vertical-align:middle}
 
 /* ───────────────────────── 네임카드 ───────────────────────── */
 .nc{position:relative;display:flex;gap:5px;padding:7px 7px;text-align:left;cursor:pointer;height:100%;
-  min-height:86px;background:var(--ink);overflow:hidden;isolation:isolate}
+  min-height:90px;background:var(--ink);overflow:hidden;isolation:isolate}
 /* 시그니처 컬러가 은은하게 흐르는 앰비언트 배경 */
 .nc::before{content:'';position:absolute;inset:-60%;z-index:0;pointer-events:none;
   background:
@@ -204,8 +204,9 @@ table.sched td.c-common{vertical-align:middle}
 .nc .nm{font-weight:700;font-size:12.5px;letter-spacing:-.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nc .nm em{font-style:normal;font-weight:500;font-size:10px;opacity:.68;margin-left:3px}
 .nc .tm{font-size:9.5px;opacity:.62;font-variant-numeric:tabular-nums;margin-top:2px;letter-spacing:-.3px;white-space:nowrap}
+.nc .badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}
 .nc .bday,.nc .alertbadge{display:inline-flex;align-items:center;gap:2px;font-size:9.5px;font-weight:700;
-  margin-top:3px;border-radius:5px;padding:1px 5px;white-space:nowrap}
+  border-radius:5px;padding:1px 5px;white-space:nowrap}
 .nc .bday{background:rgba(255,213,79,.18);color:#FFD866}
 .nc .alertbadge{background:rgba(232,86,74,.22);color:#FF9B92;animation:nfpulse 1.8s ease-in-out infinite}
 @keyframes nfpulse{0%,100%{opacity:1}50%{opacity:.55}}
@@ -218,11 +219,11 @@ table.sched td.c-common{vertical-align:middle}
 .nc .pen:hover{opacity:.95;background:rgba(255,255,255,.15)}
 .nc .pen svg{width:12px;height:12px}
 /* 흉상 — 카드 오른쪽 아래에 붙이고 하단은 카드 밖으로 넘겨 크롭합니다 */
-.nc .bust{position:absolute;right:-10px;bottom:-9px;width:94px;height:94px;z-index:1;pointer-events:none}
+.nc .bust{position:absolute;right:-10px;bottom:-15px;width:94px;height:94px;z-index:1;pointer-events:none}
 .bust img,.bust svg{width:100%;height:100%;display:block;object-fit:contain;object-position:bottom}
-.bust .ints{position:absolute;left:0;right:0;bottom:20px;display:flex;justify-content:center;gap:1px}
-.bust .ints img,.bust .ints svg{width:15px;height:15px;
-  filter:drop-shadow(0 0 2px #fff) drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+.nc .ints{position:absolute;left:7px;bottom:6px;display:flex;gap:3px;z-index:2}
+.nc .ints img,.nc .ints svg{width:22px;height:22px;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
 .sigbar{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:2}
 
 /* ───────────────────────── 팝오버 / 모달 ───────────────────────── */
@@ -508,20 +509,24 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
    상수
 ========================================================================== */
 var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+/* ── 저장소 키 ──────────────────────────────────────────────────
+   이 값은 바꾸지 마세요. 바꾸면 브라우저에 저장된 로컬 데이터가 초기화됩니다.
+   Supabase 에 연결되어 있으면 실제 데이터는 서버에 있으므로
+   이 파일(index.html)을 새 버전으로 교체해도 일정·거래·방명록은 그대로 유지됩니다. */
 var LS='teamws.v2';
 var FUTURE_DAYS=365;      // 오늘로부터 자동 생성되는 미래 일수
 var DEFAULT_PAST=3;       // 기본 D-3
 
 var VACS=[
   {k:'annual',     label:'연차'},
-  {k:'am_half',    label:'오전반차'},
-  {k:'pm_half',    label:'오후반차'},
   {k:'am_quarter', label:'오전반반차'},
-  {k:'pm_quarter', label:'오후반반차'}
+  {k:'am_half',    label:'오전반차'},
+  {k:'pm_quarter', label:'오후반반차'},
+  {k:'pm_half',    label:'오후반차'}
 ];
 var VMAP={}; VACS.forEach(function(v){VMAP[v.k]=v;});
 
-var LUNCH=[{k:'appt',label:'약속 있음'},{k:'light',label:'간단히'},{k:'skip',label:'생략'}];
+var LUNCH=[{k:'appt',label:'약속 있음'},{k:'bento',label:'도시락'},{k:'light',label:'간단히'},{k:'skip',label:'생략'}];
 var LMAP={}; LUNCH.forEach(function(l){LMAP[l.k]=l.label;});
 
 var ARRIVES=['08:00','08:30','09:00','09:30','10:00'];
@@ -794,7 +799,7 @@ function bustHtml(m,size){
 }
 function interestHtml(id,size){
   var src=iconSrc(id);
-  if(src) return '<img src="'+esc(src)+'" title="'+esc(iconName(id))+'" alt="" loading="lazy" '+
+  if(src) return '<img src="'+esc(src)+'" title="'+esc(iconName(id))+'" alt="'+esc(iconName(id))+'" loading="lazy" '+
     'onerror="this.onerror=null;this.style.visibility=\'hidden\'">';
   return '<svg viewBox="0 0 24 24" width="'+(size||15)+'" height="'+(size||15)+'"><rect width="24" height="24" rx="7" fill="#fff" opacity=".82"/>'+
     '<text x="12" y="17" font-size="14" text-anchor="middle">'+esc(id||'·')+'</text></svg>';
@@ -995,13 +1000,14 @@ function nameCardHtml(m){
     '<div class="l">'+
       '<div class="nm">'+esc(m.name)+(m.rank?'<em>'+esc(m.rank)+'</em>':'')+'</div>'+
       '<div class="tm">'+esc(workHours(m))+'</div>'+
-      (nc?'<div class="alertbadge" title="중고거래 알림 '+nc+'건 — 네임카드를 눌러 확인">🔔 '+nc+'</div>':'')+
-      (dd!=null&&dd<=7?'<div class="bday" title="'+(dd===0?'오늘 생일!':birthText((m.profile||{}).birth)+' 생일')+'">👑 '+
-        (dd===0?'오늘':'D-'+dd)+'</div>':'')+
+      ((nc||(dd!=null&&dd<=7))?'<div class="badges">'+
+        (nc?'<span class="alertbadge" title="중고거래 알림 '+nc+'건 — 네임카드를 눌러 확인">🔔 '+nc+'</span>':'')+
+        (dd!=null&&dd<=7?'<span class="bday" title="'+(dd===0?'오늘 생일!':birthText((m.profile||{}).birth)+' 생일')+'">👑 '+
+          (dd===0?'오늘':'D-'+dd)+'</span>':'')+
+      '</div>':'')+
     '</div>'+
-    '<div class="bust">'+bustHtml(m,94)+
-      (ints.length?'<div class="ints">'+ints.map(function(i){return interestHtml(i,15);}).join('')+'</div>':'')+
-    '</div>'+
+    '<div class="bust">'+bustHtml(m,94)+'</div>'+
+    (ints.length?'<div class="ints">'+ints.map(function(i){return interestHtml(i,22);}).join('')+'</div>':'')+
     '<button class="pen" data-pen="'+m.id+'" title="팀원 정보 편집">'+ICO.pen+'</button>'+
     '<div class="sigbar" style="background:'+sig(m)+'"></div></div>';
 }
@@ -1397,11 +1403,12 @@ function workHours(m){ var st=m.start_time||'09:00'; return st+' ~ '+workEnd(st)
 /* 아바타 필터 (팩 태그 기반) */
 var AV_FILTERS=[
  {k:'hair',label:'머리',opts:[
-   ['short','짧은 머리',['픽시','보브','단발','버즈','크루컷','삭발','짧은','비대칭','모히칸','웨트','레이어드','스윕','short-hair','crew-cut','buzz-cut','pixie','bob']],
-   ['long','긴 머리',['롱','장발','중단발','long-hair']],
-   ['wave','웨이브·곱슬',['웨이브','곱슬','컬리','wavy','curly']],
-   ['tie','묶음·땋기',['포니','번','땋','브레이드','집게핀','꽃핀','ponytail','bun','braid']],
-   ['hat','모자·헤어밴드',['캡','비니','베레모','버킷햇','페도라','헤어밴드','cap','beanie','fedora','beret']]
+   ['short','짧은 머리',['픽시','보브','단발','버즈','크루컷','삭발','짧은','비대칭','모히칸','웨트','레이어드','스윕',
+     '브러시컷','샤기컷','투블록','쉼표머리','포마드','short-hair','crew-cut','buzz-cut','pixie','bob']],
+   ['long','긴 머리',['롱','장발','중단발','생머리','long-hair']],
+   ['wave','웨이브·곱슬',['웨이브','곱슬','컬리','샤기','wavy','curly']],
+   ['tie','묶음·땋기',['포니','번','땋','브레이드','집게핀','꽃핀','반묶음','헤어롤','클립','ponytail','bun','braid']],
+   ['hat','모자·헤어밴드',['캡','비니','베레모','버킷햇','페도라','헤어밴드','반다나','스카프','cap','beanie','fedora','beret']]
  ]},
  {k:'acc',label:'포인트',opts:[
    ['glass','안경',['안경','glasses','spectacles']],
@@ -2436,16 +2443,27 @@ function reconcileAssets(force){
   S.members.forEach(function(m,idx){
     var seed=hashStr((m.__salt||'')+(m.id||String(idx)));
 
-    /* 아바타 — 없거나 팩에 존재하지 않으면 새로 배정 (겹치지 않게) */
+    /* 아바타 — 비어 있거나 팩에 없는 ID 일 때만 새로 배정합니다.
+       (직접 고른 값은 절대 덮어쓰지 않습니다) */
     if(force || !m.avatar || avs.indexOf(m.avatar)<0){
-      var p=seed%avs.length, guard=0;
-      while(usedAv[avs[p]] && guard++<avs.length) p=(p+7)%avs.length;
-      m.avatar=avs[p]; changed=true;
+      var cast=DEFAULT_CAST[m.id];
+      if(!force && cast && avs.indexOf(cast.a)>=0 && !usedAv[cast.a]){
+        m.avatar=cast.a;                       /* 기본 예시 캐스팅 우선 */
+      }else{
+        var p=seed%avs.length, guard=0;
+        while(usedAv[avs[p]] && guard++<avs.length) p=(p+7)%avs.length;
+        m.avatar=avs[p];
+      }
+      changed=true;
     }
     usedAv[m.avatar]=1;
 
     /* 관심사 3개 — 서로 다른 카테고리에서 하나씩 */
     var valid=(m.interests||[]).filter(function(i){ return ics.indexOf(i)>=0; });
+    if(!force && !valid.length){
+      var cast2=DEFAULT_CAST[m.id];
+      if(cast2) valid=cast2.i.filter(function(i){ return ics.indexOf(i)>=0; });
+    }
     if(force || valid.length<3){
       /* 이미 고른 유효한 값은 그대로 두고 모자란 만큼만 채웁니다 */
       var picked=force?[]:valid.slice(0,3), used={};
@@ -2470,22 +2488,7 @@ function reconcileAssets(force){
   return changed;
 }
 
-/* 예시 캐스팅이 바뀌면 기존 브라우저에도 한 번만 반영합니다 (일정 데이터는 보존) */
-var CAST_VER='cast-v2';
-function applyDefaultCast(){
-  try{ if(localStorage.getItem(LS+'.cast')===CAST_VER) return false; }catch(err){}
-  var done=false;
-  S.members.forEach(function(m){
-    var c=DEFAULT_CAST[m.id]; if(!c) return;
-    m.avatar=c.a; m.interests=c.i.slice(); done=true;
-  });
-  try{ localStorage.setItem(LS+'.cast',CAST_VER); }catch(err){}
-  if(done){ saveLocal(); if(S.sb) S.members.forEach(function(m){ sbUp('members',memberRow(m),'id'); }); }
-  return done;
-}
-
 function renderAll(){
-  applyDefaultCast();
   reconcileAssets(false);
   $('teamName').value=S.team.name||'우리 팀';
   document.title=(S.team.name||'팀')+' · 팀 워크스페이스';
