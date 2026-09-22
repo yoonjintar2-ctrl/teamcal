@@ -20,7 +20,7 @@
   --today:#FFFBEA; --today-line:#E8B931;
   --holi-tx:#C4493F;
   --r:8px;
-  --w-date:100px; --w-common:216px; --w-mem:182px; --w-add:38px;
+  --w-date:72px; --w-common:190px; --w-mem:170px; --w-add:34px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
@@ -92,7 +92,7 @@ table.sched thead th{
 table.sched thead th:last-child{border-right:none}
 table.sched thead th.c-date{left:0;z-index:45}
 table.sched td.c-date{position:sticky;left:0;z-index:20;border-right:1px solid var(--line)}
-.hdlabel{padding:12px 10px;font-size:15px;font-weight:700;letter-spacing:-.2px;line-height:1.3}
+.hdlabel{padding:11px 9px;font-size:14px;font-weight:700;letter-spacing:-.2px;line-height:1.3}
 th.c-date{width:var(--w-date);min-width:var(--w-date);max-width:var(--w-date)}
 th.c-common{width:var(--w-common);min-width:var(--w-common);max-width:var(--w-common)}
 th.c-mem{width:var(--w-mem);min-width:var(--w-mem);max-width:var(--w-mem)}
@@ -105,21 +105,25 @@ table.sched td{border-right:1px solid var(--line2);border-bottom:1px solid var(-
   vertical-align:top;background:var(--page)}
 table.sched td:last-child{border-right:none}
 table.sched td.c-date{vertical-align:middle;text-align:center}
-.dcell{padding:8px 7px;line-height:1.34}
-.dcell .d1{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--tx3);letter-spacing:-.2px;white-space:nowrap}
-.dcell .d2{font-size:13px;font-weight:600;color:var(--tx3);margin-top:3px;line-height:1.3}
+.dcell{padding:7px 4px;line-height:1.32}
+.dcell .d1{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--tx3);letter-spacing:-.2px;white-space:nowrap}
+.dcell .d2{font-size:11.5px;font-weight:600;color:var(--tx3);margin-top:2px;line-height:1.28}
 .dcell .d2 .hn{font-weight:600}
 
-table.sched tr.sat .dcell .d2,table.sched tr.sun .dcell .d2{color:var(--red)}
-table.sched tr.holi .dcell .d1,table.sched tr.holi .dcell .d2{color:var(--red)}
+table.sched tr.sat .dcell .wd,table.sched tr.sun .dcell .wd{color:var(--red)}
 table.sched tr.sun .dcell .d1{color:var(--red)}
+table.sched tr.holi .dcell .d1,table.sched tr.holi .dcell .wd,
+table.sched tr.holi .dcell .d2{color:var(--red)}
+.dcell .wd{font-weight:600}
+.dcell .yr{font-size:10.5px;font-weight:600;opacity:.6;margin-right:3px;letter-spacing:-.3px}
 /* 행 상태 배경 — 고정(sticky) 날짜 열까지 같은 값이 적용되도록
    모두 `table.sched` 접두사를 붙여 기본 td 규칙보다 우선순위를 높입니다 */
 table.sched tr.holi td,table.sched tr.sun td{background:#F0F2F5}
 table.sched tr.past td{background:var(--past)}
 table.sched tr.past .dcell .d1,table.sched tr.past .dcell .d2{color:var(--past-tx)}
 table.sched tr.past.holi .dcell .d1,table.sched tr.past.holi .dcell .d2,
-table.sched tr.past.sat .dcell .d2,table.sched tr.past.sun .dcell .d2{color:#CFA9A5}
+table.sched tr.past.holi .dcell .wd,
+table.sched tr.past.sat .dcell .wd,table.sched tr.past.sun .dcell .wd{color:#CFA9A5}
 table.sched tr.past .cellbody{opacity:.52}
 table.sched tr.mstart td{border-top:2px solid #D8DDE3}
 
@@ -133,7 +137,7 @@ table.sched tr.today td:last-child{box-shadow:inset 0 2px 0 var(--today-line),
 table.sched tr.today .dcell .d1{color:#8A6100;font-weight:700}
 table.sched tr.today .dcell .d2{color:#8A6100}
 
-.cell{padding:7px 9px;min-height:44px}
+.cell{padding:6px 8px;min-height:42px}
 /* 호버·편집 표시는 셀(div)이 아니라 칸(td) 전체에 겁니다 — 행 높이가 커져도 테두리가 끊기지 않습니다 */
 table.sched tbody td.c-cell{position:relative;cursor:pointer}
 table.sched tbody td.c-cell:hover{
@@ -145,21 +149,21 @@ table.sched tbody td.c-cell:has(.cell.editing){
 /* :has() 미지원 브라우저 대비 */
 .cell.editing{box-shadow:inset 0 0 0 2px var(--accent)}
 .cellbody{display:flex;flex-direction:column;gap:2px}
-.ln{display:flex;align-items:flex-start;gap:6px;font-size:14px;line-height:1.5;color:var(--tx2)}
-.ln > svg{flex:0 0 14px;width:14px;height:14px;margin-top:3px;color:var(--tx4)}
+.ln{display:flex;align-items:flex-start;gap:5px;font-size:13px;line-height:1.5;color:var(--tx2)}
+.ln > svg{flex:0 0 13px;width:13px;height:13px;margin-top:3px;color:var(--tx4)}
 .ln .v{min-width:0;word-break:break-word}
-.ln.tm{font-size:13.5px;color:var(--tx3)}
+.ln.tm{font-size:12.5px;color:var(--tx3)}
 .ln.tm .v{font-variant-numeric:tabular-nums;letter-spacing:-.2px}
-.ln.tm > svg{width:13px;height:13px;flex:0 0 13px;margin-top:3px}
+.ln.tm > svg{width:12px;height:12px;flex:0 0 12px;margin-top:3px}
 .cell:hover .ln.tm{color:var(--tx2)}
 /* 공통 일정: 아이콘 없이 텍스트만, 셀 안에서 세로·가로 가운데 */
 table.sched td.c-common{vertical-align:middle}
 .cell.common{display:flex;align-items:center;justify-content:center;text-align:center}
 .cell.common .cellbody{align-items:center;width:100%}
-.cell.common .commontx{font-weight:700;color:var(--tx);font-size:14.5px;line-height:1.5;
+.cell.common .commontx{font-weight:700;color:var(--tx);font-size:13.5px;line-height:1.5;
   white-space:pre-wrap;word-break:break-word}
 .kbadge{font-weight:700;color:var(--tx)}
-.cell .ph{color:#C5CBD2;font-size:15px}
+.cell .ph{color:#C5CBD2;font-size:14px}
 .cell:hover .ph{color:var(--tx3)}
 
 /* ───────────────────────── 네임카드 ───────────────────────── */
@@ -200,13 +204,13 @@ table.sched td.c-common{vertical-align:middle}
   100%{transform:translate3d(14%,12%,0)   scale(1.1)}
 }
 @media (prefers-reduced-motion:reduce){ .nc::before,.nc .amb,.mh-hd::before{animation:none} }
-.nc .l{flex:1;min-width:0;padding-top:2px;padding-right:80px}
-.nc .nm{font-weight:700;font-size:15.5px;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nc .nm em{font-style:normal;font-weight:500;font-size:13px;opacity:.75;margin-left:4px}
-.nc .tm{font-size:12.5px;opacity:.72;font-variant-numeric:tabular-nums;margin-top:3px;letter-spacing:-.2px;white-space:nowrap}
+.nc .l{flex:1;min-width:0;padding-top:2px;padding-right:76px}
+.nc .nm{font-weight:700;font-size:14.5px;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nc .nm em{font-style:normal;font-weight:500;font-size:12px;opacity:.75;margin-left:4px}
+.nc .tm{font-size:11.5px;opacity:.72;font-variant-numeric:tabular-nums;margin-top:3px;letter-spacing:-.2px;white-space:nowrap}
 .nc .badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}
-.nc .bday,.nc .alertbadge{display:inline-flex;align-items:center;gap:2px;font-size:12px;font-weight:700;
-  border-radius:5px;padding:2px 7px;white-space:nowrap}
+.nc .bday,.nc .alertbadge{display:inline-flex;align-items:center;gap:2px;font-size:11px;font-weight:700;
+  border-radius:5px;padding:1.5px 6px;white-space:nowrap}
 .nc .bday{background:rgba(255,213,79,.18);color:#FFD866}
 .nc .alertbadge{background:rgba(232,86,74,.22);color:#FF9B92;animation:nfpulse 1.8s ease-in-out infinite}
 @keyframes nfpulse{0%,100%{opacity:1}50%{opacity:.55}}
@@ -225,7 +229,7 @@ img.clayimg{object-fit:contain;vertical-align:middle;max-width:100%}
 .tempcard .clayimg{width:100%;height:100%;object-fit:contain;object-position:bottom;display:block}
 .bust img,.bust svg{width:100%;height:100%;display:block;object-fit:contain;object-position:bottom}
 .nc .ints{position:absolute;left:8px;bottom:7px;display:flex;gap:3px;z-index:2}
-.nc .ints img,.nc .ints svg{width:24px;height:24px;
+.nc .ints img,.nc .ints svg{width:22px;height:22px;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
 .sigbar{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:2}
 
@@ -1186,7 +1190,7 @@ function nameCardHtml(m){
       '</div>':'')+
     '</div>'+
     '<div class="bust">'+bustHtml(m,102)+'</div>'+
-    (ints.length?'<div class="ints">'+ints.map(function(i){return interestHtml(i,24);}).join('')+'</div>':'')+
+    (ints.length?'<div class="ints">'+ints.map(function(i){return interestHtml(i,22);}).join('')+'</div>':'')+
     '<button class="pen" data-pen="'+m.id+'" title="팀원 정보 편집">'+ICO.pen+'</button>'+
     '<div class="sigbar" style="background:'+sig(m)+'"></div></div>';
 }
@@ -1232,7 +1236,7 @@ function renderBody(){
       '표 오른쪽 끝의 ＋ 버튼으로 팀원을 추가하거나, 숨긴 팀원을 다시 표시하세요.</div></td></tr>';
     return;
   }
-  var t=today(), s=rangeStart(), e=rangeEnd(), out=[], lastM='';
+  var t=today(), s=rangeStart(), e=rangeEnd(), out=[], lastM='', lastY='';
   for(var d=new Date(s.getTime()); d<=e; d=addDays(d,1)){
     var ds=fmt(d), dow=d.getDay(), hol=holidayOf(ds);
     var cls=[];
@@ -1245,8 +1249,13 @@ function renderBody(){
     var mk=ds.slice(0,7); if(mk!==lastM){ cls.push('mstart'); lastM=mk; }
 
     var r='<tr class="'+cls.join(' ')+'" data-d="'+ds+'">';
-    r+='<td class="c-date"><div class="dcell"><div class="d1">'+ds+'</div>'+
-       '<div class="d2">'+DOW[dow]+(hol?'<span class="hn"> · '+esc(hol)+'</span>':'')+'</div></div></td>';
+    var yy=ds.slice(0,4), showYear=(yy!==lastY); lastY=yy;
+    r+='<td class="c-date"><div class="dcell">'+
+       '<div class="d1">'+(showYear?'<span class="yr">'+yy+'.</span>':'')+
+         (+ds.slice(5,7))+'/'+(+ds.slice(8,10))+
+         ' <span class="wd">('+DOW[dow]+')</span></div>'+
+       (hol?'<div class="d2">'+esc(hol)+'</div>':'')+
+       '</div></td>';
 
     var ct=S.commons[ds]||'';
     r+='<td class="c-common c-cell"><div class="cell common" data-d="'+ds+'" data-m="__c__">'+
