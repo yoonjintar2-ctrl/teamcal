@@ -20,7 +20,7 @@
   --today:#FFFBEA; --today-line:#E8B931;
   --holi-tx:#C4493F;
   --r:8px;
-  --w-date:88px; --w-common:190px; --w-mem:164px; --w-add:34px;
+  --w-date:100px; --w-common:216px; --w-mem:182px; --w-add:38px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
@@ -92,7 +92,7 @@ table.sched thead th{
 table.sched thead th:last-child{border-right:none}
 table.sched thead th.c-date{left:0;z-index:45}
 table.sched td.c-date{position:sticky;left:0;z-index:20;border-right:1px solid var(--line)}
-.hdlabel{padding:11px 9px;font-size:13px;font-weight:700;letter-spacing:-.2px;line-height:1.3}
+.hdlabel{padding:12px 10px;font-size:15px;font-weight:700;letter-spacing:-.2px;line-height:1.3}
 th.c-date{width:var(--w-date);min-width:var(--w-date);max-width:var(--w-date)}
 th.c-common{width:var(--w-common);min-width:var(--w-common);max-width:var(--w-common)}
 th.c-mem{width:var(--w-mem);min-width:var(--w-mem);max-width:var(--w-mem)}
@@ -105,9 +105,9 @@ table.sched td{border-right:1px solid var(--line2);border-bottom:1px solid var(-
   vertical-align:top;background:var(--page)}
 table.sched td:last-child{border-right:none}
 table.sched td.c-date{vertical-align:middle;text-align:center}
-.dcell{padding:7px 6px;line-height:1.32}
-.dcell .d1{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--tx3);letter-spacing:-.2px;white-space:nowrap}
-.dcell .d2{font-size:11px;font-weight:600;color:var(--tx3);margin-top:2px;line-height:1.28}
+.dcell{padding:8px 7px;line-height:1.34}
+.dcell .d1{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--tx3);letter-spacing:-.2px;white-space:nowrap}
+.dcell .d2{font-size:13px;font-weight:600;color:var(--tx3);margin-top:3px;line-height:1.3}
 .dcell .d2 .hn{font-weight:600}
 
 table.sched tr.sat .dcell .d2,table.sched tr.sun .dcell .d2{color:var(--red)}
@@ -133,7 +133,7 @@ table.sched tr.today td:last-child{box-shadow:inset 0 2px 0 var(--today-line),
 table.sched tr.today .dcell .d1{color:#8A6100;font-weight:700}
 table.sched tr.today .dcell .d2{color:#8A6100}
 
-.cell{padding:6px 8px;min-height:40px}
+.cell{padding:7px 9px;min-height:44px}
 /* 호버·편집 표시는 셀(div)이 아니라 칸(td) 전체에 겁니다 — 행 높이가 커져도 테두리가 끊기지 않습니다 */
 table.sched tbody td.c-cell{position:relative;cursor:pointer}
 table.sched tbody td.c-cell:hover{
@@ -145,26 +145,26 @@ table.sched tbody td.c-cell:has(.cell.editing){
 /* :has() 미지원 브라우저 대비 */
 .cell.editing{box-shadow:inset 0 0 0 2px var(--accent)}
 .cellbody{display:flex;flex-direction:column;gap:2px}
-.ln{display:flex;align-items:flex-start;gap:5px;font-size:12px;line-height:1.5;color:var(--tx2)}
-.ln > svg{flex:0 0 12px;width:12px;height:12px;margin-top:3px;color:var(--tx4)}
+.ln{display:flex;align-items:flex-start;gap:6px;font-size:14px;line-height:1.5;color:var(--tx2)}
+.ln > svg{flex:0 0 14px;width:14px;height:14px;margin-top:3px;color:var(--tx4)}
 .ln .v{min-width:0;word-break:break-word}
-.ln.tm{font-size:11.5px;color:var(--tx3)}
+.ln.tm{font-size:13.5px;color:var(--tx3)}
 .ln.tm .v{font-variant-numeric:tabular-nums;letter-spacing:-.2px}
-.ln.tm > svg{width:11px;height:11px;flex:0 0 11px;margin-top:3px}
+.ln.tm > svg{width:13px;height:13px;flex:0 0 13px;margin-top:3px}
 .cell:hover .ln.tm{color:var(--tx2)}
 /* 공통 일정: 아이콘 없이 텍스트만, 셀 안에서 세로·가로 가운데 */
 table.sched td.c-common{vertical-align:middle}
 .cell.common{display:flex;align-items:center;justify-content:center;text-align:center}
 .cell.common .cellbody{align-items:center;width:100%}
-.cell.common .commontx{font-weight:700;color:var(--tx);font-size:12.5px;line-height:1.5;
+.cell.common .commontx{font-weight:700;color:var(--tx);font-size:14.5px;line-height:1.5;
   white-space:pre-wrap;word-break:break-word}
 .kbadge{font-weight:700;color:var(--tx)}
-.cell .ph{color:#C5CBD2;font-size:13px}
+.cell .ph{color:#C5CBD2;font-size:15px}
 .cell:hover .ph{color:var(--tx3)}
 
 /* ───────────────────────── 네임카드 ───────────────────────── */
 .nc{position:relative;display:flex;gap:5px;padding:7px 7px;text-align:left;cursor:pointer;height:100%;
-  min-height:90px;background:var(--ink);overflow:hidden;isolation:isolate}
+  min-height:98px;background:var(--ink);overflow:hidden;isolation:isolate}
 /* 시그니처 컬러가 은은하게 흐르는 앰비언트 배경 */
 .nc::before{content:'';position:absolute;inset:-60%;z-index:0;pointer-events:none;
   background:
@@ -200,13 +200,13 @@ table.sched td.c-common{vertical-align:middle}
   100%{transform:translate3d(14%,12%,0)   scale(1.1)}
 }
 @media (prefers-reduced-motion:reduce){ .nc::before,.nc .amb,.mh-hd::before{animation:none} }
-.nc .l{flex:1;min-width:0;padding-top:1px;padding-right:74px}
-.nc .nm{font-weight:700;font-size:13.5px;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nc .nm em{font-style:normal;font-weight:500;font-size:11px;opacity:.75;margin-left:4px}
-.nc .tm{font-size:10.5px;opacity:.72;font-variant-numeric:tabular-nums;margin-top:3px;letter-spacing:-.2px;white-space:nowrap}
+.nc .l{flex:1;min-width:0;padding-top:2px;padding-right:80px}
+.nc .nm{font-weight:700;font-size:15.5px;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nc .nm em{font-style:normal;font-weight:500;font-size:13px;opacity:.75;margin-left:4px}
+.nc .tm{font-size:12.5px;opacity:.72;font-variant-numeric:tabular-nums;margin-top:3px;letter-spacing:-.2px;white-space:nowrap}
 .nc .badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}
-.nc .bday,.nc .alertbadge{display:inline-flex;align-items:center;gap:2px;font-size:10.5px;font-weight:700;
-  border-radius:5px;padding:1.5px 6px;white-space:nowrap}
+.nc .bday,.nc .alertbadge{display:inline-flex;align-items:center;gap:2px;font-size:12px;font-weight:700;
+  border-radius:5px;padding:2px 7px;white-space:nowrap}
 .nc .bday{background:rgba(255,213,79,.18);color:#FFD866}
 .nc .alertbadge{background:rgba(232,86,74,.22);color:#FF9B92;animation:nfpulse 1.8s ease-in-out infinite}
 @keyframes nfpulse{0%,100%{opacity:1}50%{opacity:.55}}
@@ -219,13 +219,13 @@ table.sched td.c-common{vertical-align:middle}
 .nc .pen:hover{opacity:.95;background:rgba(255,255,255,.15)}
 .nc .pen svg{width:12px;height:12px}
 /* 흉상 — 카드 오른쪽 아래에 붙이고 하단은 카드 밖으로 넘겨 크롭합니다 */
-.nc .bust{position:absolute;right:-10px;bottom:-15px;width:94px;height:94px;z-index:1;pointer-events:none}
+.nc .bust{position:absolute;right:-10px;bottom:-16px;width:102px;height:102px;z-index:1;pointer-events:none}
 /* 클레이 이미지 공통 기본값 — 별도 규칙이 있는 곳에서는 그 규칙이 우선합니다 */
 img.clayimg{object-fit:contain;vertical-align:middle;max-width:100%}
 .tempcard .clayimg{width:100%;height:100%;object-fit:contain;object-position:bottom;display:block}
 .bust img,.bust svg{width:100%;height:100%;display:block;object-fit:contain;object-position:bottom}
-.nc .ints{position:absolute;left:7px;bottom:6px;display:flex;gap:3px;z-index:2}
-.nc .ints img,.nc .ints svg{width:22px;height:22px;
+.nc .ints{position:absolute;left:8px;bottom:7px;display:flex;gap:3px;z-index:2}
+.nc .ints img,.nc .ints svg{width:24px;height:24px;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
 .sigbar{position:absolute;left:0;right:0;bottom:0;height:3px;z-index:2}
 
@@ -278,6 +278,12 @@ textarea{resize:vertical;min-height:52px;line-height:1.55}
   pointer-events:none;display:none;white-space:pre-wrap;word-break:keep-all;letter-spacing:-.1px}
 #tipbox.show{display:block}
 .ulist .v[data-tip]{cursor:help;border-bottom:1px dotted #C7CDD4}
+#boot{position:fixed;inset:0;z-index:400;background:var(--canvas);display:flex;align-items:center;justify-content:center}
+#boot.done{display:none}
+.bootbox{display:flex;align-items:center;gap:10px;color:var(--tx3);font-size:13px}
+.spin{width:17px;height:17px;border:2px solid var(--line);border-top-color:var(--accent);
+  border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#16181D;color:#fff;
   padding:10px 17px;border-radius:9px;font-size:12.5px;z-index:200;opacity:0;pointer-events:none;transition:.2s}
 .toast.show{opacity:1}
@@ -384,6 +390,8 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 .avgscore{font-size:11px;color:var(--tx3);margin-left:6px;font-variant-numeric:tabular-nums}
 
 .pwcell{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;letter-spacing:-.2px}
+table.data input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--accent)}
+table.data tr.picked td{background:#EDF1FF}
 .copybtn{border:none;background:transparent;color:var(--tx4);padding:0 4px;font-size:11px}
 .copybtn:hover{color:var(--accent)}
 .embedwrap{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
@@ -397,6 +405,8 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
+
+<div id="boot"><div class="bootbox"><span class="spin"></span>불러오는 중…</div></div>
 
 <div class="topbar">
   <input class="teamname" id="teamName" value="Media 3팀" maxlength="22"
@@ -433,7 +443,10 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 <!-- ══════════════ 활용툴 ══════════════ -->
 <section class="panel" id="p-tools"><div class="pad">
   <div class="ptitle"><h2>활용툴</h2><span class="cnt" id="tlCount"></span>
-    <div style="flex:1"></div><button class="btn" id="btnNewTool">+ 툴 추가</button></div>
+    <div style="flex:1"></div>
+    <button class="btn" id="btnDedupTool" title="이름이 같은 행을 하나만 남깁니다">중복 정리</button>
+    <button class="btn danger" id="btnDelTool" disabled>선택 삭제</button>
+    <button class="btn" id="btnNewTool">+ 툴 추가</button></div>
   <p class="psub">광고 업무에서 자주 쓰는 사이트 모음. 행을 클릭하면 수정할 수 있습니다.</p>
   <div class="fbar" id="tlFilter"></div>
   <div id="tlList"></div>
@@ -442,7 +455,10 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 <!-- ══════════════ 성수동 맛집 ══════════════ -->
 <section class="panel" id="p-food"><div class="pad">
   <div class="ptitle"><h2>성수동 맛집</h2><span class="cnt" id="fdCount"></span>
-    <div style="flex:1"></div><button class="btn" id="btnNewFood">+ 맛집 추가</button></div>
+    <div style="flex:1"></div>
+    <button class="btn" id="btnDedupFood" title="이름이 같은 행을 하나만 남깁니다">중복 정리</button>
+    <button class="btn danger" id="btnDelFood" disabled>선택 삭제</button>
+    <button class="btn" id="btnNewFood">+ 맛집 추가</button></div>
   <p class="psub">영업시간을 한 번 넣어두면 <b>지금 영업 중인지</b> 자동으로 계산해 표시하고, 영업 중이 아닌 곳은 흐리게 처리합니다.
     하트를 눌러 평점을 남기면 팀원 평균이 표시됩니다.</p>
   <div class="fbar" id="fdFilter"></div>
@@ -1169,8 +1185,8 @@ function nameCardHtml(m){
           (dd===0?'오늘':'D-'+dd)+'</span>':'')+
       '</div>':'')+
     '</div>'+
-    '<div class="bust">'+bustHtml(m,94)+'</div>'+
-    (ints.length?'<div class="ints">'+ints.map(function(i){return interestHtml(i,22);}).join('')+'</div>':'')+
+    '<div class="bust">'+bustHtml(m,102)+'</div>'+
+    (ints.length?'<div class="ints">'+ints.map(function(i){return interestHtml(i,24);}).join('')+'</div>':'')+
     '<button class="pen" data-pen="'+m.id+'" title="팀원 정보 편집">'+ICO.pen+'</button>'+
     '<div class="sigbar" style="background:'+sig(m)+'"></div></div>';
 }
@@ -1565,6 +1581,10 @@ function workHours(m){ var st=m.start_time||'09:00'; return st+' ~ '+workEnd(st)
 
 /* 아바타 필터 (팩 태그 기반) */
 var AV_FILTERS=[
+ {k:'sex',label:'성별',opts:[
+   ['f','여성형',[]],
+   ['m','남성형',[]]
+ ]},
  {k:'hair',label:'머리',opts:[
    ['short','짧은 머리',['픽시','보브','단발','버즈','크루컷','삭발','짧은','비대칭','모히칸','웨트','레이어드','스윕',
      '브러시컷','샤기컷','투블록','쉼표머리','포마드','올백','크롭','쇼트','클래식컷','솔트앤페퍼',
@@ -1584,11 +1604,13 @@ var AV_FILTERS=[
 ];
 var ACC_ALL=['안경','선글라스','수염','헤드폰','glasses','sunglasses','beard','mustache','stubble','headphones','spectacles'];
 function avBlob(id){ var v=(window.AVATARS||{})[id]; return ((v&&v.q)||id).toLowerCase(); }
+function avSex(id){ var v=(window.AVATARS||{})[id]; return (v&&v.g)||''; }
 function avMatch(id,f){
   var blob=avBlob(id);
   function has(list){ return list.some(function(x){return blob.indexOf(String(x).toLowerCase())>=0;}); }
   for(var i=0;i<AV_FILTERS.length;i++){
     var g=AV_FILTERS[i], sel=f[g.k]; if(!sel) continue;
+    if(g.k==='sex'){ if(avSex(id)!==sel) return false; continue; }
     var opt=g.opts.filter(function(o){return o[0]===sel;})[0]; if(!opt) continue;
     if(g.k==='acc'&&sel==='none'){ if(has(ACC_ALL)) return false; }
     else if(!has(opt[2])) return false;
@@ -2269,10 +2291,12 @@ function renderTools(){
     cats.map(function(c){return '<button class="fchip'+(TLF===c?' on':'')+'" data-tlf="'+esc(c)+'">'+esc(c)+'</button>';}).join('');
   var list=S.tools.filter(function(t){return !TLF||t.category===TLF;});
   $('tlList').innerHTML=list.length? '<table class="data"><thead><tr>'+
+    '<th style="width:36px"><input type="checkbox" class="allchk" data-all="tools"></th>'+
     '<th style="width:48px">No.</th><th style="width:92px">구분</th><th style="width:186px">이름</th>'+
     '<th style="width:240px">주소</th><th style="width:148px">ID</th><th style="width:148px">PW</th><th>설명</th></tr></thead><tbody>'+
     list.map(function(t,i){
       return '<tr data-row="tools:'+t.id+'" style="cursor:pointer">'+
+        '<td class="c"><input type="checkbox" class="rowchk" data-sel="tools" value="'+esc(t.id)+'"></td>'+
         '<td class="c no">'+(i+1)+'</td>'+
         '<td class="c">'+esc(t.category||'')+'</td>'+
         '<td><b>'+esc(t.name)+'</b></td>'+
@@ -2348,6 +2372,7 @@ function renderFoods(){
     return !FDF||f.kind===FDF;
   });
   $('fdList').innerHTML=list.length? '<table class="data"><thead><tr>'+
+    '<th style="width:36px"><input type="checkbox" class="allchk" data-all="foods"></th>'+
     '<th style="width:44px">No.</th><th style="width:196px">가게명</th><th style="width:132px">종류</th>'+
     '<th style="width:180px">영업시간</th><th style="width:104px">휴무</th>'+
     '<th style="width:104px">현재</th><th style="width:108px">예약</th>'+
@@ -2355,6 +2380,7 @@ function renderFoods(){
     list.map(function(f,i){
       var st=foodStatus(f,now);
       return '<tr data-row="foods:'+f.id+'" class="'+(st.dim?'dimrow':'')+'" style="cursor:pointer">'+
+        '<td class="c"><input type="checkbox" class="rowchk" data-sel="foods" value="'+esc(f.id)+'"></td>'+
         '<td class="c no">'+(i+1)+'</td>'+
         '<td><b'+(f.closed?' style="text-decoration:line-through"':'')+'>'+esc(f.name)+'</b>'+
           (f.url?' <a href="'+esc(f.url)+'" target="_blank" rel="noopener" '+
@@ -2391,9 +2417,97 @@ document.addEventListener('click',function(ev){
     if(!/^f_/.test(String(f.id))) sbUp('foods',{id:f.id,ratings:f.ratings},'id'); else saveLocal();
     saveLocal(); renderFoods(); return;
   }
-  if(ev.target.closest('a')||ev.target.closest('.hearts')) return;  /* 링크·평점 클릭은 행 편집을 열지 않음 */
+  if(ev.target.closest('a')||ev.target.closest('.hearts')||ev.target.closest('input')) return;
   var rw=ev.target.closest('[data-row]');
   if(rw){ var a=rw.dataset.row.split(':'); openRow(a[0],a.slice(1).join(':')); }
+});
+
+
+/* ==========================================================================
+   활용툴 · 맛집 — 여러 줄 선택 삭제 / 중복 정리
+========================================================================== */
+function bulkArr(kind){ return kind==='tools'? S.tools : S.foods; }
+function bulkRender(kind){ kind==='tools'? renderTools() : renderFoods(); }
+
+function selectedIds(kind){
+  return [].slice.call(document.querySelectorAll('.rowchk[data-sel="'+kind+'"]:checked'))
+           .map(function(c){ return c.value; });
+}
+function refreshBulkBtn(kind){
+  var btn=$(kind==='tools'?'btnDelTool':'btnDelFood'); if(!btn) return;
+  var n=selectedIds(kind).length;
+  btn.disabled=!n;
+  btn.textContent = n? '선택 삭제 ('+n+')' : '선택 삭제';
+  document.querySelectorAll('.rowchk[data-sel="'+kind+'"]').forEach(function(c){
+    var tr=c.closest('tr'); if(tr) tr.classList.toggle('picked',c.checked);
+  });
+}
+document.addEventListener('change',function(ev){
+  var all=ev.target.closest('.allchk');
+  if(all){
+    var k=all.dataset.all;
+    document.querySelectorAll('.rowchk[data-sel="'+k+'"]').forEach(function(c){ c.checked=all.checked; });
+    refreshBulkBtn(k); return;
+  }
+  var one=ev.target.closest('.rowchk');
+  if(one) refreshBulkBtn(one.dataset.sel);
+});
+
+function bulkDelete(kind){
+  var ids=selectedIds(kind); if(!ids.length) return;
+  var label=kind==='tools'?'툴':'맛집';
+  if(!confirm('선택한 '+ids.length+'개 '+label+'을 삭제할까요?\n되돌릴 수 없습니다.')) return;
+  var arr=bulkArr(kind), keep=arr.filter(function(x){ return ids.indexOf(String(x.id))<0; });
+  if(kind==='tools') S.tools=keep; else S.foods=keep;
+  saveLocal();
+  if(S.sb){
+    var serverIds=ids.filter(function(i){ return !/^[tf]_/.test(i); });
+    if(serverIds.length){
+      S.sb.from(kind).delete().in('id',serverIds).then(function(r){
+        if(r.error) toast('삭제 실패: '+r.error.message);
+      });
+    }
+  }
+  bulkRender(kind); toast(ids.length+'개를 삭제했습니다');
+}
+
+function bulkDedupe(kind){
+  var arr=bulkArr(kind);
+  /* 이름이 같으면 '내용이 더 채워진' 행을 남깁니다 */
+  function score(x){
+    if(kind==='tools') return (x.login_id?2:0)+(x.login_pw?2:0)+(x.description?1:0)+(x.url?1:0);
+    return (Object.keys(x.ratings||{}).length?3:0)+((x.hours||{}).open?2:0)+(x.url?1:0)+(x.reservation?1:0);
+  }
+  var best={}, dupIds=[];
+  arr.forEach(function(x){
+    var k=(x.name||'').trim();
+    if(!best[k]){ best[k]=x; return; }
+    if(score(x)>score(best[k])){ dupIds.push(String(best[k].id)); best[k]=x; }
+    else dupIds.push(String(x.id));
+  });
+  if(!dupIds.length){ toast('중복이 없습니다'); return; }
+  var label=kind==='tools'?'툴':'맛집';
+  if(!confirm('이름이 겹치는 '+label+' '+dupIds.length+'개를 지우고 하나씩만 남길까요?')) return;
+  var keep=arr.filter(function(x){ return dupIds.indexOf(String(x.id))<0; });
+  if(kind==='tools') S.tools=keep; else S.foods=keep;
+  saveLocal();
+  if(S.sb){
+    var serverIds=dupIds.filter(function(i){ return !/^[tf]_/.test(i); });
+    /* 한 번에 너무 많이 보내지 않도록 100개씩 */
+    for(var i=0;i<serverIds.length;i+=100){
+      S.sb.from(kind).delete().in('id',serverIds.slice(i,i+100)).then(function(r){
+        if(r.error) toast('정리 실패: '+r.error.message);
+      });
+    }
+  }
+  bulkRender(kind); toast(dupIds.length+'개 중복을 정리했습니다');
+}
+
+document.addEventListener('click',function(ev){
+  if(ev.target.id==='btnDelTool')   bulkDelete('tools');
+  if(ev.target.id==='btnDelFood')   bulkDelete('foods');
+  if(ev.target.id==='btnDedupTool') bulkDedupe('tools');
+  if(ev.target.id==='btnDedupFood') bulkDedupe('foods');
 });
 
 function openRow(kind,id){
@@ -2696,6 +2810,8 @@ function seedIfEmpty(){
   saveLocal();
 }
 
+function bootDone(){ var b=$('boot'); if(b) b.classList.add('done'); }
+
 (function init(){
   loadLocal();
   /* config.js 가 있으면 접속만 해도 바로 연결됩니다 (배포용) */
@@ -2703,15 +2819,25 @@ function seedIfEmpty(){
   if(CFG.supabaseUrl && CFG.supabaseKey){
     if(!S.sbUrl || S.sbUrl!==CFG.supabaseUrl){ S.sbUrl=CFG.supabaseUrl; S.sbKey=CFG.supabaseKey; saveLocal(); }
   }
-  seedIfEmpty();
-  renderAll();
   var lastTab=null; try{ lastTab=localStorage.getItem(LS+'.tab'); }catch(err){}
-  if(lastTab&&TABS.indexOf(lastTab)>=0) goTab(lastTab);
-  if(S.sbUrl&&S.sbKey&&sbInit()){
+  function openTab(){ if(lastTab&&TABS.indexOf(lastTab)>=0) goTab(lastTab); }
+
+  var connecting = !!(S.sbUrl && S.sbKey && sbInit());
+
+  if(connecting){
+    /* 서버 값이 올 때까지 기다렸다가 한 번만 그립니다.
+       (예전에는 기본값을 먼저 그려서 0.1초쯤 깜빡였습니다) */
     setStat('off','연결 중…');
-    sbLoadAll(true).then(function(ok){ if(ok){ sbRealtime(); } scrollToToday(); });
+    var guard=setTimeout(function(){ bootDone(); }, 8000);   /* 만약을 위한 안전장치 */
+    sbLoadAll(true).then(function(ok){
+      clearTimeout(guard);
+      if(ok){ sbRealtime(); }
+      else  { seedIfEmpty(); renderAll(); }   /* 연결 실패 시에만 로컬 값으로 */
+      openTab(); bootDone(); scrollToToday();
+    });
   }else{
-    setStat('off','미연결');
+    seedIfEmpty(); renderAll(); openTab();
+    setStat('off','미연결'); bootDone();
     setTimeout(function(){ scrollToToday(); },60);
   }
 })();
