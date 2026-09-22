@@ -1093,13 +1093,35 @@ function sbLoadAll(silent){
 }
 
 /* 단건 저장 — 실패해도 로컬에는 남습니다 */
+/* 서버 스키마가 구버전이라 없는 컬럼은 기억해 두고 다음부터 빼고 보냅니다.
+   (supabase_schema.sql 을 아직 다시 실행하지 않은 경우를 위한 자동 복구) */
+var SKIP_COLS={};
+function stripUnknown(table,row){
+  var sk=SKIP_COLS[table]; if(!sk) return row;
+  var out={}; Object.keys(row).forEach(function(k){ if(!sk[k]) out[k]=row[k]; });
+  return out;
+}
+function missingColumn(err,row){
+  var msg=(err&&(err.message||''))+' '+(err&&(err.details||''));
+  var m=msg.match(/'([^']+)' column/) || msg.match(/column "?([A-Za-z_]+)"? of relation/)
+       || msg.match(/column ([A-Za-z_]+) does not exist/);
+  var name=m && m[1];
+  return (name && Object.prototype.hasOwnProperty.call(row,name)) ? name : null;
+}
 function sbUp(table,row,conflict){
   saveLocal();
   if(!S.sb) return Promise.resolve();
-  var q=S.sb.from(table).upsert(row, conflict?{onConflict:conflict}:undefined);
-  return q.then(function(r){
-    if(r.error){ setStat('err','저장 실패'); toast('저장 실패: '+r.error.message); }
-    else setStat('on','연결됨');
+  var payload=stripUnknown(table,row);
+  return S.sb.from(table).upsert(payload, conflict?{onConflict:conflict}:undefined).then(function(r){
+    if(!r.error){ setStat('on','연결됨'); return; }
+    var col=missingColumn(r.error,payload);
+    if(col){
+      (SKIP_COLS[table]=SKIP_COLS[table]||{})[col]=1;
+      toast('서버에 '+table+'.'+col+' 칸이 없어 빼고 저장합니다 — supabase_schema.sql 을 다시 실행해 주세요');
+      return sbUp(table,row,conflict);
+    }
+    setStat('err','저장 실패');
+    toast('저장 실패: '+r.error.message);
   });
 }
 function sbDel(table,match){
