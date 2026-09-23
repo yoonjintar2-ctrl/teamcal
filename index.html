@@ -41,10 +41,10 @@ a:hover{text-decoration:underline}
 
 /* ───────────────────────── 상단 바 ───────────────────────── */
 /* 상단 한 줄 — 팀 이름 · 탭 · 과거 버튼을 한 프레임에 모읍니다 */
-.topbar{display:flex;align-items:center;gap:10px;padding:0 14px;height:52px;
+.topbar{display:flex;align-items:center;gap:8px;padding:0 14px;height:52px;
   background:var(--page);border-bottom:1px solid var(--line);flex:0 0 auto}
 .tabbar{display:flex;align-items:center;gap:3px;flex:1 1 auto;min-width:0;overflow-x:auto;
-  padding-left:8px;margin-left:4px;border-left:1px solid var(--line);
+  padding-left:9px;border-left:1px solid var(--line);
   scrollbar-width:none}
 .tabbar::-webkit-scrollbar{display:none}
 .tabbar button{border:none;background:transparent;padding:7px 13px;font-size:13.5px;color:var(--tx2);
@@ -52,8 +52,12 @@ a:hover{text-decoration:underline}
   transition:.12s;flex:0 0 auto}
 .tabbar button:hover{background:var(--line3);color:var(--tx)}
 .tabbar button.on{background:var(--ink);color:var(--ink-tx);font-weight:700}
+/* 제목 — 글자 수에 맞춰 너비가 늘고 줄어듭니다 (fitTeamName) */
 .teamname{font-weight:800;font-size:15.5px;letter-spacing:-.4px;border:none;background:transparent;
-  padding:4px 7px;border-radius:7px;width:auto;min-width:80px;max-width:230px;color:var(--tx)}
+  padding:4px 7px;border-radius:7px;width:140px;min-width:0;max-width:260px;color:var(--tx);
+  flex:0 0 auto}
+#teamNameMirror{position:absolute;left:-9999px;top:0;visibility:hidden;white-space:pre;
+  pointer-events:none}
 .teamname:hover{background:var(--line3)}
 .teamname:focus{outline:2px solid var(--accent-soft);background:#fff}
 .tbright{margin-left:auto;display:flex;align-items:center;gap:6px;flex:0 0 auto}
@@ -83,8 +87,8 @@ a:hover{text-decoration:underline}
 .psub{color:var(--tx3);font-size:13px;margin:0 0 18px}
 
 /* ───────────────────────── 스케줄 표 ───────────────────────── */
-/* 표 좌우(및 아래) 여백 — 어두운 배경으로 표를 또렷하게 분리합니다 */
-#gridwrap{flex:1 1 auto;overflow:auto;background:var(--ink2);position:relative}
+/* 표 좌우(및 아래) 여백 — 밝은 회색으로 표를 또렷하게 분리합니다 */
+#gridwrap{flex:1 1 auto;overflow:auto;background:#E4E7EC;position:relative}
 table.sched{border-collapse:separate;border-spacing:0;width:max-content;table-layout:fixed;margin:0 auto}
 table.sched th,table.sched td{padding:0;margin:0}
 table.sched thead th{
@@ -122,7 +126,7 @@ table.sched tr.holi .dcell .d2{color:var(--red)}
 #yrNow{position:fixed;z-index:26;display:none;pointer-events:none;
   writing-mode:vertical-rl;text-orientation:mixed;
   font-size:11.5px;font-weight:800;letter-spacing:1.2px;font-variant-numeric:tabular-nums;
-  color:rgba(255,255,255,.62);background:transparent;padding:7px 3px;border-radius:8px;
+  color:var(--tx3);background:transparent;padding:7px 3px;border-radius:8px;
   transition:opacity .15s}
 /* 행 상태 배경 — 고정(sticky) 날짜 열까지 같은 값이 적용되도록
    모두 `table.sched` 접두사를 붙여 기본 td 규칙보다 우선순위를 높입니다 */
@@ -430,6 +434,7 @@ table.data tr.picked td{background:#EDF1FF}
     <button data-tab="tools">활용툴</button>
     <button data-tab="food">성수동 맛집</button>
     <button data-tab="weekly" title="새 창에서 열립니다 (Alt+클릭 = 주소 수정)">주간업무보고 ↗</button>
+    <button data-tab="drive" title="팝업 창으로 열립니다 (Alt+클릭 = 주소 수정)">팀 구글 드라이브 ↗</button>
   </nav>
   <div class="tbright">
     <button class="btn sm" id="btnPastLess" title="과거 1일 숨기기">− 과거</button>
@@ -739,12 +744,17 @@ var MKSTATUS={selling:'판매중',reserved:'예약중',sold:'판매완료'};
 /* 한국 공휴일 2025~2032 (대체공휴일·겹침 대체 포함, 음력 환산 완료) */
 var HOLIDAYS={'2025-01-01':'신정','2025-01-28':'설날 연휴','2025-01-29':'설날','2025-01-30':'설날 연휴','2025-03-01':'삼일절','2025-03-03':'대체공휴일','2025-05-05':'어린이날·부처님오신날','2025-05-06':'대체공휴일','2025-06-06':'현충일','2025-08-15':'광복절','2025-10-03':'개천절','2025-10-05':'추석 연휴','2025-10-06':'추석','2025-10-07':'추석 연휴','2025-10-08':'대체공휴일','2025-10-09':'한글날','2025-12-25':'성탄절','2026-01-01':'신정','2026-02-16':'설날 연휴','2026-02-17':'설날','2026-02-18':'설날 연휴','2026-03-01':'삼일절','2026-03-02':'대체공휴일','2026-05-05':'어린이날','2026-05-24':'부처님오신날','2026-05-25':'대체공휴일','2026-06-06':'현충일','2026-08-15':'광복절','2026-08-17':'대체공휴일','2026-09-24':'추석 연휴','2026-09-25':'추석','2026-09-26':'추석 연휴','2026-10-03':'개천절','2026-10-05':'대체공휴일','2026-10-09':'한글날','2026-12-25':'성탄절','2027-01-01':'신정','2027-02-06':'설날 연휴','2027-02-07':'설날','2027-02-08':'설날 연휴','2027-02-09':'대체공휴일','2027-03-01':'삼일절','2027-05-05':'어린이날','2027-05-13':'부처님오신날','2027-06-06':'현충일','2027-08-15':'광복절','2027-08-16':'대체공휴일','2027-09-14':'추석 연휴','2027-09-15':'추석','2027-09-16':'추석 연휴','2027-10-03':'개천절','2027-10-04':'대체공휴일','2027-10-09':'한글날','2027-10-11':'대체공휴일','2027-12-25':'성탄절','2027-12-27':'대체공휴일','2028-01-01':'신정','2028-01-26':'설날 연휴','2028-01-27':'설날','2028-01-28':'설날 연휴','2028-03-01':'삼일절','2028-05-02':'부처님오신날','2028-05-05':'어린이날','2028-06-06':'현충일','2028-08-15':'광복절','2028-10-02':'추석 연휴','2028-10-03':'개천절·추석','2028-10-04':'추석 연휴','2028-10-05':'대체공휴일','2028-10-09':'한글날','2028-12-25':'성탄절','2029-01-01':'신정','2029-02-12':'설날 연휴','2029-02-13':'설날','2029-02-14':'설날 연휴','2029-03-01':'삼일절','2029-05-05':'어린이날','2029-05-07':'대체공휴일','2029-05-20':'부처님오신날','2029-05-21':'대체공휴일','2029-06-06':'현충일','2029-08-15':'광복절','2029-09-21':'추석 연휴','2029-09-22':'추석','2029-09-23':'추석 연휴','2029-09-24':'대체공휴일','2029-10-03':'개천절','2029-10-09':'한글날','2029-12-25':'성탄절','2030-01-01':'신정','2030-02-02':'설날 연휴','2030-02-03':'설날','2030-02-04':'설날 연휴','2030-02-05':'대체공휴일','2030-03-01':'삼일절','2030-05-05':'어린이날','2030-05-06':'대체공휴일','2030-05-09':'부처님오신날','2030-06-06':'현충일','2030-08-15':'광복절','2030-09-11':'추석 연휴','2030-09-12':'추석','2030-09-13':'추석 연휴','2030-10-03':'개천절','2030-10-09':'한글날','2030-12-25':'성탄절','2031-01-01':'신정','2031-01-22':'설날 연휴','2031-01-23':'설날','2031-01-24':'설날 연휴','2031-03-01':'삼일절','2031-03-03':'대체공휴일','2031-05-05':'어린이날','2031-05-28':'부처님오신날','2031-06-06':'현충일','2031-08-15':'광복절','2031-09-30':'추석 연휴','2031-10-01':'추석','2031-10-02':'추석 연휴','2031-10-03':'개천절','2031-10-09':'한글날','2031-12-25':'성탄절','2032-01-01':'신정','2032-02-10':'설날 연휴','2032-02-11':'설날','2032-02-12':'설날 연휴','2032-03-01':'삼일절','2032-05-05':'어린이날','2032-05-16':'부처님오신날','2032-05-17':'대체공휴일','2032-06-06':'현충일','2032-08-15':'광복절','2032-08-16':'대체공휴일','2032-09-18':'추석 연휴','2032-09-19':'추석','2032-09-20':'추석 연휴','2032-09-21':'대체공휴일','2032-10-03':'개천절','2032-10-04':'대체공휴일','2032-10-09':'한글날','2032-10-11':'대체공휴일','2032-12-25':'성탄절','2032-12-27':'대체공휴일'};
 
+/* 팀 구글 드라이브 기본 주소 (상단 버튼 Alt+클릭으로 바꿀 수 있습니다) */
+var DEFAULT_DRIVE_URL='https://drive.google.com/drive/folders/1r30USP5JiGLCt4oSO1zd7qFBHxe8vxJI?usp=drive_link';
+
 /* ==========================================================================
    상태
 ========================================================================== */
 var S={
   sbUrl:'', sbKey:'', sb:null, online:false,
-  team:{name:'Media 3팀', weeklyReportUrl:'https://docs.google.com/presentation/d/1eoovSrjJed0kKcZBuTrjBtNwU-1i9KpV/edit#slide=id.p1'},
+  team:{name:'Media 3팀',
+        weeklyReportUrl:'https://docs.google.com/presentation/d/1eoovSrjJed0kKcZBuTrjBtNwU-1i9KpV/edit#slide=id.p1',
+        driveUrl:DEFAULT_DRIVE_URL},
   members:[], sched:{}, commons:{}, holiExtra:{},
   market:[], comments:[], tools:[], foods:[], guestbook:[],
   pastDays:DEFAULT_PAST,
@@ -2686,6 +2696,23 @@ function openWeekly(edit){
   if(!url){ openWeekly(true); return; }
   window.open(url,'_blank','noopener');
 }
+/* 팀 구글 드라이브: 팝업 창으로 열립니다 (Alt+클릭 → 주소 수정) */
+function openDrive(edit){
+  if(edit){
+    var v=prompt('팀 구글 드라이브 링크',S.team.driveUrl||DEFAULT_DRIVE_URL);
+    if(v!==null){ S.team.driveUrl=v.trim(); saveTeam(); }
+    return;
+  }
+  var url=S.team.driveUrl||DEFAULT_DRIVE_URL;
+  if(!url){ openDrive(true); return; }
+  var aw=screen.availWidth||1440, ah=screen.availHeight||900;
+  var w=Math.max(720,Math.min(1280,Math.round(aw*.86)));
+  var h=Math.max(520,Math.min(880, Math.round(ah*.88)));
+  var lft=Math.max(0,Math.round((aw-w)/2)), top=Math.max(0,Math.round((ah-h)/2));
+  var win=window.open(url,'teamDrive',
+    'noopener,popup=yes,width='+w+',height='+h+',left='+lft+',top='+top+',resizable=yes,scrollbars=yes');
+  if(!win) toast('팝업이 차단되었습니다 — 주소창의 팝업 허용을 켜주세요');
+}
 function saveTeam(){ saveLocal(); sbUp('settings',{key:'team',value:S.team},'key'); }
 
 /* ==========================================================================
@@ -2708,6 +2735,7 @@ function goTab(name){
 $('tabs').addEventListener('click',function(ev){
   var b=ev.target.closest('[data-tab]'); if(!b) return;
   if(b.dataset.tab==='weekly'){ openWeekly(ev.altKey); return; }
+  if(b.dataset.tab==='drive'){ openDrive(ev.altKey); return; }
   goTab(b.dataset.tab);
 });
 
@@ -2740,12 +2768,28 @@ $('btnPastLess').onclick=function(){
   S.pastDays--; saveLocal(); renderBody();
 };
 
-/* 팀 이름 */
+/* 팀 이름 — 글자 수에 따라 입력칸 너비를 실시간으로 맞춥니다 */
+function fitTeamName(){
+  var i=$('teamName'); if(!i) return;
+  var m=$('teamNameMirror');
+  if(!m){ m=document.createElement('span'); m.id='teamNameMirror'; document.body.appendChild(m); }
+  try{
+    var cs=getComputedStyle(i);
+    m.style.fontFamily=cs.fontFamily; m.style.fontSize=cs.fontSize;
+    m.style.fontWeight=cs.fontWeight; m.style.letterSpacing=cs.letterSpacing;
+  }catch(err){}
+  m.textContent=(i.value||'팀')+' ';
+  var w=m.offsetWidth||0;
+  if(w) i.style.width=Math.min(260,Math.max(56,w+16))+'px';
+}
 $('teamName').addEventListener('change',function(){
   S.team.name=(this.value||'').trim()||'우리 팀';
-  this.value=S.team.name; document.title=S.team.name+' · 팀 워크스페이스'; saveTeam();
+  this.value=S.team.name; document.title=S.team.name+' · 팀 워크스페이스';
+  fitTeamName(); saveTeam();
 });
+$('teamName').addEventListener('input',fitTeamName);
 $('teamName').addEventListener('keydown',function(ev){ if(ev.key==='Enter') this.blur(); });
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(fitTeamName).catch(function(){});
 
 /* Supabase 연결 */
 function openSetup(){
@@ -2854,6 +2898,7 @@ function reconcileAssets(force){
 function renderAll(){
   reconcileAssets(false);
   $('teamName').value=S.team.name||'우리 팀';
+  fitTeamName();
   document.title=(S.team.name||'팀')+' · 팀 워크스페이스';
   renderHead(); renderBody();
   var cur=el('#tabs button.on');
