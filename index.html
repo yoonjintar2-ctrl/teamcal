@@ -40,22 +40,23 @@ a:hover{text-decoration:underline}
 ::-webkit-scrollbar-track{background:transparent}
 
 /* ───────────────────────── 상단 바 ───────────────────────── */
-.topbar{display:flex;align-items:center;gap:14px;padding:0 16px;height:46px;
+/* 상단 한 줄 — 팀 이름 · 탭 · 과거 버튼을 한 프레임에 모읍니다 */
+.topbar{display:flex;align-items:center;gap:10px;padding:0 14px;height:52px;
   background:var(--page);border-bottom:1px solid var(--line);flex:0 0 auto}
-/* 탭 — 한 단 아래, 배경을 달리해 프레임을 나눕니다 */
-.tabbar{display:flex;align-items:stretch;gap:2px;height:40px;padding:0 12px;flex:0 0 auto;
-  background:#EDEFF3;border-bottom:1px solid #DFE3E8;overflow-x:auto}
-.tabbar button{border:none;background:transparent;padding:0 16px;font-size:13.5px;color:var(--tx2);
-  font-weight:500;letter-spacing:-.2px;white-space:nowrap;border-radius:8px 8px 0 0;
-  margin-top:4px;transition:.12s;flex:0 0 auto}
-.tabbar button:hover{background:rgba(255,255,255,.62);color:var(--tx)}
-.tabbar button.on{background:var(--page);color:var(--tx);font-weight:700;
-  box-shadow:0 -1px 0 #DFE3E8 inset,1px 0 0 #DFE3E8,-1px 0 0 #DFE3E8}
+.tabbar{display:flex;align-items:center;gap:3px;flex:1 1 auto;min-width:0;overflow-x:auto;
+  padding-left:8px;margin-left:4px;border-left:1px solid var(--line);
+  scrollbar-width:none}
+.tabbar::-webkit-scrollbar{display:none}
+.tabbar button{border:none;background:transparent;padding:7px 13px;font-size:13.5px;color:var(--tx2);
+  font-weight:500;letter-spacing:-.2px;white-space:nowrap;border-radius:8px;
+  transition:.12s;flex:0 0 auto}
+.tabbar button:hover{background:var(--line3);color:var(--tx)}
+.tabbar button.on{background:var(--ink);color:var(--ink-tx);font-weight:700}
 .teamname{font-weight:800;font-size:15.5px;letter-spacing:-.4px;border:none;background:transparent;
   padding:4px 7px;border-radius:7px;width:auto;min-width:80px;max-width:230px;color:var(--tx)}
 .teamname:hover{background:var(--line3)}
 .teamname:focus{outline:2px solid var(--accent-soft);background:#fff}
-.tbright{margin-left:auto;display:flex;align-items:center;gap:6px}
+.tbright{margin-left:auto;display:flex;align-items:center;gap:6px;flex:0 0 auto}
 .btn{border:1px solid var(--line);background:#fff;color:var(--tx);padding:6px 12px;border-radius:7px;
   white-space:nowrap;transition:.12s;font-size:13px}
 .btn:hover{background:#F6F8FA;border-color:#D4D9DF}
@@ -82,7 +83,8 @@ a:hover{text-decoration:underline}
 .psub{color:var(--tx3);font-size:13px;margin:0 0 18px}
 
 /* ───────────────────────── 스케줄 표 ───────────────────────── */
-#gridwrap{flex:1 1 auto;overflow:auto;background:var(--canvas);position:relative}
+/* 표 좌우(및 아래) 여백 — 어두운 배경으로 표를 또렷하게 분리합니다 */
+#gridwrap{flex:1 1 auto;overflow:auto;background:var(--ink2);position:relative}
 table.sched{border-collapse:separate;border-spacing:0;width:max-content;table-layout:fixed;margin:0 auto}
 table.sched th,table.sched td{padding:0;margin:0}
 table.sched thead th{
@@ -112,7 +114,7 @@ table.sched td.c-date{vertical-align:middle;text-align:center}
 .dcell .d2 .hn{font-weight:600}
 
 table.sched tr.sat .dcell .wd,table.sched tr.sun .dcell .wd{color:var(--red)}
-table.sched tr.sun .dcell .d1{color:var(--red)}
+table.sched tr.sat .dcell .d1,table.sched tr.sun .dcell .d1{color:var(--red)}
 table.sched tr.holi .dcell .d1,table.sched tr.holi .dcell .wd,
 table.sched tr.holi .dcell .d2{color:var(--red)}
 .dcell .wd{font-weight:600;font-size:12px;letter-spacing:-.1px}
@@ -120,15 +122,16 @@ table.sched tr.holi .dcell .d2{color:var(--red)}
 #yrNow{position:fixed;z-index:26;display:none;pointer-events:none;
   writing-mode:vertical-rl;text-orientation:mixed;
   font-size:11.5px;font-weight:800;letter-spacing:1.2px;font-variant-numeric:tabular-nums;
-  color:var(--tx3);background:var(--canvas);padding:7px 3px;border-radius:8px;
+  color:rgba(255,255,255,.62);background:transparent;padding:7px 3px;border-radius:8px;
   transition:opacity .15s}
 /* 행 상태 배경 — 고정(sticky) 날짜 열까지 같은 값이 적용되도록
    모두 `table.sched` 접두사를 붙여 기본 td 규칙보다 우선순위를 높입니다 */
-table.sched tr.holi td,table.sched tr.sun td{background:#F0F2F5}
+table.sched tr.holi td,table.sched tr.sun td,table.sched tr.sat td{background:#F0F2F5}
 table.sched tr.past td{background:var(--past)}
 table.sched tr.past .dcell .d1,table.sched tr.past .dcell .d2{color:var(--past-tx)}
 table.sched tr.past.holi .dcell .d1,table.sched tr.past.holi .dcell .d2,
 table.sched tr.past.holi .dcell .wd,
+table.sched tr.past.sat .dcell .d1,table.sched tr.past.sun .dcell .d1,
 table.sched tr.past.sat .dcell .wd,table.sched tr.past.sun .dcell .wd{color:#CFA9A5}
 table.sched tr.past .cellbody{opacity:.52}
 table.sched tr.mstart td{border-top:2px solid #D8DDE3}
@@ -421,19 +424,18 @@ table.data tr.picked td{background:#EDF1FF}
 <div class="topbar">
   <input class="teamname" id="teamName" value="Media 3팀" maxlength="22"
          title="팀 이름 — 클릭해서 수정 / Alt+클릭 = Supabase 연결 설정">
+  <nav class="tabbar" id="tabs">
+    <button data-tab="schedule" class="on">팀 스케줄</button>
+    <button data-tab="market">중고거래</button>
+    <button data-tab="tools">활용툴</button>
+    <button data-tab="food">성수동 맛집</button>
+    <button data-tab="weekly" title="새 창에서 열립니다 (Alt+클릭 = 주소 수정)">주간업무보고 ↗</button>
+  </nav>
   <div class="tbright">
     <button class="btn sm" id="btnPastLess" title="과거 1일 숨기기">− 과거</button>
     <button class="btn sm" id="btnPastMore" title="과거 1일 추가">+ 과거</button>
   </div>
 </div>
-
-<nav class="tabbar" id="tabs">
-  <button data-tab="schedule" class="on">팀 스케줄</button>
-  <button data-tab="market">중고거래</button>
-  <button data-tab="tools">활용툴</button>
-  <button data-tab="food">성수동 맛집</button>
-  <button data-tab="weekly" title="새 창에서 열립니다 (Alt+클릭 = 주소 수정)">주간업무보고 ↗</button>
-</nav>
 
 <!-- ══════════════ 팀 스케줄 ══════════════ -->
 <section class="panel on" id="p-schedule">
@@ -783,7 +785,8 @@ function holidayOf(ds){ return S.holiExtra[ds] || HOLIDAYS[ds] || ''; }
 /* 무채색 라인 아이콘 (12x12, currentColor) */
 var ICO={
   vac:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.35"><circle cx="6" cy="6" r="4.6"/><path d="M6 1.4v9.2" /><path d="M6 1.4a4.6 4.6 0 0 1 0 9.2z" fill="currentColor" stroke="none"/></svg>',
-  lunch:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M1.6 5.9h8.8a4.4 4.4 0 0 1-8.8 0z"/><path d="M4 1.3v1.6M6 .9v2M8 1.3v1.6"/></svg>',
+  /* 점심 — 포크와 나이프 */
+  lunch:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M2.3 1.1v2.3a1.15 1.15 0 0 0 2.3 0V1.1"/><path d="M3.45 1.1v2.3M3.45 4.6v6.3"/><path d="M8.7 10.9V1.1c1.25.75 1.85 2.1 1.85 3.5 0 1.15-.6 2-1.85 2.3"/></svg>',
   time:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="6" cy="6" r="4.7"/><path d="M6 3.3V6l1.9 1.2"/></svg>',
   memo:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M1.9 2.6h8.2M1.9 6h8.2M1.9 9.4h5.2"/></svg>',
   pin:'<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M6 10.6V7M3.4 7h5.2l-.8-2.1V1.7H4.2v3.2L3.4 7z"/></svg>',
@@ -1229,6 +1232,20 @@ function renderHead(){
   $('sched').style.width=total+'px';
 }
 
+/* 근태 아이콘 — 연차는 꽉 찬 원, 반차는 1/2, 반반차는 1/4 */
+function vacIcon(v){
+  var fill;
+  if(v==='am_quarter'||v==='pm_quarter')
+    fill='<path d="M6 6V1.4A4.6 4.6 0 0 1 10.6 6z" fill="currentColor" stroke="none"/>'+
+         '<path d="M6 1.4v4.6h4.6"/>';
+  else if(v==='am_half'||v==='pm_half')
+    fill='<path d="M6 1.4a4.6 4.6 0 0 1 0 9.2z" fill="currentColor" stroke="none"/><path d="M6 1.4v9.2"/>';
+  else
+    fill='<circle cx="6" cy="6" r="4.6" fill="currentColor" stroke="none"/>';
+  return '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.35">'+
+         '<circle cx="6" cy="6" r="4.6"/>'+fill+'</svg>';
+}
+
 function line(icon,val,cls){
   return '<div class="ln '+(cls||'')+'">'+icon+'<span class="v">'+val+'</span></div>';
 }
@@ -1242,7 +1259,7 @@ function cellInner(m,e,offday){
   }
   if(!e) return out||'<span class="ph">＋</span>';
   /* 2) 근태 3) 점심 4) 메모 */
-  if(e.vacation) out+=line(ICO.vac,'<span class="kbadge">'+esc(VMAP[e.vacation]?VMAP[e.vacation].label:e.vacation)+'</span>');
+  if(e.vacation) out+=line(vacIcon(e.vacation),'<span class="kbadge">'+esc(VMAP[e.vacation]?VMAP[e.vacation].label:e.vacation)+'</span>');
   if(e.lunch)    out+=line(ICO.lunch,'점심 '+esc(LMAP[e.lunch]||e.lunch));
   if(e.memo)     out+=line(ICO.memo,esc(e.memo));
   return out||'<span class="ph">＋</span>';
