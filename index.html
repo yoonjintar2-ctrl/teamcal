@@ -412,7 +412,9 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 .hearts span.on{color:#2B2F37}
 .hearts:hover span{color:#B9C0C8}
 .hearts span:hover,.hearts span:hover ~ span{}
-.avgscore{font-size:11px;color:var(--tx3);margin-left:6px;font-variant-numeric:tabular-nums}
+.avgscore{font-size:11px;color:var(--tx3);margin-left:6px;font-variant-numeric:tabular-nums;cursor:pointer;
+  border-bottom:1px dotted #B9C0C8;padding:1px 0}
+.avgscore:hover{color:var(--accent);border-bottom-color:var(--accent)}
 
 .pwcell{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;letter-spacing:-.2px}
 table.data input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--accent)}
@@ -490,18 +492,53 @@ table.data tr.picked td{background:#EDF1FF}
 .whoalt .grow{flex:1}
 
 /* ───────────────────────── 슬기로운 회사생활 하위 메뉴 ───────────────────────── */
-.subnav{display:none;align-items:center;gap:4px;padding:8px 14px;background:#F3F4F7;border-bottom:1px solid var(--line);
-  flex:0 0 auto;overflow-x:auto}
-.subnav.show{display:flex}
-.subnav::before{content:'슬기로운 회사생활';font-size:11.5px;font-weight:800;color:var(--tx3);margin-right:8px;letter-spacing:.3px}
-.subnav button{border:1px solid transparent;background:transparent;padding:5px 13px;border-radius:999px;font-size:13px;
-  color:var(--tx2);white-space:nowrap}
-.subnav button:hover{background:#fff;border-color:var(--line)}
-.subnav button.on{background:#fff;border-color:#D4D9DF;color:var(--tx);font-weight:700;box-shadow:0 1px 2px rgba(16,20,28,.06)}
+.subnav{display:none;align-items:center;gap:6px;padding:0 14px;height:48px;background:var(--ink);
+  flex:0 0 auto;overflow-x:auto;position:relative;z-index:5;box-shadow:0 4px 12px rgba(16,20,28,.14)}
+.subnav.show{display:flex;animation:subdrop .18s ease-out}
+@keyframes subdrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+/* 위쪽 탭과 이어지는 꼬리 — 어느 메뉴에서 펼쳐졌는지 보이도록 */
+.subnav::after{content:'';position:absolute;top:-6px;left:var(--nx,120px);width:12px;height:12px;background:var(--ink);
+  transform:translateX(-50%) rotate(45deg)}
+.subnav .sublabel{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.5);margin-right:6px;white-space:nowrap;
+  display:flex;align-items:center;gap:6px;letter-spacing:.2px}
+.subnav .sublabel svg{width:11px;height:11px}
+.subnav button{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);padding:6px 15px;border-radius:999px;
+  font-size:13px;color:rgba(255,255,255,.82);white-space:nowrap;display:flex;align-items:center;gap:6px;transition:.12s}
+.subnav button .si{font-size:14px;line-height:1}
+.subnav button:hover{background:rgba(255,255,255,.14);color:#fff}
+.subnav button.on{background:#fff;border-color:#fff;color:var(--ink);font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+/* 펼쳐지는 탭 표시 (▾) */
+.tabbar button .caret{display:inline-block;width:10px;height:10px;margin-left:5px;vertical-align:0;transition:transform .18s;opacity:.7}
+.tabbar button.on .caret{transform:rotate(180deg);opacity:1}
 
 /* ───────────────────────── 맛집 지도 ───────────────────────── */
 .mapwrap{position:relative;margin:0 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#EEF0F3}
-#fdMap{height:calc(100vh - 300px);min-height:420px;width:100%;position:relative;z-index:0}
+#fdMap{height:calc(100vh - 236px);min-height:560px;width:100%;position:relative;z-index:0;background:#F2F3F5}
+#fdMap.mono .leaflet-tile-pane{filter:grayscale(1) contrast(.9) brightness(1.06)}
+.fdtable tbody tr{cursor:pointer}
+.fdtable tbody tr.sel td{background:#EEF2FF!important}
+.fdtable tbody tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.fdtable td.memo{font-size:12px;color:var(--tx2);line-height:1.45}
+.fdtable .nvlink{font-size:11px;font-weight:600;white-space:nowrap;margin-left:4px}
+.fdtable .nopos{display:inline-block;width:13px;height:13px;color:var(--tx4);margin-right:4px;vertical-align:-2px}
+.fdtable .nopos svg{width:13px;height:13px;display:block}
+.catchip{display:inline-block;font-size:11px;font-weight:700;color:var(--tx2);background:var(--line2);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.closedtag{font-size:10.5px;font-weight:700;color:var(--red);background:var(--red-soft);border-radius:4px;padding:1px 5px}
+.editbtn{border:1px solid var(--line);background:#fff;color:var(--tx3);font-size:11.5px;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.editbtn:hover{color:var(--tx);border-color:#C9D0D8;background:#F6F8FA}
+.fchip .n{font-size:11px;opacity:.6;margin-left:2px;font-variant-numeric:tabular-nums}
+.ratepop{position:fixed;z-index:250;width:250px;background:#fff;border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 14px 40px rgba(16,20,28,.18);padding:6px 0;display:none}
+.ratepop.show{display:block}
+.rp-h{display:flex;align-items:baseline;gap:8px;padding:8px 14px 8px;border-bottom:1px solid var(--line2);font-size:13px}
+.rp-h span{font-size:11.5px;color:var(--tx3);margin-left:auto}
+.rp-it{display:flex;align-items:center;gap:8px;padding:7px 14px;font-size:12.8px}
+.rp-it .pav{width:24px;height:24px;flex:0 0 24px;margin:0;border-width:2px;box-shadow:none;cursor:default}
+.rp-it .nm{flex:1;min-width:0}
+.rp-it .nm em{font-style:normal;font-size:10.5px;color:var(--accent);font-weight:700}
+.rp-it .hv{color:#2B2F37;letter-spacing:1px;font-size:12px}
+.rp-it .hv i{font-style:normal;color:#E3E7EB}
+.rp-it b{width:14px;text-align:right;font-variant-numeric:tabular-nums}
 .foodsplit{display:grid;grid-template-columns:minmax(380px,1fr) minmax(540px,1.12fr);gap:16px;align-items:start}
 .mapcol{position:sticky;top:6px}
 .mapcol .mapwrap{margin:0}
@@ -570,7 +607,7 @@ table.data tr.picked td{background:#EDF1FF}
     <button data-tab="schedule" class="on">팀 스케줄</button>
     <button data-tab="weekly" title="새 창에서 열립니다 (Alt+클릭 = 주소 수정)">주간업무보고 ↗</button>
     <button data-tab="drive" title="팝업 창으로 열립니다 (Alt+클릭 = 주소 수정)">팀 구글 드라이브 ↗</button>
-    <button data-tab="archive" title="중고거래 · 활용툴 · 성수동 맛집 · 팀 사진첩">슬기로운 회사생활</button>
+    <button data-tab="archive" title="중고거래 · 활용툴 · 성수동 맛집 · 팀 사진첩">슬기로운 회사생활<svg class="caret" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
   </nav>
   <div class="tbright">
     <div class="presence" id="presence" title="지금 접속 중인 팀원"></div>
@@ -586,10 +623,11 @@ table.data tr.picked td{background:#EDF1FF}
 
 <!-- 슬기로운 회사생활 하위 메뉴 -->
 <nav class="subnav" id="subnav">
-  <button data-sub="market">중고거래</button>
-  <button data-sub="tools">활용툴</button>
-  <button data-sub="food">성수동 맛집</button>
-  <button data-sub="photos">팀 사진첩</button>
+  <span class="sublabel">슬기로운 회사생활 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg></span>
+  <button data-sub="market"><span class="si">🛍️</span>중고거래</button>
+  <button data-sub="tools"><span class="si">🧰</span>활용툴</button>
+  <button data-sub="food"><span class="si">🍽️</span>성수동 맛집</button>
+  <button data-sub="photos"><span class="si">📷</span>팀 사진첩</button>
 </nav>
 
 <!-- ══════════════ 팀 스케줄 ══════════════ -->
@@ -626,8 +664,7 @@ table.data tr.picked td{background:#EDF1FF}
     <button class="btn" id="btnDedupFood" title="이름이 같은 행을 하나만 남깁니다">중복 정리</button>
     <button class="btn danger" id="btnDelFood" disabled>선택 삭제</button>
     <button class="btn" id="btnNewFood">+ 맛집 추가</button></div>
-  <p class="psub">지도의 이름표나 목록의 📍 를 누르면 서로 위치가 연결됩니다. 영업 중이 아닌 곳은 흐리게 표시되고,
-    하트를 눌러 평점을 남기면 팀원 평균이 보입니다.</p>
+  <p class="psub">목록을 누르면 지도에서 그 가게가 선택됩니다. 지도는 마우스 휠로 확대·축소, 평점 숫자를 누르면 누가 몇 점 줬는지 보여요.</p>
   <div class="foodsplit">
     <div class="mapcol"><div class="mapwrap">
       <div id="fdMap"><div class="mapload">지도를 불러오는 중…</div></div>
@@ -1605,7 +1642,7 @@ function cellInner(m,e,offday){
   if(!e) return out||'<span class="ph">＋</span>';
   /* 2) 근태 3) 점심 4) 메모 */
   if(e.vacation) out+=line(vacIcon(e.vacation),'<span class="kbadge">'+esc(VMAP[e.vacation]?VMAP[e.vacation].label:e.vacation)+'</span>');
-  if(e.lunch)    out+=line(ICO.lunch,'점심 '+esc(LMAP[e.lunch]||e.lunch));
+  if(e.lunch)    out+=line(ICO.lunch,'<span class="kbadge">점심 '+esc(LMAP[e.lunch]||e.lunch)+'</span>');
   if(e.memo)     out+=line(ICO.memo,esc(e.memo));
   return out||'<span class="ph">＋</span>';
 }
@@ -2771,7 +2808,7 @@ function heartsHtml(f,mid){
   var h='<span class="hearts" data-food="'+f.id+'" title="'+(mine?'내 평점 '+mine+'점':'클릭해서 평점 남기기')+'">';
   for(var i=1;i<=5;i++) h+='<span class="'+(i<=show?'on':'')+'" data-v="'+i+'">♥</span>';
   h+='</span>';
-  if(vals.length) h+='<span class="avgscore">'+avg.toFixed(1)+' ('+vals.length+')</span>';
+  if(vals.length) h+='<span class="avgscore" data-food="'+f.id+'" title="누가 몇 점 줬는지 보기">'+avg.toFixed(1)+' ('+vals.length+')</span>';
   return h;
 }
 
@@ -2809,44 +2846,6 @@ function offText(f){
   return off.map(function(d){return DOW_KO[d];}).join('·')+'요일 휴무';
 }
 var STATUS_STYLE={open:'#1DAE67',break:'#E39A17',closed:'#98A0AA',off:'#98A0AA',gone:'#C4493F',unknown:'#C3C9D0'};
-
-function renderFoods(){
-  fillFoodPos();
-  var now=new Date();
-  var known=S.foods.filter(function(f){var h=f.hours||{};return h.open&&h.close;}).length;
-  var openNow=S.foods.filter(function(f){return foodStatus(f,now).k==='open';}).length;
-  $('fdCount').textContent=S.foods.filter(function(f){return !f.closed;}).length+'곳'+
-    (known? ' · 지금 영업 중 '+openNow+'곳' : ' · 영업시간 미입력');
-  var kinds=[]; S.foods.forEach(function(f){ if(f.kind&&kinds.indexOf(f.kind)<0) kinds.push(f.kind); });
-  $('fdFilter').innerHTML='<button class="fchip'+(FDF===''?' on':'')+'" data-fdf="">전체</button>'+
-    '<button class="fchip'+(FDF==='__now'?' on':'')+'" data-fdf="__now">지금 영업 중</button>'+
-    '<button class="fchip'+(FDF==='__open'?' on':'')+'" data-fdf="__open">폐업 제외</button>'+
-    kinds.slice(0,10).map(function(k){return '<button class="fchip'+(FDF===k?' on':'')+'" data-fdf="'+esc(k)+'">'+esc(k)+'</button>';}).join('');
-  var list=S.foods.filter(function(f){
-    if(FDF==='__now') return foodStatus(f,now).k==='open';
-    if(FDF==='__open') return !f.closed;
-    return !FDF||f.kind===FDF;
-  });
-  $('fdList').innerHTML=list.length? '<table class="data"><thead><tr>'+
-    '<th style="width:36px"><input type="checkbox" class="allchk" data-all="foods"></th>'+
-    '<th style="width:44px">No.</th><th>가게명</th><th style="width:124px">종류</th>'+
-    '<th style="width:84px">휴무</th><th style="width:150px">평점</th></tr></thead><tbody>'+
-    list.map(function(f,i){
-      var st=foodStatus(f,now);
-      return '<tr data-row="foods:'+f.id+'" class="'+(st.dim?'dimrow':'')+'" style="cursor:pointer">'+
-        '<td class="c"><input type="checkbox" class="rowchk" data-sel="foods" value="'+esc(f.id)+'"></td>'+
-        '<td class="c no">'+(i+1)+'</td>'+
-        '<td><button class="pinbtn'+(hasPos(f)?' set':'')+'" data-pin="'+esc(f.id)+'" title="'+(hasPos(f)?'지도에서 보기 (Alt+클릭 = 위치 다시 지정)':'지도에 위치 지정')+'">'+ICO.pinmap+'</button> '+
-          '<b'+(f.closed?' style="text-decoration:line-through"':'')+'>'+esc(f.name)+'</b>'+
-          (f.url?' <a href="'+esc(f.url)+'" target="_blank" rel="noopener" '+
-            'data-tip="네이버 지도에서 최신 영업시간·리뷰 보기" style="font-size:11px">지도↗</a>':'')+'</td>'+
-        '<td style="font-size:12.5px">'+esc(f.kind||'')+'</td>'+
-        '<td class="c" style="font-size:11.5px">'+esc(offText(f))+'</td>'+
-        '<td class="c">'+heartsHtml(f,S.me)+'</td></tr>';
-    }).join('')+'</tbody></table>'
-    : '<div class="empty"><b>등록된 맛집이 없습니다</b></div>';
-  drawFoodMap();
-}
 
 $('tlFilter').addEventListener('click',function(ev){
   var b=ev.target.closest('[data-tlf]'); if(b){ TLF=b.dataset.tlf; renderTools(); }});
@@ -2981,29 +2980,29 @@ function openRow(kind,id){
         '<div class="fld"><label>PW (선택)</label><input type="text" id="rE" value="'+esc(r?r.login_pw:'')+'"></div>'+
       '</div>'+
       '<div class="fld"><label>설명</label><textarea id="rF">'+esc(r?r.description:'')+'</textarea></div>'
-    : '<div class="grid2">'+
-        '<div class="fld"><label>가게명</label><input type="text" id="rA" value="'+esc(r?r.name:'')+'"></div>'+
-        '<div class="fld"><label>종류</label><input type="text" id="rB" value="'+esc(r?r.kind:'')+'" placeholder="모던한식 / 파스타 …"></div>'+
-      '</div>'+
-      '<div class="fld"><label>참고 (네이버 지도 링크)</label><input type="text" id="rC" value="'+esc(r?r.url:'')+'" placeholder="https://naver.me/…"></div>'+
-      '<div class="grid2">'+
-        '<div class="fld"><label>영업 시간</label><div style="display:flex;align-items:center;gap:5px">'+
-          '<input type="time" id="hO" value="'+esc(hh.open||'')+'"><span>~</span>'+
-          '<input type="time" id="hC" value="'+esc(hh.close||'')+'"></div></div>'+
-        '<div class="fld"><label>브레이크타임 (선택)</label><div style="display:flex;align-items:center;gap:5px">'+
-          '<input type="time" id="hBS" value="'+esc(hh.bs||'')+'"><span>~</span>'+
-          '<input type="time" id="hBE" value="'+esc(hh.be||'')+'"></div></div>'+
-      '</div>'+
-      '<div class="fld"><label>휴무 요일</label><div class="chips" id="hOff">'+
-        DOW_KO.map(function(d,k){return '<button class="chip'+((hh.off||[]).indexOf(k)>=0?' on':'')+'" data-off="'+k+'">'+d+'</button>';}).join('')+
-      '</div></div>'+
-      '<div class="fld"><label>예약</label><input type="text" id="rE" value="'+esc(r?r.reservation:'')+'" placeholder="네이버 예약 / 캐치테이블"></div>'+
-      '<div class="fld"><label>메모</label><textarea id="rF">'+esc(r?r.note:'')+'</textarea></div>'+
-      '<div class="fld"><label>폐업</label><div class="chips"><button class="chip'+(r&&r.closed?' on':'')+'" id="rClosed">폐업했습니다</button></div></div>';
+    : '<div class="fld"><label>가게명 *</label><input type="text" id="rA" value="'+esc(r?r.name:'')+'" placeholder="예) 대엽"></div>'+
+      '<div class="fld"><label>종류</label><div class="chips" id="rCat">'+FOODCATS.map(function(c){
+        return '<button class="chip'+(r&&r.kind===c?' on':'')+'" data-cat="'+c+'">'+c+'</button>'; }).join('')+
+        '<span class="hint" style="margin-left:6px">안 고르면 네이버 분류로 자동 선택</span></div></div>'+
+      '<div class="fld"><label>네이버 지도 링크</label><input type="text" id="rC" value="'+esc(r?r.url:'')+'" placeholder="https://naver.me/…"></div>'+
+      '<div class="fld"><label>메모</label><textarea id="rF" placeholder="대표 메뉴, 웨이팅 팁, 예약 방법 등">'+esc(r?r.note:'')+'</textarea></div>'+
+      '<div class="fld"><label>폐업 여부</label><div class="chips"><button class="chip'+(r&&r.closed?' on':'')+'" id="rClosed">폐업했습니다</button></div></div>'+
+      '<div class="note" id="rNv" style="font-size:12px">'+
+        (r&&hasPos(r)
+          ? '📍 지도 위치가 있습니다'+(r.addr?' — '+esc(r.addr):'')+'. 가게명을 바꾸면 위치를 다시 찾습니다. '+
+            '<button class="btn sm" id="rRepin" style="margin-left:4px">지도에서 직접 다시 지정</button>'
+          : '📍 저장하면 <b>네이버에서 위치를 자동으로 찾아</b> 지도에 올립니다. 못 찾으면 지도에서 한 번 클릭해 지정하면 됩니다.')+
+      '</div>';
   $('ov').classList.add('show'); $('mRow').classList.add('show'); $('rA').focus();
 }
 document.addEventListener('click',function(ev){
   if(ev.target.id==='rClosed') ev.target.classList.toggle('on');
+  var cc=ev.target.closest('#rCat [data-cat]');
+  if(cc){ var was=cc.classList.contains('on');
+    document.querySelectorAll('#rCat .chip').forEach(function(x){ x.classList.remove('on'); });
+    if(!was) cc.classList.add('on'); }
+  if(ev.target.id==='rRepin'&&RW.id){ var fid=RW.id; closeAll(); goTab('food'); MAP.sel=fid; startPlacing(fid);
+    toast('지도에서 새 위치를 클릭하세요'); }
   var of=ev.target.closest('#hOff [data-off]'); if(of) of.classList.toggle('on');
 });
 
@@ -3011,6 +3010,7 @@ $('rwOk').onclick=function(){
   var isTool=RW.kind==='tools', arr=isTool?S.tools:S.foods;
   var name=($('rA').value||'').trim();
   if(!name){ toast('이름을 입력해 주세요'); return; }
+  if(!isTool){ saveFood(name); return; }
   var prev=RW.id?(arr.filter(function(x){return String(x.id)===String(RW.id);})[0]||{}):{};
   var rec=isTool
     ? {id:RW.id||uid('t_'),sort:prev.sort==null?arr.length+1:prev.sort,name:name,category:($('rB').value||'').trim(),
@@ -3035,6 +3035,56 @@ $('rwOk').onclick=function(){
   }
   saveLocal(); closeAll(); isTool?renderTools():renderFoods();
 };
+/* 서버 저장 — 서버에 아직 없는 칸(lat·addr 등)은 빼고 다시 시도 */
+function sbWriteRow(table,row,id){
+  var payload=stripUnknown(table,row);
+  var q=id? S.sb.from(table).update(payload).eq('id',id).select() : S.sb.from(table).insert(payload).select();
+  return q.then(function(r){
+    if(!r.error) return r;
+    var col=missingColumn(r.error,payload);
+    if(col){ (SKIP_COLS[table]=SKIP_COLS[table]||{})[col]=1; return sbWriteRow(table,row,id); }
+    throw new Error(r.error.message);
+  });
+}
+/* 맛집 저장 — 가게명·종류·네이버 링크·메모·폐업만 입력, 위치·분류는 네이버에서 자동 */
+function saveFood(name){
+  var prev=RW.id?(foodById(RW.id)||{}):{};
+  var cb=el('#rCat .chip.on'), cat=cb?cb.dataset.cat:'';
+  var rec=Object.assign({},prev,{id:prev.id||uid('f_'),sort:prev.sort==null?S.foods.length+1:prev.sort,name:name,
+    url:($('rC').value||'').trim(),note:($('rF').value||'').trim(),
+    closed:!!($('rClosed')&&$('rClosed').classList.contains('on')),
+    ratings:prev.ratings||{},hours:prev.hours||{},closed_day:prev.closed_day||'',reservation:prev.reservation||''});
+  var renamed=!!(prev.name&&prev.name!==name);
+  var need=!rec.closed&&(!hasPos(rec)||renamed);
+  var btn=$('rwOk'); btn.disabled=true; btn.textContent='저장 중…';
+  if(need&&$('rNv')) $('rNv').innerHTML='📍 네이버에서 위치를 찾는 중…';
+  (need?naverLookup(name):Promise.resolve(null)).then(function(nv){
+    if(nv){ rec.lat=+(+nv.lat).toFixed(6); rec.lng=+(+nv.lng).toFixed(6); rec.addr=nv.road||nv.address||'';
+      if(!cat) cat=guessCat((nv.category||'')+' '+name); }
+    rec.kind=cat||(FOODCATS.indexOf(prev.kind)>=0?prev.kind:guessCat(name));
+    var i=-1; S.foods.forEach(function(x,k){ if(String(x.id)===String(rec.id)) i=k; });
+    if(i>=0) S.foods[i]=rec; else S.foods.push(rec);
+    saveLocal();
+    var done=function(){
+      btn.disabled=false; btn.textContent='저장';
+      closeAll(); MAP.sel=rec.id; renderFoods();
+      if(nv) toast(name+' — 네이버에서 위치를 찾아 지도에 올렸습니다');
+      else if(need&&!hasPos(rec)){ toast(name+' — 위치를 못 찾았어요. 지도에서 위치를 한 번 클릭해 주세요'); startPlacing(rec.id); }
+      else toast('저장했습니다');
+    };
+    if(!S.sb){ done(); return; }
+    var row={sort:rec.sort,name:rec.name,kind:rec.kind,url:rec.url,note:rec.note,closed:rec.closed};
+    if(hasPos(rec)){ row.lat=rec.lat; row.lng=rec.lng; }
+    if(rec.addr) row.addr=rec.addr;
+    var isLocal=/^f_/.test(String(rec.id));
+    if(isLocal){ row.ratings=rec.ratings; row.hours=rec.hours; row.closed_day=rec.closed_day; row.reservation=rec.reservation; }
+    sbWriteRow('foods',row,isLocal?null:rec.id).then(function(r){
+      var saved=r&&r.data&&r.data[0];
+      if(saved&&isLocal){ var old=rec.id; rec.id=saved.id; if(String(MAP.sel)===String(old)) MAP.sel=saved.id; }
+      done(); sbLoadAll(true);
+    }).catch(function(err){ toast('저장 실패: '+err.message); done(); });
+  });
+}
 $('rwDel').onclick=function(){
   if(!RW.id||!confirm('삭제할까요?')) return;
   if(RW.kind==='tools') S.tools=S.tools.filter(function(x){return String(x.id)!==String(RW.id);});
@@ -3093,6 +3143,7 @@ function goTab(name){
   TABS.forEach(function(t){ $('p-'+t).classList.toggle('on',t===name); });
   document.querySelectorAll('#tabs button').forEach(function(b){ b.classList.toggle('on',b.dataset.tab===top); });
   $('subnav').classList.toggle('show',inArch);
+  if(inArch) placeSubnavTail();
   document.querySelectorAll('#subnav button').forEach(function(b){ b.classList.toggle('on',b.dataset.sub===name); });
   if(name==='market')  renderMarket();
   if(name==='tools')   renderTools();
@@ -3107,6 +3158,13 @@ $('tabs').addEventListener('click',function(ev){
   if(b.dataset.tab==='drive'){ openDrive(ev.altKey); return; }
   goTab(b.dataset.tab);
 });
+/* 하위 메뉴 꼬리를 '슬기로운 회사생활' 탭 가운데에 맞춥니다 */
+function placeSubnavTail(){
+  var t=el('#tabs [data-tab="archive"]'), n=$('subnav'); if(!t||!n) return;
+  var a=t.getBoundingClientRect(), b=n.getBoundingClientRect();
+  if(a.width) n.style.setProperty('--nx',Math.round(a.left+a.width/2-b.left)+'px');
+}
+window.addEventListener('resize',function(){ if($('subnav').classList.contains('show')) placeSubnavTail(); });
 $('subnav').addEventListener('click',function(ev){
   var b=ev.target.closest('[data-sub]'); if(b) goTab(b.dataset.sub);
 });
@@ -3268,15 +3326,13 @@ function reconcileAssets(force){
 }
 
 /* ==========================================================================
-   성수동 맛집 — 지도 (Leaflet + OpenStreetMap, 키·로그인 불필요)
-   - 좌표가 있는 맛집은 지도 위에 이름표로 표시됩니다
-   - 좌표가 없으면 목록의 📍 버튼 → 지도에서 위치 클릭으로 지정 (팀 전체에 저장)
-   - '자동으로 위치 찾기' 는 OpenStreetMap 검색으로 한 번 시도해 봅니다
+   성수동 맛집 — 지도 (Leaflet · 차분한 회색톤 지도, 키·로그인 불필요)
+   - 오른쪽 목록을 누르면 왼쪽 지도에서 그 가게가 선택됩니다 (반대도 동일)
+   - 새 가게는 저장할 때 네이버 지역 검색으로 위치·분류를 자동으로 찾습니다
+     (Supabase Edge Function 'naver-place' 가 있을 때 — 배포가이드 8번)
 ========================================================================== */
 var SEONGSU=[37.5460,127.0450];
-/* 기본 등록 맛집 위치 — 구글 지도의 가게 위치(플러스 코드)에서 환산한 값입니다.
-   서버에 좌표가 비어 있는 가게는 이름이 같으면 이 값으로 채우고, 서버에도 한 번 저장합니다. */
-var FOOD_POS={"문츠바베큐": [37.545652, 127.048545], "메종 파이프그라운드": [37.5443796, 127.0438576], "정이담": [37.5445603, 127.0436887], "훈연": [37.5469841, 127.0432877], "퀴버 서울숲": [37.5462754, 127.0442137], "시원": [37.5493195, 127.0486657], "다로베": [37.5481733, 127.0431122], "옥희분식": [37.5460402, 127.0471725], "온류": [37.5470524, 127.0400733], "다반": [37.5469167, 127.0426854], "삼청동샤부": [37.541815, 127.0448587], "헤이든": [37.5463602, 127.0470209], "훼미리손칼국수보쌈": [37.5494775, 127.0446801], "정선부뚜막": [37.5474889, 127.042997], "소인주서울 본점": [37.549707, 127.044548], "야키토리나루토 성수": [37.5490691, 127.0450794], "제스티살롱 성수": [37.547499, 127.042485], "봉평메밀면사무소 서울숲점": [37.546324, 127.0456226], "밋보어 서울 by 에디션덴마크": [37.5408066, 127.0477746], "하니칼국수 서울숲점": [37.5467702, 127.0415361]};
+var FOOD_POS={"문츠바베큐": [37.545652, 127.048545], "메종 파이프그라운드": [37.5443796, 127.0438576], "정이담": [37.5445603, 127.0436887], "훈연": [37.5469841, 127.0432877], "퀴버 서울숲": [37.5462754, 127.0442137], "시원": [37.5493195, 127.0486657], "다로베": [37.5481733, 127.0431122], "옥희분식": [37.5460402, 127.0471725], "온류": [37.5470524, 127.0400733], "다반": [37.5469167, 127.0426854], "삼청동샤부": [37.541815, 127.0448587], "헤이든": [37.5463602, 127.0470209], "훼미리손칼국수보쌈": [37.5494775, 127.0446801], "정선부뚜막": [37.5474889, 127.042997], "소인주서울 본점": [37.549707, 127.044548], "야키토리나루토 성수": [37.5490691, 127.0450794], "제스티살롱 성수": [37.547499, 127.042485], "봉평메밀면사무소 서울숲점": [37.546324, 127.0456226], "밋보어 서울 by 에디션덴마크": [37.5408066, 127.0477746], "하니칼국수 서울숲점": [37.5467702, 127.0415361]};;
 function normName(n){ return String(n||'').replace(/\s+/g,'').toLowerCase(); }
 var _posPushed={};
 function fillFoodPos(){
@@ -3288,7 +3344,51 @@ function fillFoodPos(){
     if(!_posPushed[f.id]&&!/^f_/.test(String(f.id))){ _posPushed[f.id]=1; sbPatch('foods',f.id,{lat:f.lat,lng:f.lng}); }
   });
 }
-var MAP={map:null,layer:null,placing:null,loading:null,markers:{},fitted:false};
+
+/* ── 분류: 한식 · 일식 · 양식 · 간편식 ───────────────────────────────── */
+var FOODCATS=['한식','일식','양식','간편식'];
+var FOODCAT_OF={'문츠바베큐':'양식','메종 파이프그라운드':'양식','정이담':'한식','훈연':'일식','퀴버 서울숲':'양식',
+  '시원':'한식','다로베':'양식','옥희분식':'간편식','온류':'한식','다반':'한식','삼청동샤부':'한식','헤이든':'양식',
+  '훼미리손칼국수보쌈':'한식','정선부뚜막':'한식','오카와리':'일식','소인주서울 본점':'한식','야키토리나루토 성수':'일식',
+  '제스티살롱 성수':'간편식','댓길함박':'양식','봉평메밀면사무소 서울숲점':'한식','밋보어 서울 by 에디션덴마크':'양식',
+  '대엽':'한식','하니칼국수 서울숲점':'한식'};
+function guessCat(text){
+  var t=String(text||'');
+  if(/분식|김밥|햄버거|버거|샌드위치|샐러드|토스트|도시락|베이글|포케|패스트푸드|핫도그|떡볶이/.test(t)&&!/파스타|피자/.test(t)) return '간편식';
+  if(/일식|일본|덮밥|소바|스시|초밥|라멘|우동|돈카츠|돈까스|야키|이자카야|오마카세|텐동|규동|꼬치|마제|사케/.test(t)) return '일식';
+  if(/양식|피자|파스타|이탈리|프렌치|스테이크|함박|브런치|바베큐|BBQ|멕시|술집|펍|와인|비스트로|레스토랑|그릴|중식|중국|태국|베트남|인도/.test(t)) return '양식';
+  return '한식';
+}
+/* 예전의 자세한 종류(예: '들기름 막국수')는 메모로 옮기고 종류는 4가지로 맞춥니다 — 한 번만 */
+var _catPushed={};
+function normalizeFoodCats(){
+  S.foods.forEach(function(f){
+    if(FOODCATS.indexOf(f.kind)>=0) return;
+    var old=(f.kind||'').trim();
+    f.kind=FOODCAT_OF[f.name]||guessCat(old+' '+f.name);
+    if(old && String(f.note||'').indexOf(old)<0) f.note=old+(f.note?' · '+f.note:'');
+    if(!_catPushed[f.id]&&!/^f_/.test(String(f.id))){ _catPushed[f.id]=1; sbPatch('foods',f.id,{kind:f.kind,note:f.note||''}); }
+  });
+}
+
+/* ── 네이버 지역 검색 (Edge Function 프록시) ───────────────────────────── */
+var NAVER={ok:null};
+function naverLookup(name){
+  if(!S.sb||!S.sb.functions||NAVER.ok===false||!name) return Promise.resolve(null);
+  return S.sb.functions.invoke('naver-place',{body:{query:name+' 성수동'}}).then(function(r){
+    if(r.error){ NAVER.ok=false; return null; }
+    NAVER.ok=true;
+    var items=((r.data&&r.data.items)||[]).filter(function(it){ return it&&it.lat&&it.lng; });
+    var near=items.filter(function(it){ return /성동구/.test((it.road||'')+(it.address||'')); });
+    var key=normName(name);
+    var best=near.filter(function(it){ return normName(it.title).indexOf(key)>=0||key.indexOf(normName(it.title))>=0; })[0]
+          || near[0] || null;
+    return best;
+  },function(){ NAVER.ok=false; return null; });
+}
+
+/* ── 지도 ─────────────────────────────────────────────────────────────── */
+var MAP={map:null,layer:null,placing:null,loading:null,markers:{},fitted:false,sel:null};
 function hasPos(f){ return f&&f.lat!=null&&f.lng!=null&&!isNaN(+f.lat)&&!isNaN(+f.lng); }
 function loadLeaflet(){
   if(window.L&&window.L.map) return Promise.resolve();
@@ -3301,33 +3401,34 @@ function loadLeaflet(){
   });
   return MAP.loading;
 }
+function foodPts(){ return S.foods.filter(function(f){ return hasPos(f)&&!f.closed; }).map(function(f){ return [+f.lat,+f.lng]; }); }
+function fitFoods(){
+  var pts=foodPts(); if(!MAP.map||!pts.length) return;
+  if(pts.length===1) MAP.map.setView(pts[0],17); else MAP.map.fitBounds(pts,{padding:[26,26],maxZoom:17});
+}
 function drawFoodMap(){
   if(!$('p-food').classList.contains('on')) return;
-  fillFoodPos();
   loadLeaflet().then(function(){
     var box=$('fdMap');
     if(!MAP.map){
       box.innerHTML='';
-      MAP.map=L.map(box,{zoomControl:true,scrollWheelZoom:false,attributionControl:true}).setView(SEONGSU,16);
-      var osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,
-        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(MAP.map);
-      /* 내 PC에서 파일로 열면 OSM 타일이 거부될 수 있어, 몇 장 실패하면 다른 지도로 바꿉니다 */
+      MAP.map=L.map(box,{zoomControl:true,scrollWheelZoom:true,wheelPxPerZoomLevel:90,attributionControl:true}).setView(SEONGSU,16);
+      /* 회색톤의 차분한 지도 (CARTO Positron) — 안 되면 OpenStreetMap 을 흑백으로 */
+      var calm=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:20,subdomains:'abcd',
+        attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>'}).addTo(MAP.map);
       var bad=0;
-      osm.on('tileerror',function(){
+      calm.on('tileerror',function(){
         if(++bad!==4) return;
-        MAP.map.removeLayer(osm);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:20,subdomains:'abcd',
-          attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(MAP.map);
+        MAP.map.removeLayer(calm); box.classList.add('mono');
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,
+          attribution:'&copy; OpenStreetMap'}).addTo(MAP.map);
       });
       MAP.layer=L.layerGroup().addTo(MAP.map);
       MAP.map.on('click',onMapClick);
-      /* 지도를 한 번 누르면 휠 확대가 켜집니다 (페이지 스크롤과 충돌 방지) */
-      MAP.map.on('focus',function(){ MAP.map.scrollWheelZoom.enable(); });
-      MAP.map.on('blur', function(){ MAP.map.scrollWheelZoom.disable(); });
     }
-    setTimeout(function(){ MAP.map.invalidateSize(); },30);
-    setTimeout(function(){ MAP.map.invalidateSize(); },300);
     paintMarkers();
+    setTimeout(function(){ MAP.map.invalidateSize(); if(!MAP.fitted&&foodPts().length){ MAP.fitted=true; fitFoods(); } },40);
+    setTimeout(function(){ MAP.map.invalidateSize(); },320);
   },function(){
     $('fdMap').innerHTML='<div class="mapload">지도를 불러오지 못했습니다 (인터넷 연결 확인)</div>';
   });
@@ -3336,22 +3437,18 @@ function drawFoodMap(){
 function paintMarkers(){
   if(!MAP.layer) return;
   MAP.layer.clearLayers(); MAP.markers={};
-  var now=new Date(), pts=[];
+  var now=new Date();
   S.foods.forEach(function(f){
     if(!hasPos(f)||f.closed) return;
-    var st=foodStatus(f,now);
-    var html='<div class="fdlabel'+(st.dim?' dim':'')+'" data-fid="'+esc(f.id)+'">'+
+    if(FDF&&f.kind!==FDF) return;                       /* 분류 필터와 함께 */
+    var st=foodStatus(f,now), on=String(MAP.sel)===String(f.id);
+    var html='<div class="fdlabel'+(st.dim?' dim':'')+(on?' hot':'')+'" data-fid="'+esc(f.id)+'">'+
       (st.k==='open'?'<span class="st" style="background:'+STATUS_STYLE.open+'"></span>':'')+esc(f.name)+'</div>';
     var mk=L.marker([+f.lat,+f.lng],{icon:L.divIcon({className:'fdpin',html:html,iconSize:[0,0]}),
-      riseOnHover:true,keyboard:false,title:f.name+(f.kind?' · '+f.kind:'')+' · '+st.label});
-    mk.on('click',function(){ focusFoodRow(f.id); });
-    mk.addTo(MAP.layer); MAP.markers[f.id]=mk; pts.push([+f.lat,+f.lng]);
+      riseOnHover:true,keyboard:false,zIndexOffset:on?1000:0,title:f.name+' · '+(f.kind||'')+(f.note?' · '+f.note:'')});
+    mk.on('click',function(){ selectFood(f.id,'map'); });
+    mk.addTo(MAP.layer); MAP.markers[f.id]=mk;
   });
-  if(pts.length&&!MAP.fitted){
-    MAP.fitted=true;
-    if(pts.length===1) MAP.map.setView(pts[0],16);
-    else MAP.map.fitBounds(pts,{padding:[40,40],maxZoom:17});
-  }
 }
 function drawMapBar(){
   var bar=$('fdMapBar'); if(!bar) return;
@@ -3360,30 +3457,35 @@ function drawMapBar(){
   if(MAP.placing){
     var f=foodById(MAP.placing);
     bar.className='mapbar placing';
-    bar.innerHTML='📍 <b>'+esc(f?f.name:'')+'</b> 의 위치를 지도에서 클릭하세요'+
+    bar.innerHTML='📍 <b>'+esc(f?f.name:'')+'</b> 의 위치를 지도에서 클릭하세요 (Esc 취소)'+
       '<div class="grow"></div><button class="btn sm" id="mpCancel">취소</button>';
     return;
   }
   bar.className='mapbar';
-  bar.innerHTML='지도에 표시 <b style="color:var(--tx)">'+on+'</b> / '+live.length+'곳'+
-    (off?' · 위치 미지정 '+off+'곳 — 목록의 '+ICO.pinmap.replace('<svg','<svg style="width:12px;height:12px;vertical-align:-2px"')+' 버튼을 누르고 지도에서 클릭':'')+
+  bar.innerHTML='<span>지도 '+on+' / '+live.length+'곳'+(off?' · 위치 없음 '+off+'곳':'')+'</span>'+
     '<div class="grow"></div>'+
-    (off?'<button class="btn sm" id="mpAuto" title="OpenStreetMap 에서 가게 이름으로 찾아봅니다 (못 찾는 곳은 직접 지정)">자동으로 위치 찾기</button>':'')+
+    (off?'<button class="btn sm" id="mpAuto" title="가게 이름으로 위치를 찾아봅니다 (못 찾는 곳은 목록에서 눌러 직접 지정)">위치 자동 찾기</button>':'')+
     (on?'<button class="btn sm" id="mpFit">전체 보기</button>':'');
 }
 function foodById(id){ return S.foods.filter(function(x){ return String(x.id)===String(id); })[0]; }
-function focusFoodRow(id){
-  var tr=el('#fdList tr[data-row="foods:'+id+'"]'); if(!tr) return;
-  if(tr.scrollIntoView) tr.scrollIntoView({block:'center',behavior:'smooth'});
-  tr.classList.add('picked'); setTimeout(function(){ tr.classList.remove('picked'); },1600);
-  document.querySelectorAll('.fdlabel.hot').forEach(function(x){ x.classList.remove('hot'); });
-  var lb=el('.fdlabel[data-fid="'+id+'"]'); if(lb) lb.classList.add('hot');
+/* 선택 — 목록 ↔ 지도 */
+function selectFood(id,from){
+  var f=foodById(id); if(!f) return;
+  MAP.sel=f.id;
+  document.querySelectorAll('#fdList tr.sel').forEach(function(x){ x.classList.remove('sel'); });
+  var tr=el('#fdList tr[data-frow="'+id+'"]');
+  if(tr){ tr.classList.add('sel'); if(from==='map'&&tr.scrollIntoView) tr.scrollIntoView({block:'center',behavior:'smooth'}); }
+  if(!hasPos(f)){
+    if(f.closed) return;
+    toast(f.name+' — 위치가 아직 없어요. 지도에서 위치를 클릭해 주세요');
+    startPlacing(f.id); return;
+  }
+  paintMarkers();
+  if(MAP.map&&from!=='map') MAP.map.setView([+f.lat,+f.lng],Math.max(MAP.map.getZoom(),17),{animate:true});
 }
 function startPlacing(id){
   MAP.placing=id; drawMapBar();
-  var box=$('fdMap'); box.classList.add('map-crosshair');
-  if(box.scrollIntoView) box.scrollIntoView({block:'nearest',behavior:'smooth'});
-  var f=foodById(id); if(f&&hasPos(f)&&MAP.map) MAP.map.panTo([+f.lat,+f.lng]);
+  $('fdMap').classList.add('map-crosshair');
 }
 function stopPlacing(){ MAP.placing=null; $('fdMap').classList.remove('map-crosshair'); drawMapBar(); }
 function onMapClick(e){
@@ -3391,55 +3493,112 @@ function onMapClick(e){
   var f=foodById(MAP.placing); stopPlacing(); if(!f) return;
   f.lat=+e.latlng.lat.toFixed(6); f.lng=+e.latlng.lng.toFixed(6);
   sbPatch('foods',f.id,{lat:f.lat,lng:f.lng}); saveLocal();
-  paintMarkers(); renderFoods(); toast(f.name+' 위치를 저장했습니다');
+  MAP.sel=f.id; renderFoods(); toast(f.name+' 위치를 저장했습니다');
 }
-$('fdList').addEventListener('click',function(ev){
-  var b=ev.target.closest('[data-pin]'); if(!b) return;
-  ev.stopPropagation();
-  var f=foodById(b.dataset.pin); if(!f) return;
-  if(hasPos(f)&&!ev.altKey&&MAP.map){ MAP.map.setView([+f.lat,+f.lng],17,{animate:true});
-    var fm=$('fdMap'); if(fm.scrollIntoView) fm.scrollIntoView({block:'nearest',behavior:'smooth'}); focusFoodRow(f.id); return; }
-  startPlacing(f.id);
-});
 $('fdMapBar').addEventListener('click',function(ev){
   if(ev.target.id==='mpCancel'){ stopPlacing(); return; }
-  if(ev.target.id==='mpFit'&&MAP.map){
-    var pts=S.foods.filter(function(f){return hasPos(f)&&!f.closed;}).map(function(f){return [+f.lat,+f.lng];});
-    if(pts.length) MAP.map.fitBounds(pts,{padding:[40,40],maxZoom:17}); return; }
+  if(ev.target.id==='mpFit'){ fitFoods(); return; }
   if(ev.target.id==='mpAuto'){ autoLocate(ev.target); }
-});
-$('fdMap').addEventListener('click',function(ev){
-  var lb=ev.target.closest('.fdlabel'); if(lb&&!MAP.placing) focusFoodRow(lb.dataset.fid);
 });
 document.addEventListener('keydown',function(ev){ if(ev.key==='Escape'&&MAP.placing) stopPlacing(); });
 
-/* 가게 이름으로 OpenStreetMap 검색 (성수동 일대로 범위 제한, 1초에 1건 — 이용 정책 준수) */
+/* 위치 없는 가게를 이름으로 찾기 — 네이버(설정 시) → OpenStreetMap 순서 */
 function autoLocate(btn){
   var todo=S.foods.filter(function(f){ return !f.closed&&!hasPos(f); });
   if(!todo.length) return;
   btn.disabled=true;
   var found=0, i=0;
-  function q(name){
+  function osm(name){
     var base=name.replace(/\s*(본점|성수점|성수|서울숲점|서울숲)\s*$/,'').trim();
-    return 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=ko&countrycodes=kr'+
-      '&viewbox=127.028,37.556,127.072,37.532&bounded=1&q='+encodeURIComponent(base);
+    return fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=ko&countrycodes=kr'+
+      '&viewbox=127.028,37.556,127.072,37.532&bounded=1&q='+encodeURIComponent(base))
+      .then(function(r){ return r.json(); }).then(function(a){ return a&&a[0]?{lat:+a[0].lat,lng:+a[0].lon}:null; })
+      .catch(function(){ return null; });
   }
   function next(){
     if(i>=todo.length){
-      btn.disabled=false; drawMapBar(); paintMarkers(); renderFoods();
-      toast(found? found+'곳의 위치를 찾았습니다'+(todo.length-found?' · '+(todo.length-found)+'곳은 📍 로 직접 지정해 주세요':'')
-                 : '자동으로 찾지 못했습니다 — 📍 버튼으로 직접 지정해 주세요');
+      btn.disabled=false; renderFoods();
+      toast(found? found+'곳의 위치를 찾았습니다'+(todo.length-found?' · '+(todo.length-found)+'곳은 목록에서 눌러 직접 지정해 주세요':'')
+                 : '찾지 못했습니다 — 목록에서 가게를 누르고 지도에서 위치를 클릭해 주세요');
       return;
     }
-    var f=todo[i++];
-    btn.textContent='찾는 중… '+i+'/'+todo.length;
-    fetch(q(f.name)).then(function(r){ return r.json(); }).then(function(a){
-      if(a&&a[0]){ f.lat=+(+a[0].lat).toFixed(6); f.lng=+(+a[0].lon).toFixed(6); found++;
+    var f=todo[i++]; btn.textContent='찾는 중… '+i+'/'+todo.length;
+    naverLookup(f.name).then(function(nv){ return nv||osm(f.name); }).then(function(p){
+      if(p&&p.lat){ f.lat=+(+p.lat).toFixed(6); f.lng=+(+p.lng).toFixed(6); found++;
         sbPatch('foods',f.id,{lat:f.lat,lng:f.lng}); }
-    }).catch(function(){}).then(function(){ setTimeout(next,1100); });
+    }).then(function(){ setTimeout(next,NAVER.ok?150:1100); });
   }
   next();
 }
+
+/* ── 평점 — 누가 몇 점 줬는지 ─────────────────────────────────────────── */
+function ratePopHtml(f){
+  var r=f.ratings||{}, ids=Object.keys(r).filter(function(k){ return +r[k]>0; })
+    .sort(function(a,b){ return (+r[b])-(+r[a]); });
+  if(!ids.length) return '<div class="bp-empty">아직 평점이 없습니다.</div>';
+  var avg=ids.reduce(function(a,k){ return a+(+r[k]); },0)/ids.length;
+  return '<div class="rp-h"><b>'+esc(f.name)+'</b><span>평균 '+avg.toFixed(1)+' · '+ids.length+'명</span></div>'+
+    ids.map(function(k){
+      var m=memberById(k), v=+r[k];
+      return '<div class="rp-it">'+(m?pavHtml(m):'<span class="pav"></span>')+
+        '<span class="nm">'+(m?esc(m.name):'(삭제된 팀원)')+(k===S.me?' <em>나</em>':'')+'</span>'+
+        '<span class="hv">'+'♥♥♥♥♥'.slice(0,v)+'<i>'+'♥♥♥♥♥'.slice(v)+'</i></span><b>'+v+'</b></div>';
+    }).join('');
+}
+function openRatePop(anchor,fid){
+  var f=foodById(fid); if(!f) return;
+  var p=$('ratePop'); if(!p){ p=document.createElement('div'); p.id='ratePop'; p.className='ratepop'; document.body.appendChild(p); }
+  p.innerHTML=ratePopHtml(f); p.classList.add('show');
+  var a=anchor.getBoundingClientRect(), w=p.offsetWidth||240, h=p.offsetHeight||120;
+  var left=Math.min(window.innerWidth-w-10,Math.max(10,a.right-w)), top=a.bottom+6;
+  if(top+h>window.innerHeight-10) top=a.top-h-6;
+  p.style.left=left+'px'; p.style.top=top+'px';
+}
+document.addEventListener('click',function(ev){
+  var p=$('ratePop'); if(p&&p.classList.contains('show')&&!ev.target.closest('#ratePop')&&!ev.target.closest('.avgscore')) p.classList.remove('show');
+});
+
+/* ── 목록 ─────────────────────────────────────────────────────────────── */
+function renderFoods(){
+  fillFoodPos(); normalizeFoodCats();
+  var live=S.foods.filter(function(f){ return !f.closed; });
+  $('fdCount').textContent=live.length+'곳';
+  $('fdFilter').innerHTML='<button class="fchip'+(FDF===''?' on':'')+'" data-fdf="">전체 <span class="n">'+live.length+'</span></button>'+
+    FOODCATS.map(function(c){
+      var n=live.filter(function(f){ return f.kind===c; }).length;
+      return '<button class="fchip'+(FDF===c?' on':'')+'" data-fdf="'+c+'">'+c+' <span class="n">'+n+'</span></button>'; }).join('');
+  var now=new Date();
+  var list=S.foods.filter(function(f){ return !FDF||f.kind===FDF; })
+    .sort(function(a,b){ return (a.closed?1:0)-(b.closed?1:0) || (a.sort||0)-(b.sort||0); });
+  $('fdList').innerHTML=list.length? '<table class="data fdtable"><thead><tr>'+
+    '<th style="width:34px"><input type="checkbox" class="allchk" data-all="foods"></th>'+
+    '<th style="width:40px">No.</th><th style="width:34%">가게명</th><th style="width:62px">종류</th>'+
+    '<th>메모</th><th style="width:128px">평점</th><th style="width:52px"></th></tr></thead><tbody>'+
+    list.map(function(f,i){
+      var st=foodStatus(f,now);
+      return '<tr data-frow="'+esc(f.id)+'" class="'+(st.dim||f.closed?'dimrow':'')+(String(MAP.sel)===String(f.id)?' sel':'')+'">'+
+        '<td class="c"><input type="checkbox" class="rowchk" data-sel="foods" value="'+esc(f.id)+'"></td>'+
+        '<td class="c no">'+(i+1)+'</td>'+
+        '<td>'+(hasPos(f)||f.closed?'':'<span class="nopos" title="지도 위치 없음 — 누르면 지정">'+ICO.pinmap+'</span>')+
+          '<b'+(f.closed?' style="text-decoration:line-through"':'')+'>'+esc(f.name)+'</b>'+(f.closed?' <span class="closedtag">폐업</span>':'')+
+          (f.url?' <a class="nvlink" href="'+esc(f.url)+'" target="_blank" rel="noopener" title="네이버 지도에서 영업시간·리뷰 보기">네이버지도↗</a>':'')+'</td>'+
+        '<td class="c"><span class="catchip">'+esc(f.kind||'')+'</span></td>'+
+        '<td class="memo">'+esc(f.note||'')+'</td>'+
+        '<td class="c">'+heartsHtml(f,S.me)+'</td>'+
+        '<td class="c"><button class="editbtn" data-fedit="'+esc(f.id)+'">수정</button></td></tr>';
+    }).join('')+'</tbody></table>'
+    : '<div class="empty"><b>'+(S.foods.length?'이 분류의 맛집이 없습니다':'등록된 맛집이 없습니다')+'</b></div>';
+  drawFoodMap();
+}
+$('fdList').addEventListener('click',function(ev){
+  var ed=ev.target.closest('[data-fedit]');
+  if(ed){ ev.stopPropagation(); openRow('foods',ed.dataset.fedit); return; }
+  var av=ev.target.closest('.avgscore');
+  if(av){ ev.stopPropagation(); openRatePop(av,av.dataset.food); return; }
+  if(ev.target.closest('a')||ev.target.closest('.hearts')||ev.target.closest('input')) return;
+  var tr=ev.target.closest('tr[data-frow]');
+  if(tr){ ev.stopPropagation(); selectFood(tr.dataset.frow,'list'); }
+});
 
 /* ==========================================================================
    파일 저장소 — 팀 사진첩: 브라우저에서 줄인 뒤 Supabase Storage (1장 ≈ 0.3~0.6MB)
