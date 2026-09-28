@@ -86,7 +86,14 @@ a:hover{text-decoration:underline}
 /* ───────────────────────── 스케줄 표 ───────────────────────── */
 /* 표 좌우(및 아래) 여백 — 흰색 */
 #gridwrap{flex:1 1 auto;overflow:auto;background:var(--page);position:relative}
-table.sched{border-collapse:separate;border-spacing:0;width:max-content;table-layout:fixed;margin:0 auto}
+table.sched{border-collapse:separate;border-spacing:0;width:max-content;table-layout:fixed;margin:0 auto;
+  /* 좌우 여백으로 번지는 그림자 — 표에 가까울수록 진하고 멀어질수록 투명 */
+  box-shadow:0 0 0 1px rgba(16,20,28,.05),0 0 14px rgba(16,20,28,.10),0 0 44px rgba(16,20,28,.09),0 0 110px rgba(16,20,28,.07)}
+/* 날짜 칸 날씨 */
+.dcell .wx{font-size:11px;color:var(--tx3);margin-top:2px;white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
+.dcell .wx i{font-style:normal;font-size:12px;margin-right:2px}
+.hdlabel .wxsrc{font-size:9px;font-weight:500;opacity:.45;margin-top:1px;letter-spacing:0}
+table.sched tr.today .dcell .wx{color:#8A6100}
 table.sched th,table.sched td{padding:0;margin:0}
 table.sched thead th{
   position:sticky;top:0;z-index:30;background:var(--ink);color:var(--ink-tx);
@@ -381,6 +388,26 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 .mh-hd .ints{display:flex;gap:4px;margin-top:9px}
 .mh-hd .ints img,.mh-hd .ints svg{width:24px;height:24px;border-radius:7px}
 .sect{margin-bottom:20px}
+.ftwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ftcard,.biocard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#FCFCFD}
+.biocard.empty{display:flex;align-items:center}
+.fttop{display:flex;align-items:center;gap:8px}
+.ftsum{font-size:13px;font-weight:800}
+.ftz{font-size:11px;color:var(--tx3);margin-left:auto}
+.ftbar{display:inline-flex;gap:2px;margin-left:5px;vertical-align:1px}
+.ftbar i{font-style:normal;font-size:9px;color:#E3E7EB}
+.ftbar i.on{color:#7B61FF}
+.ftline{font-size:13px;line-height:1.6;margin:8px 0 10px;color:var(--tx)}
+.ftgrid{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:4px 8px;font-size:12px;color:var(--tx2);align-items:center}
+.ftlucky{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.ftlucky span{font-size:11.5px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 8px;color:var(--tx2)}
+.biorow{display:grid;grid-template-columns:34px 1fr 38px;gap:8px;align-items:center;font-size:12px;margin-bottom:5px}
+.biorow b{text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
+.biobar{position:relative;height:8px;border-radius:8px;background:var(--line2)}
+.biobar::after{content:'';position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#C9D0D8}
+.biobar i{position:absolute;top:0;bottom:0;border-radius:8px}
+.biosvg{width:100%;height:auto;display:block;margin-top:6px}
+@media (max-width:760px){ .ftwrap{grid-template-columns:1fr} }
 .sect h4{font-size:13px;font-weight:800;margin:0 0 10px;display:flex;align-items:center;gap:7px;letter-spacing:-.2px}
 .sect h4 .s{font-weight:500;font-size:11px;color:var(--tx3)}
 .ulist{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:1px;background:var(--line2);
@@ -514,7 +541,7 @@ table.data tr.picked td{background:#EDF1FF}
 /* ───────────────────────── 맛집 지도 ───────────────────────── */
 .mapwrap{position:relative;margin:0 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#EEF0F3}
 #fdMap{height:calc(100vh - 236px);min-height:560px;width:100%;position:relative;z-index:0;background:#F2F3F5}
-#fdMap.mono .leaflet-tile-pane{filter:grayscale(1) contrast(.88) brightness(1.08)}
+#fdMap.mono .leaflet-tile-pane{filter:saturate(.5) brightness(1.03)}
 .fdtable tbody tr{cursor:pointer}
 .fdtable tbody tr.sel td{background:#EEF2FF!important}
 .fdtable tbody tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
@@ -632,6 +659,8 @@ table.data tr.picked td{background:#EDF1FF}
   #sThead.tall .nc{min-height:74px}
   .dcell{padding:5px 2px}
   .dcell .d1{font-size:12px} .dcell .wd{font-size:10.5px} .dcell .d2{font-size:10px}
+  .dcell .wx{font-size:9.5px;letter-spacing:-.5px} .dcell .wx i{font-size:10px;margin-right:0}
+  .hdlabel .wxsrc{display:none}
   .cell{padding:5px 5px;min-height:34px}
   .ln{font-size:11.5px;gap:3px;line-height:1.45}
   .ln.tm{font-size:10.5px}
@@ -839,7 +868,7 @@ table.data tr.picked td{background:#EDF1FF}
 /* ==========================================================================
    상수
 ========================================================================== */
-var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var DOW=['일','월','화','수','목','금','토'];
 /* ── 저장소 키 ──────────────────────────────────────────────────
    이 값은 바꾸지 마세요. 바꾸면 브라우저에 저장된 로컬 데이터가 초기화됩니다.
    Supabase 에 연결되어 있으면 실제 데이터는 서버에 있으므로
@@ -1682,7 +1711,7 @@ function nameCardHtml(m){
 function renderHead(){
   var vis=shownMembers();
   var h='<tr>'+
-    '<th class="c-date"><div class="hdlabel">날짜</div></th>'+
+    '<th class="c-date"><div class="hdlabel">날짜<div class="wxsrc" title="날씨 예보: Open-Meteo.com (CC BY 4.0)">날씨 Open-Meteo</div></div></th>'+
     '<th class="c-common"><div class="hdlabel">공통 일정</div></th>';
   vis.forEach(function(m){ h+='<th class="c-mem">'+nameCardHtml(m)+'</th>'; });
   h+='<th class="c-add"><button class="addcol" id="btnTeam" title="팀원 추가 / 삭제">＋</button></th>';
@@ -1727,6 +1756,50 @@ function cellInner(m,e,offday){
   if(e.memo)     out+=line(ICO.memo,esc(e.memo));
   return out||'<span class="ph">＋</span>';
 }
+
+/* ── 날씨 예보 (성수동, Open-Meteo · 키 불필요) ────────────────────────────
+   오늘부터 예보가 있는 날(최대 10일)까지만 표시하고, 1시간마다 새로 받아옵니다 */
+var WX={days:{},at:0,busy:false};
+var WX_KEY=LS+'.wx', WX_TTL=60*60*1000;
+var WX_ICON=[[0,'☀️','맑음'],[1,'🌤️','대체로 맑음'],[2,'⛅','구름 조금'],[3,'☁️','흐림'],[45,'🌫️','안개'],[48,'🌫️','안개'],
+  [51,'🌦️','이슬비'],[53,'🌦️','이슬비'],[55,'🌦️','이슬비'],[56,'🌧️','어는 비'],[57,'🌧️','어는 비'],
+  [61,'🌧️','비'],[63,'🌧️','비'],[65,'🌧️','강한 비'],[66,'🌧️','어는 비'],[67,'🌧️','어는 비'],
+  [71,'🌨️','눈'],[73,'🌨️','눈'],[75,'❄️','많은 눈'],[77,'🌨️','싸락눈'],[80,'🌦️','소나기'],[81,'🌦️','소나기'],[82,'⛈️','강한 소나기'],
+  [85,'🌨️','눈 소나기'],[86,'🌨️','눈 소나기'],[95,'⛈️','뇌우'],[96,'⛈️','뇌우·우박'],[99,'⛈️','뇌우·우박']];
+function wxInfo(c){ for(var i=0;i<WX_ICON.length;i++) if(WX_ICON[i][0]===+c) return WX_ICON[i]; return [c,'🌡️','']; }
+function wxHtml(ds){
+  var w=WX.days[ds]; if(!w||ds<today()) return '';
+  var inf=wxInfo(w.c);
+  return '<div class="wx" title="성수동 '+esc(inf[2])+' · 최저 '+Math.round(w.min)+'° / 최고 '+Math.round(w.max)+'°"><i>'+inf[1]+'</i>'+
+    Math.round(w.min)+'°~'+Math.round(w.max)+'°</div>';
+}
+function paintWx(){
+  document.querySelectorAll('#sTbody tr[data-d]').forEach(function(tr){
+    var dc=tr.querySelector('.dcell'); if(!dc) return;
+    var old=dc.querySelector('.wx'); if(old) old.remove();
+    var h=wxHtml(tr.getAttribute('data-d')); if(!h) return;
+    var d1=dc.querySelector('.d1'); if(d1) d1.insertAdjacentHTML('afterend',h);
+  });
+}
+function loadWeather(force){
+  if(!force){
+    try{ var c=JSON.parse(localStorage.getItem(WX_KEY)||'null');
+      if(c&&c.at&&Date.now()-c.at<WX_TTL){ WX.days=c.days||{}; WX.at=c.at; paintWx(); return; } }catch(err){}
+  }
+  if(WX.busy||!window.fetch) return; WX.busy=true;
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5446&longitude=127.0557'+
+        '&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSeoul&forecast_days=10')
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      var d=j&&j.daily; if(!d||!d.time) return;
+      var days={}; d.time.forEach(function(t,i){ days[t]={c:d.weather_code[i],max:d.temperature_2m_max[i],min:d.temperature_2m_min[i]}; });
+      WX.days=days; WX.at=Date.now();
+      try{ localStorage.setItem(WX_KEY,JSON.stringify({at:WX.at,days:days})); }catch(err){}
+      paintWx();
+    }).catch(function(){}).then(function(){ WX.busy=false; });
+}
+setInterval(function(){ loadWeather(true); },WX_TTL);
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible') loadWeather(false); });
 
 /* 생일 — 해당 날짜가 팀원의 생일이면 true (2/29 생일은 평년엔 2/28) */
 function isBirthday(m,ds){
@@ -1781,7 +1854,7 @@ function renderBody(){
     r+='<td class="c-date"><div class="dcell">'+
        '<div class="d1">'+
          (+ds.slice(5,7))+'/'+(+ds.slice(8,10))+
-         ' <span class="wd">('+DOW[dow]+')</span></div>'+
+         ' <span class="wd">('+DOW[dow]+')</span></div>'+wxHtml(ds)+
        (hol?'<div class="d2">'+esc(hol)+'</div>':'')+
        '</div></td>';
 
@@ -2117,7 +2190,7 @@ function openMember(id){
    '<div class="fld"><label>관심사 아이콘 <span style="font-weight:400">· 최대 3개, 캐릭터 가슴 앞에 표시</span></label><div id="mIcBox"></div></div>'+
    '<div class="fld"><label>서로 이해하기 <span style="font-weight:400">· 모두 선택 사항, 비우면 미니홈피에 표시되지 않습니다</span></label>'+
      '<div class="grid3">'+
-       fldInput('생년월일','pBirth',p.birth,'MM-DD 또는 4.2')+
+       fldInput('생년월일','pBirth',p.birth,'11-28 · 연도까지 쓰면 바이오리듬도 (1990-11-28)')+
        fldSelect('별자리','pZodiac',p.zodiac,ZODIACS)+
        fldSelect('MBTI','pMbti',p.mbti,MBTIS)+
        fldSelect('혈액형','pBlood',p.blood,BLOODS)+
@@ -2574,6 +2647,7 @@ function openHome(id){
         : '<div class="hint">아직 등록된 정보가 없습니다. 오른쪽 위 <b>정보 편집</b>에서 입력할 수 있습니다 (모두 선택 사항).</div>')+
     '</div>'+
 
+    fortuneHtml(m)+
     '<div class="sect"><h4>📅 앞으로의 일정<span class="s">오늘 이후</span></h4>'+
       (up.length? '<div style="display:flex;flex-direction:column;gap:5px">'+up.map(function(k){
           var ds=k.split('|')[0], e=S.sched[k];
@@ -2602,6 +2676,76 @@ function openHome(id){
 
   renderGB(id);
   $('ov').classList.add('show'); $('mHome').classList.add('show');
+}
+
+/* ==========================================================================
+   재미로 보는 오늘의 운세 · 바이오리듬
+   - 운세: 팀원 + 날짜로 정해지는 재미용 문구 (하루 동안 같은 결과)
+   - 바이오리듬: 신체 23일 · 감성 28일 · 지성 33일 주기 (생일에 연도가 있어야 계산)
+========================================================================== */
+function seeded(str){ var h=hashStr(str)>>>0; return function(){ h=(h*1664525+1013904223)>>>0; return h/4294967296; }; }
+var FT_LINES=[
+  '오전에 미뤄둔 메일 하나가 오후를 가볍게 해줍니다.','회의에서 한 번 더 질문하면 좋은 답이 돌아와요.',
+  '오늘은 점심 메뉴 선택 운이 최고조! 새로운 곳에 도전해 보세요.','작은 칭찬 한마디가 팀 분위기를 바꿉니다.',
+  '숫자 확인을 한 번 더 — 꼼꼼함이 빛나는 날.','예상 못 한 곳에서 도움의 손길이 옵니다.',
+  '커피 한 잔의 여유가 좋은 아이디어를 데려와요.','정리 정돈 운이 좋은 날, 폴더 하나만 정리해도 기분 up.',
+  '오늘 들은 이야기가 다음 제안서의 힌트가 됩니다.','퇴근 30분 전 집중력이 가장 좋아요.',
+  '말보다 메모가 더 오래 남는 날. 적어두세요.','동료의 D-day를 챙기면 행운이 두 배.',
+  '급할수록 돌아가면 오히려 빨라요.','오늘의 실수는 내일의 노하우. 너무 신경 쓰지 마세요.',
+  '새로운 툴 하나를 써보기 좋은 날입니다.','산책 10분이 오후 컨디션을 살려줘요.',
+  '기다리던 회신이 생각보다 빨리 옵니다.','오늘은 듣는 쪽이 이기는 날.',
+  '달달한 간식이 협업 운을 끌어올립니다.','계획은 세 줄이면 충분해요. 시작이 반!',
+  '오랜만에 연락한 사람에게서 좋은 소식이.','마감 운 좋음 — 오늘 끝낼 수 있는 것부터.',
+  '작은 양보가 큰 신뢰로 돌아오는 날.','오늘 찍은 사진 한 장이 팀 사진첩의 레전드가 될지도?'];
+var FT_COLORS=['코랄','민트','라벤더','머스터드','네이비','올리브','하늘색','버건디','크림','차콜','피치','세이지'];
+var FT_DIRS=['동쪽','서쪽','남쪽','북쪽','동남쪽','서남쪽','동북쪽','서북쪽'];
+function starBar(n,max){ var h=''; for(var i=1;i<=(max||5);i++) h+='<i class="'+(i<=n?'on':'')+'">●</i>'; return '<span class="ftbar">'+h+'</span>'; }
+function birthDate(v){
+  var m=String(v||'').match(/(\d{4})\s*[-./년]\s*(\d{1,2})\s*[-./월]\s*(\d{1,2})/);
+  if(!m) return null; var d=new Date(+m[1],+m[2]-1,+m[3]); return isNaN(d)?null:d;
+}
+function bioVal(days,period){ return Math.sin(2*Math.PI*days/period); }
+function bioSvg(days){
+  var W=300,H=96,P=[[23,'#E0655A','신체'],[28,'#3B8FD9','감성'],[33,'#2FA36B','지성']],N=15;
+  var x=function(i){ return 10+i*(W-20)/(N-1); }, y=function(v){ return H/2-v*(H/2-10); };
+  var g='<line x1="10" y1="'+H/2+'" x2="'+(W-10)+'" y2="'+H/2+'" stroke="#E3E7EB"/>'+
+        '<line x1="'+x(7)+'" y1="4" x2="'+x(7)+'" y2="'+(H-4)+'" stroke="#C9D0D8" stroke-dasharray="3 3"/>';
+  P.forEach(function(p){
+    var d=''; for(var i=0;i<N;i++) d+=(i?'L':'M')+x(i).toFixed(1)+' '+y(bioVal(days-7+i,p[0])).toFixed(1);
+    g+='<path d="'+d+'" fill="none" stroke="'+p[1]+'" stroke-width="2" stroke-linecap="round"/>'+
+       '<circle cx="'+x(7)+'" cy="'+y(bioVal(days,p[0])).toFixed(1)+'" r="3.5" fill="'+p[1]+'"/>';
+  });
+  return '<svg viewBox="0 0 '+W+' '+H+'" class="biosvg">'+g+'<text x="'+x(7)+'" y="'+(H-1)+'" text-anchor="middle" font-size="9" fill="#98A0AA">오늘</text></svg>';
+}
+function fortuneHtml(m){
+  var t=today(), rnd=seeded(m.id+'|'+t+'|ft'), pick=function(a){ return a[Math.floor(rnd()*a.length)]; };
+  var total=2+Math.floor(rnd()*4);                         /* 2~5 — 재미용이라 너무 나쁘진 않게 */
+  var cats=[['업무운',1+Math.floor(rnd()*5)],['금전운',1+Math.floor(rnd()*5)],['인간관계',1+Math.floor(rnd()*5)],['건강',1+Math.floor(rnd()*5)]];
+  var foods=S.foods.filter(function(f){ return !f.closed; });
+  var lunch=foods.length? pick(foods).name : '';
+  var p=m.profile||{};
+  var ft='<div class="ftcard">'+
+    '<div class="fttop"><span class="ftsum">총운 '+starBar(total)+'</span>'+(p.zodiac?'<span class="ftz">'+esc(p.zodiac)+'</span>':'')+'</div>'+
+    '<div class="ftline">“'+esc(pick(FT_LINES))+'”</div>'+
+    '<div class="ftgrid">'+cats.map(function(c){ return '<span>'+c[0]+'</span>'+starBar(c[1]); }).join('')+'</div>'+
+    '<div class="ftlucky"><span>🎨 '+pick(FT_COLORS)+'</span><span>🔢 '+(1+Math.floor(rnd()*45))+'</span><span>🧭 '+pick(FT_DIRS)+'</span>'+
+      (lunch?'<span>🍽️ '+esc(lunch)+'</span>':'')+'</div></div>';
+  var bd=birthDate(p.birth), bio;
+  if(bd){
+    var now=new Date(); now.setHours(0,0,0,0);
+    var days=Math.round((now-bd)/86400000);
+    var rows=[[23,'신체','#E0655A'],[28,'감성','#3B8FD9'],[33,'지성','#2FA36B']].map(function(r){
+      var v=Math.round(bioVal(days,r[0])*100);
+      return '<div class="biorow"><span>'+r[1]+'</span><div class="biobar"><i style="'+(v>=0?'left:50%;width:'+(v/2)+'%':'right:50%;width:'+(-v/2)+'%')+';background:'+r[2]+'"></i></div>'+
+        '<b style="color:'+r[2]+'">'+(v>0?'+':'')+v+'</b></div>';
+    }).join('');
+    bio='<div class="biocard">'+rows+bioSvg(days)+'<div class="hint" style="font-size:11px;margin-top:2px">태어난 지 '+days.toLocaleString('ko-KR')+'일째 · 앞뒤 7일 흐름</div></div>';
+  }else{
+    bio='<div class="biocard empty"><div class="hint">생일을 <b>연도까지</b> (예: 1990-11-28) 넣으면 신체·감성·지성 바이오리듬이 보여요.<br>'+
+        '<span style="font-size:11px">오른쪽 위 <b>정보 편집</b> → 생년월일</span></div></div>';
+  }
+  return '<div class="sect"><h4>🔮 오늘의 운세 · 바이오리듬<span class="s">재미로만 봐주세요 · 매일 바뀝니다</span></h4>'+
+    '<div class="ftwrap">'+ft+bio+'</div></div>';
 }
 
 function renderGB(id){
@@ -3061,8 +3205,8 @@ function openRow(kind,id){
         '<div class="fld"><label>PW (선택)</label><input type="text" id="rE" value="'+esc(r?r.login_pw:'')+'"></div>'+
       '</div>'+
       '<div class="fld"><label>설명</label><textarea id="rF">'+esc(r?r.description:'')+'</textarea></div>'
-    : '<div class="fld"><label>네이버 지도 링크 <span style="font-weight:400">· 붙여넣으면 가게 이름·위치·분류를 자동으로 가져옵니다</span></label><input type="text" id="rC" value="'+esc(r?r.url:'')+'" placeholder="https://naver.me/…"></div>'+
-      '<div class="fld"><label>가게명 <span style="font-weight:400">· 비워두면 링크의 가게 이름으로</span></label><input type="text" id="rA" value="'+esc(r?r.name:'')+'" placeholder="예) 대엽"></div>'+
+    : '<div class="fld"><label>가게명 * <span style="font-weight:400">· 네이버 지도에 등록된 이름 그대로 (위치·분류를 이 이름으로 찾습니다)</span></label><input type="text" id="rA" value="'+esc(r?r.name:'')+'" placeholder="예) 훼미리손칼국수보쌈"></div>'+
+      '<div class="fld"><label>네이버 지도 링크 <span style="font-weight:400">· 목록의 네이버지도↗ 버튼으로 연결됩니다</span></label><input type="text" id="rC" value="'+esc(r?r.url:'')+'" placeholder="https://naver.me/…"></div>'+
       (r?'<div class="fld"><label>종류 <span style="font-weight:400">· 자동 분류가 틀렸을 때만 고치세요</span></label><div class="chips" id="rCat">'+FOODCATS.map(function(c){
         return '<button class="chip'+(r.kind===c?' on':'')+'" data-cat="'+c+'">'+c+'</button>'; }).join('')+'</div></div>'
          :'<div class="hint">종류(한식·일식·양식·간편식)는 네이버에 등록된 분류로 자동으로 정해집니다.</div>')+
@@ -3070,11 +3214,11 @@ function openRow(kind,id){
       '<div class="fld"><label>폐업 여부</label><div class="chips"><button class="chip'+(r&&r.closed?' on':'')+'" id="rClosed">폐업했습니다</button></div></div>'+
       '<div class="note" id="rNv" style="font-size:12px">'+
         (r&&hasPos(r)
-          ? '📍 지도 위치가 있습니다'+(r.addr?' — '+esc(r.addr):'')+'. 링크나 가게명을 바꾸면 위치를 다시 찾습니다. '+
+          ? '📍 지도 위치가 있습니다'+(r.addr?' — '+esc(r.addr):'')+'. 가게명을 바꾸면 위치를 다시 찾습니다. '+
             '<button class="btn sm" id="rRepin" style="margin-left:4px">지도에서 직접 다시 지정</button>'
-          : '📍 저장하면 <b>네이버 지도 링크(없으면 가게명)로 위치를 찾아</b> 지도에 올립니다. 못 찾으면 지도에서 한 번 클릭해 지정하면 됩니다.')+
+          : '📍 저장하면 <b>가게명으로 네이버에서 위치·분류를 찾아</b> 지도에 올립니다. 못 찾으면 지도에서 한 번 클릭해 지정하면 됩니다.')+
       '</div>';
-  $('ov').classList.add('show'); $('mRow').classList.add('show'); (!isTool&&!r?$('rC'):$('rA')).focus();
+  $('ov').classList.add('show'); $('mRow').classList.add('show'); $('rA').focus();
 }
 document.addEventListener('click',function(ev){
   if(ev.target.id==='rClosed') ev.target.classList.toggle('on');
@@ -3090,8 +3234,8 @@ document.addEventListener('click',function(ev){
 $('rwOk').onclick=function(){
   var isTool=RW.kind==='tools', arr=isTool?S.tools:S.foods;
   var name=($('rA').value||'').trim();
-  if(!isTool&&(name||($('rC').value||'').trim())){ saveFood(name); return; }
-  if(!name){ toast(isTool?'이름을 입력해 주세요':'가게명이나 네이버 지도 링크를 입력해 주세요'); return; }
+  if(!name){ toast(isTool?'이름을 입력해 주세요':'가게명을 입력해 주세요 (네이버 지도에 나오는 이름 그대로)'); $('rA').focus(); return; }
+  if(!isTool){ saveFood(name); return; }
   var prev=RW.id?(arr.filter(function(x){return String(x.id)===String(RW.id);})[0]||{}):{};
   var rec=isTool
     ? {id:RW.id||uid('t_'),sort:prev.sort==null?arr.length+1:prev.sort,name:name,category:($('rB').value||'').trim(),
@@ -3137,7 +3281,7 @@ function saveFood(name){
     ratings:prev.ratings||{},hours:prev.hours||{},closed_day:prev.closed_day||'',reservation:prev.reservation||''});
   var renamed=!!(prev.name&&prev.name!==name);
   var relinked=(prev.url||'')!==rec.url&&!!rec.url;
-  var need=!rec.closed&&(!hasPos(rec)||renamed||relinked);
+  var need=!rec.closed&&(!hasPos(rec)||renamed);
   var btn=$('rwOk'); btn.disabled=true; btn.textContent='저장 중…';
   NAVER.linkName='';
   if(need&&$('rNv')) $('rNv').innerHTML='📍 네이버에서 '+(rec.url?'링크의 가게':'가게')+' 위치를 찾는 중…';
@@ -4264,6 +4408,7 @@ function bootDone(){ var b=$('boot'); if(b) b.classList.add('done'); }
 
 (function init(){
   loadLocal();
+  setTimeout(function(){ loadWeather(false); },400);
   /* config.js 가 있으면 접속만 해도 바로 연결됩니다 (배포용) */
   var CFG=window.TEAM_CONFIG||{};
   if(CFG.supabaseUrl && CFG.supabaseKey){
