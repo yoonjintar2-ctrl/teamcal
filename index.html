@@ -53,15 +53,15 @@ a:hover{text-decoration:underline}
 .tabbar button:hover{background:var(--line3);color:var(--tx)}
 .tabbar button.on{background:var(--ink);color:var(--ink-tx);font-weight:700}
 /* 메뉴 아이콘 — 단색 원형 */
-.tabbar button{display:inline-flex;align-items:center;gap:7px}
-.ti{display:inline-grid;place-items:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;
-  border:1.4px solid currentColor;opacity:.78;font-style:normal}
-.ti svg{width:13px;height:13px;display:block}
-.tabbar button.on .ti,.subnav button.on .ti{opacity:1}
+.tabbar button{display:inline-flex;align-items:center;gap:4px}
+/* 메뉴 아이콘 — 원 없이, 글자와 같은 굵기의 단색 선 */
+.ti{display:inline-grid;place-items:center;width:15px;height:15px;flex:0 0 15px;font-style:normal}
+.ti svg{width:15px;height:15px;display:block;stroke-width:1.45}
+.tabbar button.on .ti svg,.subnav button.on .ti svg{stroke-width:1.95}
 .tabbar .ts{display:none}
-.subnav button{display:inline-flex;align-items:center;gap:6px}
-.subnav .ti{width:20px;height:20px;flex-basis:20px;border-width:1.2px}
-.subnav .ti svg{width:11px;height:11px}
+.subnav button{display:inline-flex;align-items:center;gap:4px}
+.subnav .ti{width:14px;height:14px;flex-basis:14px}
+.subnav .ti svg{width:14px;height:14px}
 /* 제목 — 누르면 첫 화면(팀 스케줄)으로. 이름은 ⚙︎ 설정에서 바꿉니다 */
 .teamname{font-weight:800;font-size:15.5px;letter-spacing:-.4px;border:none;background:transparent;
   padding:5px 8px;border-radius:7px;color:var(--tx);white-space:nowrap;flex:0 0 auto;cursor:pointer;
@@ -736,10 +736,12 @@ body.mv-table .mvback{display:block}
   .tabbar button:hover{background:transparent}
   .tabbar button .tl,.tabbar button .caret{display:none}
   .tabbar button .ts{display:block;white-space:nowrap;letter-spacing:-.3px}
-  .tabbar .ti{width:30px;height:30px;flex-basis:30px;opacity:1;border-color:#C9D0D8;color:var(--tx2)}
-  .tabbar .ti svg{width:15px;height:15px}
+  .tabbar button{gap:2px}
+  .tabbar .ti{width:21px;height:21px;flex-basis:21px;color:var(--tx3)}
+  .tabbar .ti svg{width:21px;height:21px;stroke-width:1.4}
   .tabbar button.on{background:transparent;color:var(--tx);font-weight:800}
-  .tabbar button.on .ti{background:var(--ink);border-color:var(--ink);color:#fff}
+  .tabbar button.on .ti{color:var(--tx)}
+  .tabbar button.on .ti svg{stroke-width:1.9}
   .topbar{padding:6px 10px 0}
   .teamname{font-size:14.5px;max-width:46vw;padding:5px 4px}
   .tbright{gap:4px}
