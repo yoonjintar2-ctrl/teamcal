@@ -2071,7 +2071,7 @@ function memberDayHtml(m,ds){
     '<span class="mv-info">'+
       '<span class="mv-nm">'+esc(m.name)+(m.rank?'<em>'+esc(m.rank)+'</em>':'')+
         (m.id===S.me?'<i class="mv-me">나</i>':'')+(isBirthday(m,ds)?'<i class="mv-bd" title="생일">🎂</i>':'')+'</span>'+
-      '<span class="mv-tm">'+(off?'<span class="mv-off">쉬는 날</span>':(annual?'<s>'+esc(t.text)+'</s>':ICO.time+esc(t.text)))+'</span>'+
+      '<span class="mv-tm">'+(off?'<span class="mv-off">쉬는 날</span>':(annual?'<span class="mv-off">하루 휴가</span>':ICO.time+esc(t.text)))+'</span>'+
       (tags.length?'<span class="mv-tags">'+tags.join('')+'</span>':'')+
     '</span>'+
     '<span class="mv-edit">'+ICO.pen+'</span>'+
