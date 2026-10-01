@@ -984,7 +984,7 @@ body.mv-table .mvback{display:block}
 <div class="toast" id="toast"></div>
 
 <script src="config.js" onerror="window.__noConfig=1"></script>
-<script src="assets.js"></script>
+<script src="assets.js?v=20261001c"></script>
 <script src="avatars.js" onerror="window.__noAvatars=1"></script>
 <script src="icons.js" onerror="window.__noIcons=1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -2515,8 +2515,8 @@ function avMatch(id,f){
 }
 
 function drawAvatarPicker(){
-  var list=avatarList(), box=$('mAvBox');
-  if(!list){
+  var list=(avatarList()||[]).filter(function(id){ var v=(window.AVATARS||{})[id]; return !(v&&v.hidden); }), box=$('mAvBox');
+  if(!list.length){
     box.innerHTML='<div class="note">아바타 파일(<code>assets.js</code>)을 찾지 못했습니다. html과 같은 폴더에 두세요.</div>'+
       '<div style="display:flex;gap:10px;align-items:center;margin-top:9px">'+
       '<div style="width:50px;height:50px;border-radius:9px;overflow:hidden">'+bustPlaceholder(ME.hue,50)+'</div>'+
