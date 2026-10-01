@@ -718,7 +718,7 @@ table.data tr.picked td{background:#EDF1FF}
     <button data-tab="schedule" class="on">팀 스케줄</button>
     <button data-tab="weekly" title="새 창에서 열립니다 (Alt+클릭 = 주소 수정)">주간업무보고 ↗</button>
     <button data-tab="drive" title="팝업 창으로 열립니다 (Alt+클릭 = 주소 수정)">팀 구글 드라이브 ↗</button>
-    <button data-tab="adnews" title="새 탭에서 열립니다">광고업계 뉴스 ↗</button>
+    <button data-tab="adnews">광고업계 뉴스</button>
     <button data-tab="archive" title="성수동 맛집 · 중고거래 · 활용툴 · 팀 사진첩">슬기로운 회사생활<svg class="caret" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
   </nav>
   <div class="tbright">
@@ -745,6 +745,10 @@ table.data tr.picked td{background:#EDF1FF}
   <button data-sub="tools">활용툴</button>
   <button data-sub="photos">팀 사진첩</button>
 </nav>
+
+<!-- ══════════════ 광고업계 뉴스 (메뉴 아래에 그대로 열림) ══════════════ -->
+<section class="panel" id="p-adnews"><iframe id="adFrame" title="광고업계 뉴스" loading="lazy"
+  style="flex:1 1 auto;width:100%;border:0;background:#fff"></iframe></section>
 
 <!-- ══════════════ 팀 스케줄 ══════════════ -->
 <section class="panel on" id="p-schedule">
@@ -3446,7 +3450,8 @@ function saveTeam(){ saveLocal(); sbUp('settings',{key:'team',value:S.team},'key
 /* ==========================================================================
    탭 / 공통 동작
 ========================================================================== */
-var TABS=['schedule','market','tools','food','photos'];
+var TABS=['schedule','adnews','market','tools','food','photos'];
+var ADNEWS_URL='https://yoonjintar2-ctrl.github.io/adsnews/';
 var ARCH=['food','market','tools','photos'];           /* 슬기로운 회사생활 하위 메뉴 */
 function lastArchive(){
   var a=null; try{ a=localStorage.getItem(LS+'.arch'); }catch(err){}
@@ -3465,6 +3470,7 @@ function goTab(name){
   if(name==='tools')   renderTools();
   if(name==='food')    renderFoods();
   if(name==='photos')  renderPhotos();
+  if(name==='adnews'){ var af=$('adFrame'); if(af&&!af.getAttribute('src')) af.setAttribute('src',ADNEWS_URL); }
   queueYearRail();
   try{ localStorage.setItem(LS+'.tab',name); if(inArch) localStorage.setItem(LS+'.arch',name); }catch(err){}
 }
@@ -3472,7 +3478,6 @@ $('tabs').addEventListener('click',function(ev){
   var b=ev.target.closest('[data-tab]'); if(!b) return;
   if(b.dataset.tab==='weekly'){ openWeekly(ev.altKey); return; }
   if(b.dataset.tab==='drive'){ openDrive(ev.altKey); return; }
-  if(b.dataset.tab==='adnews'){ window.open('https://yoonjintar2-ctrl.github.io/adsnews/','_blank','noopener'); return; }
   goTab(b.dataset.tab);
 });
 /* 하위 메뉴 꼬리를 '슬기로운 회사생활' 탭 가운데에 맞춥니다 */
