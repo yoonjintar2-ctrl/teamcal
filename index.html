@@ -52,6 +52,16 @@ a:hover{text-decoration:underline}
   transition:.12s;flex:0 0 auto}
 .tabbar button:hover{background:var(--line3);color:var(--tx)}
 .tabbar button.on{background:var(--ink);color:var(--ink-tx);font-weight:700}
+/* 메뉴 아이콘 — 단색 원형 */
+.tabbar button{display:inline-flex;align-items:center;gap:7px}
+.ti{display:inline-grid;place-items:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;
+  border:1.4px solid currentColor;opacity:.78;font-style:normal}
+.ti svg{width:13px;height:13px;display:block}
+.tabbar button.on .ti,.subnav button.on .ti{opacity:1}
+.tabbar .ts{display:none}
+.subnav button{display:inline-flex;align-items:center;gap:6px}
+.subnav .ti{width:20px;height:20px;flex-basis:20px;border-width:1.2px}
+.subnav .ti svg{width:11px;height:11px}
 /* 제목 — 누르면 첫 화면(팀 스케줄)으로. 이름은 ⚙︎ 설정에서 바꿉니다 */
 .teamname{font-weight:800;font-size:15.5px;letter-spacing:-.4px;border:none;background:transparent;
   padding:5px 8px;border-radius:7px;color:var(--tx);white-space:nowrap;flex:0 0 auto;cursor:pointer;
@@ -719,9 +729,25 @@ body.mv-table .mvback{display:block}
   .mebtn{padding:0 6px 0 3px;height:34px}
   .mebtn span,.mebtn svg{display:none}
   .iconbtn{width:36px;height:34px}
-  .tabbar{order:3;flex:1 1 100%;border-left:none;padding:4px 0 8px;margin:0;gap:6px}
-  .tabbar button{padding:9px 13px;font-size:14px;background:var(--line3);border-radius:10px}
-  .tabbar button.on{background:var(--ink)}
+  .tabbar{order:3;flex:1 1 100%;border-left:none;padding:2px 0 6px;margin:0;gap:2px;
+    display:grid;grid-template-columns:repeat(5,1fr);overflow:visible}
+  .tabbar button{flex-direction:column;gap:3px;padding:5px 0 4px;font-size:10.5px;font-weight:600;background:transparent;
+    border-radius:10px;color:var(--tx3);min-width:0}
+  .tabbar button:hover{background:transparent}
+  .tabbar button .tl,.tabbar button .caret{display:none}
+  .tabbar button .ts{display:block;white-space:nowrap;letter-spacing:-.3px}
+  .tabbar .ti{width:30px;height:30px;flex-basis:30px;opacity:1;border-color:#C9D0D8;color:var(--tx2)}
+  .tabbar .ti svg{width:15px;height:15px}
+  .tabbar button.on{background:transparent;color:var(--tx);font-weight:800}
+  .tabbar button.on .ti{background:var(--ink);border-color:var(--ink);color:#fff}
+  .topbar{padding:6px 10px 0}
+  .teamname{font-size:14.5px;max-width:46vw;padding:5px 4px}
+  .tbright{gap:4px}
+  .iconbtn,.mebtn{height:32px}
+  .iconbtn{width:32px}
+  .mebtn{width:32px;padding:0 2px;justify-content:center}
+  .mebtn.none{width:auto;padding:0 9px;font-size:12px}
+  .subnav .ti{display:none}
   .subnav{height:auto;padding:8px;gap:6px}
   .subnav .sublabel,.subnav::after{display:none}
   .subnav button{padding:8px 14px;font-size:13.5px}
@@ -777,11 +803,11 @@ body.mv-table .mvback{display:block}
 <div class="topbar">
   <button class="teamname" id="teamName" title="처음 화면(팀 스케줄)으로">Media 3팀</button>
   <nav class="tabbar" id="tabs">
-    <button data-tab="schedule" class="on">팀 스케줄</button>
-    <button data-tab="weekly" title="새 창에서 열립니다 (Alt+클릭 = 주소 수정)">주간업무보고 ↗</button>
-    <button data-tab="drive" title="팝업 창으로 열립니다 (Alt+클릭 = 주소 수정)">팀 구글 드라이브 ↗</button>
-    <button data-tab="adnews">광고업계 뉴스</button>
-    <button data-tab="archive" title="성수동 맛집 · 중고거래 · 활용툴 · 팀 사진첩">슬기로운 회사생활<svg class="caret" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
+<button data-tab="schedule" class="on"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.2" width="11" height="10.3" rx="2"/><path d="M2.5 6.6h11M5.6 1.8v2.6M10.4 1.8v2.6"/></svg></i><span class="tl">팀 스케줄</span><span class="ts">스케줄</span></button>
+    <button data-tab="adnews"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h8v9.5a1 1 0 0 0 1 1H4a1 1 0 0 1-1-1z"/><path d="M11 6h2v6.5a1 1 0 0 1-2 0M5 5.8h4M5 8.2h4M5 10.6h2.5"/></svg></i><span class="tl">광고업계 뉴스</span><span class="ts">뉴스</span></button>
+    <button data-tab="weekly" title="새 창에서 열립니다 (Alt+클릭 = 주소 수정)"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h5.5L12.5 5v9h-8.5z"/><path d="M6.5 11.5v-2M8.5 11.5v-4M10.5 11.5v-3"/></svg></i><span class="tl">주간업무보고 ↗</span><span class="ts">주간보고</span></button>
+    <button data-tab="drive" title="팝업 창으로 열립니다 (Alt+클릭 = 주소 수정)"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.6a1 1 0 0 1 1-1h3.2l1.5 1.6H13a1 1 0 0 1 1 1v6.2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></svg></i><span class="tl">팀 구글 드라이브 ↗</span><span class="ts">드라이브</span></button>
+    <button data-tab="archive" title="성수동 맛집 · 중고거래 · 활용툴 · 팀 사진첩"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.3h8V10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M11 7.3h1a1.5 1.5 0 0 1 0 3h-1M5.8 2.3v2M8.2 2.3v2"/></svg></i><span class="tl">슬기로운 회사생활</span><span class="ts">회사생활</span><svg class="caret" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
   </nav>
   <div class="tbright">
     <div class="presence" id="presence" title="지금 접속 중인 팀원"></div>
@@ -802,10 +828,10 @@ body.mv-table .mvback{display:block}
 <!-- 슬기로운 회사생활 하위 메뉴 -->
 <nav class="subnav" id="subnav">
   <span class="sublabel">슬기로운 회사생활 <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg></span>
-  <button data-sub="food">성수동 맛집</button>
-  <button data-sub="market">중고거래</button>
-  <button data-sub="tools">활용툴</button>
-  <button data-sub="photos">팀 사진첩</button>
+  <button data-sub="food"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 2v3a1.5 1.5 0 0 0 3 0V2M5 2v3M5 6.5V14M11.2 14V2c1.6 1 2.3 2.7 2.3 4.5 0 1.5-.8 2.6-2.3 3"/></svg></i>성수동 맛집</button>
+  <button data-sub="market"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.3V3.5a1 1 0 0 1 1-1h4.8l5.2 5.2-5.8 5.8z"/><circle cx="5.6" cy="5.6" r="1"/></svg></i>중고거래</button>
+  <button data-sub="tools"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 2.3a3 3 0 0 0-3.4 3.9L2.8 10.3a1.4 1.4 0 0 0 2 2l4.1-4.1a3 3 0 0 0 3.9-3.4l-1.7 1.7-1.7-.3-.3-1.7z"/></svg></i>활용툴</button>
+  <button data-sub="photos"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4.6" width="12" height="8.6" rx="1.6"/><path d="M5.6 4.6l1-2h2.8l1 2"/><circle cx="8" cy="8.9" r="2.1"/></svg></i>팀 사진첩</button>
 </nav>
 
 <!-- ══════════════ 광고업계 뉴스 (메뉴 아래에 그대로 열림) ══════════════ -->
