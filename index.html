@@ -645,6 +645,67 @@ table.data tr.picked td{background:#EDF1FF}
 .lightbox .nav:hover{background:rgba(255,255,255,.24)}
 .lightbox .nav.l{left:18px}.lightbox .nav.r{right:18px}
 
+/* ═════════ 모바일 전용 하루 보기 ═════════ */
+#mview,.mvback{display:none}
+body.mv-on #gridwrap{display:none}
+body.mv-on #mview{display:flex;flex-direction:column;flex:1 1 auto;overflow:auto;background:#F2F3F6}
+body.mv-table .mvback{display:block}
+.mvback{position:fixed;right:14px;bottom:18px;z-index:40;border:none;background:var(--ink);color:#fff;font-weight:700;
+  font-size:13.5px;padding:11px 16px;border-radius:999px;box-shadow:0 8px 24px rgba(16,20,28,.3)}
+.mv-top{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:8px 10px 6px}
+.mv-nav{display:flex;align-items:center;gap:6px}
+.mv-nav > button{flex:0 0 40px;height:40px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:22px;line-height:1;color:var(--tx2)}
+.mv-nav .mv-todaybtn{flex:0 0 auto;font-size:12.5px;font-weight:700;padding:0 10px}
+.mv-date{flex:1;min-width:0;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:3px 7px;text-align:center}
+.mv-date b{font-size:17px;letter-spacing:-.4px}
+.mv-date b.red{color:var(--red)} .mv-date b.blue{color:#3B6FD9}
+.mv-rel{background:var(--ink);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px}
+.mv-wx{font-size:12.5px;color:var(--tx2);font-variant-numeric:tabular-nums}
+.mv-hol{font-size:12px;color:var(--red);font-weight:700}
+.mv-strip{display:flex;gap:3px;overflow-x:auto;margin-top:8px;padding-bottom:2px;scrollbar-width:none}
+.mv-strip::-webkit-scrollbar{display:none}
+.mvday{flex:0 0 44px;border:none;background:transparent;border-radius:12px;padding:5px 0 4px;display:flex;flex-direction:column;align-items:center;gap:1px}
+.mvday span{font-size:10.5px;color:var(--tx3)}
+.mvday b{font-size:15px;color:var(--tx)}
+.mvday i{font-style:normal;font-size:11px;height:15px;line-height:15px}
+.mvday.red b,.mvday.red span{color:var(--red)} .mvday.blue b,.mvday.blue span{color:#3B6FD9}
+.mvday.past{opacity:.45}
+.mvday.today b{box-shadow:inset 0 -2px 0 var(--today-line)}
+.mvday.on{background:var(--ink);opacity:1} .mvday.on b,.mvday.on span{color:#fff}
+.mv-body{padding:10px 10px 18px;display:flex;flex-direction:column;gap:8px}
+.mvcommon{display:flex;gap:10px;align-items:center;text-align:left;border:none;border-radius:14px;padding:11px 14px;background:var(--ink);color:#fff}
+.mvcommon .lbl{font-size:11px;font-weight:700;opacity:.6;flex:0 0 auto}
+.mvcommon .tx{font-size:14px;font-weight:700;white-space:pre-wrap}
+.mvcommon.empty{background:#fff;color:var(--tx3);border:1px dashed #CBD2DA}
+.mvcommon.empty .tx{font-weight:500;font-size:13px}
+.mvsum{font-size:12px;color:var(--tx3);padding:0 4px}
+.mvcard{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid var(--line);border-left:4px solid var(--c);
+  border-radius:16px;padding:10px 12px 10px 10px;box-shadow:0 1px 3px rgba(16,20,28,.05);width:100%}
+.mvcard:active{transform:scale(.99)}
+.mvcard.me{box-shadow:0 0 0 2px var(--c),0 4px 12px rgba(16,20,28,.08)}
+.mvcard.away{background:#F7F8FA}
+.mvcard.away .mv-av{filter:grayscale(.6);opacity:.75}
+.mv-av{width:62px;height:62px;flex:0 0 62px;border-radius:50%;background:var(--bg);border:2px solid var(--c);overflow:hidden;position:relative}
+.mv-av img,.mv-av svg{position:absolute;left:50%;top:50%;width:140%;height:140%;transform:translate(-50%,-34%);object-fit:contain}
+.mv-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.mv-nm{font-size:15.5px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;flex-wrap:wrap}
+.mv-nm em{font-style:normal;font-size:12px;font-weight:500;color:var(--tx3);margin-left:5px}
+.mv-me{font-style:normal;font-size:10px;font-weight:800;background:var(--accent);color:#fff;border-radius:999px;padding:1px 6px;margin-left:6px}
+.mv-bd{font-style:normal;margin-left:5px}
+.mv-tm{font-size:13px;color:var(--tx2);display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.mv-tm svg{width:13px;height:13px;color:var(--tx4)}
+.mv-tm s{color:var(--tx4)}
+.mv-off{font-size:12px;color:var(--tx3)}
+.mv-tags{display:flex;flex-wrap:wrap;gap:4px}
+.mvt{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;background:#EEF1F5;border-radius:999px;padding:3px 9px;color:var(--tx)}
+.mvt svg{width:12px;height:12px;flex:0 0 12px}
+.mvt.vac{background:#FFF1DE;color:#8A5300}
+.mvt.vac.full{background:var(--ink);color:#fff}
+.mvt.memo{font-weight:500;background:#F4F5F8;color:var(--tx2);white-space:normal}
+.mv-edit{flex:0 0 16px;color:#C5CBD2}
+.mv-edit svg{width:14px;height:14px}
+.mv-foot{display:flex;justify-content:center;padding:4px 0 28px}
+
 /* ═════════════════════════ 모바일 (폭 760px 이하) ═════════════════════════
    상단 메뉴는 두 줄(제목·아이콘 / 탭)로 나누고 누르기 쉽게 크게,
    표는 열 폭을 줄이고 네임카드를 간단히, 편집 창은 아래에서 올라오는 시트로 */
@@ -667,9 +728,10 @@ table.data tr.picked td{background:#EDF1FF}
   /* 팀 스케줄 표 */
   #yrNow{display:none!important}
   .hdlabel{font-size:12px;padding:8px 4px}
-  .nc{min-height:56px;padding:6px 7px}
-  .nc .bust,.nc .ints,.nc .pen{display:none}
-  .nc .l{padding-right:0}
+  .nc{min-height:64px;padding:6px 7px}
+  .nc .ints,.nc .pen{display:none}
+  .nc .bust{display:block;width:54px;height:54px;right:-8px;bottom:-10px}
+  .nc .l{padding-right:30px}
   .nc .nm{font-size:13px} .nc .nm em{font-size:10.5px}
   .nc .tm{font-size:10.5px}
   #sThead.tall .nc{min-height:74px}
@@ -752,6 +814,17 @@ table.data tr.picked td{background:#EDF1FF}
 
 <!-- ══════════════ 팀 스케줄 ══════════════ -->
 <section class="panel on" id="p-schedule">
+  <!-- 모바일 전용: 하루 보기 -->
+  <div id="mview">
+    <div class="mv-top">
+      <div class="mv-nav"><button id="mvPrev" aria-label="이전 날">‹</button><div class="mv-date" id="mvDate"></div>
+        <button id="mvNext" aria-label="다음 날">›</button><button id="mvToday" class="mv-todaybtn">오늘</button></div>
+      <div class="mv-strip" id="mvStrip"></div>
+    </div>
+    <div class="mv-body" id="mvBody"></div>
+    <div class="mv-foot"><button class="btn sm" id="mvTable">표로 보기 (전체 일정)</button></div>
+  </div>
+  <button class="mvback" id="mvBack">📱 카드로 보기</button>
   <div id="gridwrap"><span id="yrNow"></span><table class="sched" id="sched"><thead id="sThead"></thead><tbody id="sTbody"></tbody></table></div>
 </section>
 
@@ -1826,6 +1899,7 @@ function paintWx(){
     var h=wxHtml(tr.getAttribute('data-d')); if(!h) return;
     var d1=dc.querySelector('.d1'); if(d1) d1.insertAdjacentHTML('afterend',h);
   });
+  renderMobile();
 }
 function loadWeather(force){
   if(!force){
@@ -1873,6 +1947,7 @@ function patchCell(ds,mid,flash){
   if(EDIT&&EDIT.d===ds&&EDIT.m===mid) return;           /* 바로 그 칸을 편집 중이면 건드리지 않음 */
   if(mid==='__c__') c.innerHTML=commonCellHtml(ds);
   else{ var m=memberById(mid); if(!m) return; c.innerHTML=memberCellHtml(m,ds); }
+  renderMobile();
   if(flash){ var td=c.closest('td'); if(td){ td.classList.remove('rtflash'); void td.offsetWidth; td.classList.add('rtflash');
     setTimeout(function(){ td.classList.remove('rtflash'); },1600); } }
 }
@@ -1916,6 +1991,7 @@ function renderBody(){
   }
   $('sTbody').innerHTML=out.join('');
   queueYearRail();
+  renderMobile();
 }
 
 /* ── 연도 표시 (표 바깥 왼쪽) ─────────────────────────────────────────────
@@ -1953,6 +2029,107 @@ function queueYearRail(){
   var raf=window.requestAnimationFrame||function(f){ return setTimeout(f,16); };
   _yrRAF=raf(function(){ _yrRAF=0; try{ syncYearRail(); }catch(err){} })||1;
 }
+
+/* ==========================================================================
+   모바일 전용 스케줄 — 하루 보기
+   폭 760px 이하에서는 넓은 표 대신 '날짜 하나 + 팀원 카드' 화면을 보여줍니다.
+   · 위: 날짜 이동(‹ ›, 좌우 스와이프) + 2주 날짜 띠(날씨 아이콘)
+   · 가운데: 공통 일정 + 팀원별 카드(캐릭터 · 출퇴근 · 근태 · 점심 · 메모)
+   · 카드를 누르면 아래에서 편집 시트가 올라옵니다 (데스크톱과 같은 편집 창)
+   · 아래 '표로 보기' 로 기존 표 화면과 바꿀 수 있습니다
+========================================================================== */
+var MV={day:null,mode:null};
+function isMob(){ return window.innerWidth<=760; }
+function mvMode(){
+  if(MV.mode) return MV.mode;
+  try{ MV.mode=localStorage.getItem(LS+'.mview')||'day'; }catch(err){ MV.mode='day'; }
+  return MV.mode;
+}
+function setMvMode(m){
+  MV.mode=m; try{ localStorage.setItem(LS+'.mview',m); }catch(err){}
+  applyMobileView();
+  if(m==='table') setTimeout(function(){ scrollToToday(false); },30);
+}
+function applyMobileView(){
+  var on=isMob()&&mvMode()==='day';
+  document.body.classList.toggle('mv-on',on);
+  document.body.classList.toggle('mv-table',isMob()&&!on);
+  if(on) renderMobile();
+}
+function mvDay(){ if(!MV.day) MV.day=today(); return MV.day; }
+function mvShift(n){ MV.day=fmt(addDays(parseD(mvDay()),n)); renderMobile(); }
+function memberDayHtml(m,ds){
+  var off=offdayOf(ds), e=S.sched[ds+'|'+m.id]||null, tags=[];
+  var t=calcTimes(m,e||{});
+  if(e&&e.vacation){ var v=VMAP[e.vacation]; tags.push('<span class="mvt vac'+(e.vacation==='annual'?' full':'')+'">'+vacIcon(e.vacation)+esc(v?v.label:e.vacation)+'</span>'); }
+  if(e&&e.lunch) tags.push('<span class="mvt">'+ICO.lunch+'점심 '+esc(LMAP[e.lunch]||e.lunch)+'</span>');
+  if(e&&e.memo) tags.push('<span class="mvt memo">'+ICO.memo+esc(e.memo)+'</span>');
+  var annual=e&&e.vacation==='annual';
+  return '<button class="mvcard'+(annual?' away':'')+(m.id===S.me?' me':'')+'" data-d="'+ds+'" data-m="'+m.id+'" '+
+      'style="--c:'+sig(m)+';--bg:'+sig(m,'soft')+'">'+
+    '<span class="mv-av">'+bustHtml(m,72)+'</span>'+
+    '<span class="mv-info">'+
+      '<span class="mv-nm">'+esc(m.name)+(m.rank?'<em>'+esc(m.rank)+'</em>':'')+
+        (m.id===S.me?'<i class="mv-me">나</i>':'')+(isBirthday(m,ds)?'<i class="mv-bd" title="생일">🎂</i>':'')+'</span>'+
+      '<span class="mv-tm">'+(off?'<span class="mv-off">쉬는 날</span>':(annual?'<s>'+esc(t.text)+'</s>':ICO.time+esc(t.text)))+'</span>'+
+      (tags.length?'<span class="mv-tags">'+tags.join('')+'</span>':'')+
+    '</span>'+
+    '<span class="mv-edit">'+ICO.pen+'</span>'+
+  '</button>';
+}
+function renderMobile(){
+  if(!document.body.classList.contains('mv-on')) return;
+  var box=$('mview'); if(!box) return;
+  var ds=mvDay(), d=parseD(ds), dow=d.getDay(), hol=holidayOf(ds), t=today();
+  var rel= ds===t?'오늘':ds===fmt(addDays(new Date(),1))?'내일':ds===fmt(addDays(new Date(),-1))?'어제':'';
+  var w=WX.days[ds], wi=w?wxInfo(w.c):null;
+  $('mvDate').innerHTML='<b class="'+(hol||dow===0?'red':dow===6?'blue':'')+'">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DOW[dow]+')</b>'+
+    (rel?'<span class="mv-rel">'+rel+'</span>':'')+
+    (w&&ds>=t?'<span class="mv-wx">'+wi[1]+' '+Math.round(w.min)+'°~'+Math.round(w.max)+'°</span>':'')+
+    (hol?'<span class="mv-hol">'+esc(hol)+'</span>':'');
+  /* 2주 날짜 띠 — 오늘 3일 전부터 */
+  var st=addDays(new Date(),-3), h='';
+  for(var i=0;i<17;i++){
+    var dd=addDays(st,i), k=fmt(dd), wd=dd.getDay(), hw=WX.days[k];
+    h+='<button class="mvday'+(k===ds?' on':'')+(k===t?' today':'')+(holidayOf(k)||wd===0?' red':wd===6?' blue':'')+(k<t?' past':'')+'" data-mvd="'+k+'">'+
+      '<span>'+DOW[wd]+'</span><b>'+dd.getDate()+'</b><i>'+(hw&&k>=t?wxInfo(hw.c)[1]:'')+'</i></button>';
+  }
+  $('mvStrip').innerHTML=h;
+  var on=el('#mvStrip .mvday.on'); if(on&&on.scrollIntoView&&!MV.stripped){ MV.stripped=true; on.scrollIntoView({inline:'center',block:'nearest'}); }
+  /* 공통 일정 + 팀원 카드 (나 먼저) */
+  var ct=S.commons[ds]||'';
+  var list=shownMembers().slice().sort(function(a,b){ return (b.id===S.me?1:0)-(a.id===S.me?1:0); });
+  var away=list.filter(function(m){ var e=S.sched[ds+'|'+m.id]; return e&&e.vacation==='annual'; }).length;
+  $('mvBody').innerHTML=
+    '<button class="mvcommon'+(ct?'':' empty')+'" data-d="'+ds+'" data-m="__c__">'+
+      '<span class="lbl">공통 일정</span><span class="tx">'+(ct?esc(ct):'＋ 추가')+'</span></button>'+
+    (away?'<div class="mvsum">'+(ds===t?'오늘':'이날')+' '+(list.length-away)+'명 근무 · 연차 '+away+'명</div>':'')+
+    list.map(function(m){ return memberDayHtml(m,ds); }).join('');
+}
+/* 이벤트 */
+$('mvPrev').onclick=function(){ mvShift(-1); };
+$('mvNext').onclick=function(){ mvShift(1); };
+$('mvToday').onclick=function(){ MV.day=today(); MV.stripped=false; renderMobile(); };
+$('mvTable').onclick=function(){ setMvMode('table'); };
+$('mvBack').onclick=function(){ setMvMode('day'); };
+$('mvStrip').addEventListener('click',function(ev){ var b=ev.target.closest('[data-mvd]'); if(b){ MV.day=b.dataset.mvd; renderMobile(); } });
+$('mvBody').addEventListener('click',function(ev){
+  var c=ev.target.closest('[data-m]'); if(c) openCell(c);
+});
+/* 좌우로 밀어서 날짜 이동 */
+(function(){
+  var sx=0, sy=0, on=false, body=$('mvBody');
+  body.addEventListener('touchstart',function(e){ var t=e.touches[0]; sx=t.clientX; sy=t.clientY; on=true; },{passive:true});
+  body.addEventListener('touchend',function(e){
+    if(!on) return; on=false;
+    var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5) mvShift(dx<0?1:-1);
+  },{passive:true});
+})();
+window.addEventListener('resize',function(){
+  var was=document.body.classList.contains('mv-on')||document.body.classList.contains('mv-table');
+  if(was!==isMob()) applyMobileView();
+});
 
 function scrollToToday(smooth){
   var r=el('tr.today');
@@ -3528,7 +3705,7 @@ $('btnPastLess').onclick=function(){
 
 /* 제목 — 누르면 첫 화면(팀 스케줄 · 오늘)으로 */
 function fitTeamName(){}
-$('teamName').addEventListener('click',function(){ closeAll(); goTab('schedule'); scrollToToday(true); });
+$('teamName').addEventListener('click',function(){ closeAll(); goTab('schedule'); MV.day=today(); MV.stripped=false; renderMobile(); scrollToToday(true); });
 
 /* Supabase 연결 */
 function openSetup(){
@@ -4253,6 +4430,7 @@ function meMember(){ return S.me? memberById(S.me) : null; }
 function setMe(id,quiet){
   S.me=id||null; saveLocal();
   presenceTrack(); renderMe(); renderBell(); renderPresence();
+  if(typeof renderMobile==='function') renderMobile();
   var tm=$('tmMe'); if(tm) tm.value=S.me||'';
   if(!quiet){ var m=meMember(); if(m) toast(m.name+'님으로 접속했습니다'); }
   if($('p-food').classList.contains('on')) renderFoods();
@@ -4533,11 +4711,11 @@ function bootDone(){ var b=$('boot'); if(b) b.classList.add('done'); }
       clearTimeout(guard);
       if(ok){ sbRealtime(); }
       else  { seedIfEmpty(); renderAll(); }   /* 연결 실패 시에만 로컬 값으로 */
-      openTab(); bootDone(); scrollToToday();
+      applyMobileView(); openTab(); bootDone(); scrollToToday();
       setTimeout(askWhoIfNeeded,350);
     });
   }else{
-    seedIfEmpty(); renderAll(); openTab();
+    seedIfEmpty(); renderAll(); applyMobileView(); openTab();
     setStat('off','미연결'); bootDone();
     setTimeout(function(){ scrollToToday(); },60);
     setTimeout(askWhoIfNeeded,350);
