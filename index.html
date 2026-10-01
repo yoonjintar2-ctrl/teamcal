@@ -718,6 +718,7 @@ table.data tr.picked td{background:#EDF1FF}
     <button data-tab="schedule" class="on">팀 스케줄</button>
     <button data-tab="weekly" title="새 창에서 열립니다 (Alt+클릭 = 주소 수정)">주간업무보고 ↗</button>
     <button data-tab="drive" title="팝업 창으로 열립니다 (Alt+클릭 = 주소 수정)">팀 구글 드라이브 ↗</button>
+    <button data-tab="adnews" title="새 탭에서 열립니다">광고업계 뉴스 ↗</button>
     <button data-tab="archive" title="성수동 맛집 · 중고거래 · 활용툴 · 팀 사진첩">슬기로운 회사생활<svg class="caret" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button>
   </nav>
   <div class="tbright">
@@ -3471,6 +3472,7 @@ $('tabs').addEventListener('click',function(ev){
   var b=ev.target.closest('[data-tab]'); if(!b) return;
   if(b.dataset.tab==='weekly'){ openWeekly(ev.altKey); return; }
   if(b.dataset.tab==='drive'){ openDrive(ev.altKey); return; }
+  if(b.dataset.tab==='adnews'){ window.open('https://yoonjintar2-ctrl.github.io/adsnews/','_blank','noopener'); return; }
   goTab(b.dataset.tab);
 });
 /* 하위 메뉴 꼬리를 '슬기로운 회사생활' 탭 가운데에 맞춥니다 */
