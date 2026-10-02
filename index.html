@@ -655,21 +655,12 @@ table.data tr.picked td{background:#EDF1FF}
 .lightbox .nav:hover{background:rgba(255,255,255,.24)}
 .lightbox .nav.l{left:18px}.lightbox .nav.r{right:18px}
 
-/* ═════════ 비·눈 효과 — 3초마다 서서히 나타났다 사라짐 ═════════ */
-table.sched tr.wx-rain td,table.sched tr.wx-snow td{position:relative}
-table.sched tr.wx-rain td.c-date,table.sched tr.wx-snow td.c-date{position:sticky}
-table.sched tr.wx-rain td::after,table.sched tr.wx-snow td::after,
-.mv-top.wx-rain::after,.mv-top.wx-snow::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0}
-table.sched tr.wx-rain td::after,.mv-top.wx-rain::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg stroke='%234F7FD9' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M8 2l-3 9'/%3E%3Cpath d='M30 14l-3 9'/%3E%3Cpath d='M19 30l-3 9'/%3E%3Cpath d='M42 34l-3 9'/%3E%3C/g%3E%3C/svg%3E");background-size:48px 48px;
-  animation:wxfade 3s ease-in-out infinite,rainfall .7s linear infinite}
-table.sched tr.wx-snow td::after,.mv-top.wx-snow::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='%2390A4BE'%3E%3Ccircle cx='9' cy='8' r='2'/%3E%3Ccircle cx='38' cy='18' r='1.6'/%3E%3Ccircle cx='22' cy='36' r='2.2'/%3E%3Ccircle cx='50' cy='47' r='1.8'/%3E%3Ccircle cx='6' cy='52' r='1.4'/%3E%3C/g%3E%3C/svg%3E");background-size:60px 60px;
-  animation:wxfade 3s ease-in-out infinite,snowfall 5s linear infinite}
-@keyframes wxfade{0%,100%{opacity:0}50%{opacity:.38}}
-@keyframes rainfall{from{background-position:0 0}to{background-position:-16px 48px}}
-@keyframes snowfall{from{background-position:0 0}to{background-position:12px 60px}}
-@media (prefers-reduced-motion:reduce){
-  table.sched tr.wx-rain td::after,table.sched tr.wx-snow td::after,.mv-top.wx-rain::after,.mv-top.wx-snow::after{animation:none;opacity:0}
-}
+/* ═════════ 비·눈 효과 — tsParticles(MIT 공개 라이브러리) 입자 애니메이션, 3초마다 은은하게 나타났다 사라짐 ═════════ */
+.wxfx{position:absolute;pointer-events:none;z-index:10;overflow:hidden;opacity:0;animation:wxfade 3s ease-in-out infinite}
+.wxfx canvas{display:block}
+.mv-top .wxfx{inset:0;z-index:0}
+@keyframes wxfade{0%,100%{opacity:0}50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.wxfx{display:none}}
 
 /* ═════════ 모바일 전용 하루 보기 ═════════ */
 #mview,.mvback{display:none}
@@ -1954,7 +1945,95 @@ function paintWx(){
     var d1=dc.querySelector('.d1'); if(d1) d1.insertAdjacentHTML('afterend',h);
   });
   renderMobile();
+  queueWxFx();
 }
+/* ── 비·눈 입자 효과 ──
+   공개 무료 라이브러리 tsParticles(MIT 라이선스, https://particles.js.org)를 jsDelivr에서 불러와
+   비·눈 예보가 있는 행 위에만 입자 애니메이션을 띄웁니다. 비·눈 행이 없으면 라이브러리도 받지 않습니다.
+   투명도는 CSS(.wxfx, wxfade)가 3초 주기로 은은하게 올렸다 내립니다. */
+var WXFX={lib:null,loading:null,on:{},timer:0};
+var WXFX_SRC='https://cdn.jsdelivr.net/npm/@tsparticles/slim@3.9.1/tsparticles.slim.bundle.min.js';
+function wxfxLib(){
+  if(WXFX.lib) return Promise.resolve(WXFX.lib);
+  if(WXFX.loading) return WXFX.loading;
+  WXFX.loading=new Promise(function(res,rej){
+    var sc=document.createElement('script'); sc.src=WXFX_SRC; sc.async=true; sc.crossOrigin='anonymous';
+    sc.onload=function(){
+      if(!window.tsParticles||!window.loadSlim) return rej(new Error('tsParticles'));
+      window.loadSlim(window.tsParticles).then(function(){ WXFX.lib=window.tsParticles; res(WXFX.lib); },rej);
+    };
+    sc.onerror=rej; document.head.appendChild(sc);
+  });
+  WXFX.loading.catch(function(){ WXFX.loading=null; });
+  return WXFX.loading;
+}
+function wxfxOpts(kind,h){
+  var rain=kind==='rain', small=h<90;
+  return {fullScreen:{enable:false},background:{color:'transparent'},fpsLimit:30,detectRetina:true,
+    pauseOnBlur:true,pauseOnOutsideViewport:true,
+    particles: rain ? {
+      number:{value:small?36:60,density:{enable:false}},
+      color:{value:'#6f93d4'},shape:{type:'line'},
+      stroke:{width:1,color:{value:'#6f93d4'}},
+      size:{value:{min:3,max:6}},rotate:{value:100},
+      opacity:{value:{min:.25,max:.5}},
+      move:{enable:true,direction:'bottom',straight:true,speed:{min:3,max:5},outModes:{default:'out'}}
+    } : {
+      number:{value:small?30:50,density:{enable:false}},
+      color:{value:'#9aadc8'},shape:{type:'circle'},
+      size:{value:{min:1.2,max:2.8}},
+      opacity:{value:{min:.4,max:.75}},
+      move:{enable:true,direction:'bottom',speed:{min:.3,max:.8},drift:{min:-.3,max:.3},outModes:{default:'out'}},
+      wobble:{enable:true,distance:4,speed:{min:-3,max:3}}
+    }};
+}
+function wxfxKill(id){
+  var o=WXFX.on[id]; if(!o) return;
+  try{ if(o.c) o.c.destroy(); }catch(err){}
+  if(o.el&&o.el.parentNode) o.el.parentNode.removeChild(o.el);
+  delete WXFX.on[id];
+}
+function wxfxTargets(){
+  var list=[];
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches) return list;
+  var mob=document.body.classList.contains('mv-on');
+  if(mob){
+    var mt=el('#mview .mv-top'), k=mt&&(mt.classList.contains('wx-snow')?'snow':mt.classList.contains('wx-rain')?'rain':'');
+    if(k&&mt.offsetWidth) list.push({id:'wxfx-mv',kind:k,host:mt,box:null,h:mt.offsetHeight});
+    return list;
+  }
+  var wrap=$('gridwrap'); if(!wrap||!wrap.offsetWidth) return list;
+  var wr=wrap.getBoundingClientRect();
+  document.querySelectorAll('#sTbody tr.wx-rain, #sTbody tr.wx-snow').forEach(function(tr){
+    var b=tr.getBoundingClientRect(); if(!b.width||!b.height) return;
+    list.push({id:'wxfx-'+tr.getAttribute('data-d'),kind:tr.classList.contains('wx-snow')?'snow':'rain',host:wrap,h:b.height,
+      box:{l:Math.round(b.left-wr.left+wrap.scrollLeft),t:Math.round(b.top-wr.top+wrap.scrollTop),w:Math.round(b.width),h:Math.round(b.height)}});
+  });
+  return list;
+}
+function syncWxFx(){
+  var list=wxfxTargets(), keep={};
+  list.forEach(function(t){ keep[t.id]=1; });
+  Object.keys(WXFX.on).forEach(function(id){ if(!keep[id]) wxfxKill(id); });
+  if(!list.length) return;
+  wxfxLib().then(function(lib){
+    list.forEach(function(t){
+      var o=WXFX.on[t.id], sz=t.box?t.box.w+'x'+t.box.h:t.host.offsetWidth+'x'+t.host.offsetHeight;
+      if(o&&(o.kind!==t.kind||o.el.parentNode!==t.host||o.sz!==sz)){ wxfxKill(t.id); o=null; }
+      if(o){ if(t.box){ o.el.style.left=t.box.l+'px'; o.el.style.top=t.box.t+'px'; } return; }
+      var d=document.createElement('div'); d.className='wxfx'; d.id=t.id; d.setAttribute('aria-hidden','true');
+      if(t.box) d.style.cssText='left:'+t.box.l+'px;top:'+t.box.t+'px;width:'+t.box.w+'px;height:'+t.box.h+'px';
+      t.host.appendChild(d);
+      o=WXFX.on[t.id]={el:d,kind:t.kind,sz:sz,c:null};
+      lib.load({id:t.id,element:d,options:wxfxOpts(t.kind,t.h)}).then(function(c){
+        if(WXFX.on[t.id]===o) o.c=c; else if(c) c.destroy();
+      }).catch(function(){});
+    });
+  }).catch(function(){});
+}
+function queueWxFx(){ clearTimeout(WXFX.timer); WXFX.timer=setTimeout(syncWxFx,150); }
+window.addEventListener('resize',queueWxFx);
+if(window.ResizeObserver){ try{ new ResizeObserver(queueWxFx).observe($('sTbody')); }catch(err){} }
 function loadWeather(force){
   if(!force){
     try{ var c=JSON.parse(localStorage.getItem(WX_KEY)||'null');
@@ -2045,6 +2124,7 @@ function renderBody(){
     out.push(r);
   }
   $('sTbody').innerHTML=out.join('');
+  queueWxFx();
   queueYearRail();
   renderMobile();
 }
@@ -2140,6 +2220,7 @@ function renderMobile(){
   var w=WX.days[ds], wi=w?wxInfo(w.c):null;
   var mfx=wxFx(ds); var mt=el('#mview .mv-top');
   if(mt){ mt.classList.toggle('wx-rain',mfx==='rain'); mt.classList.toggle('wx-snow',mfx==='snow'); }
+  queueWxFx();
   $('mvDate').innerHTML='<b class="'+(hol||dow===0?'red':dow===6?'blue':'')+'">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DOW[dow]+')</b>'+
     (rel?'<span class="mv-rel">'+rel+'</span>':'')+
     (w&&ds>=t?'<span class="mv-wx">'+wi[1]+' '+Math.round(w.min)+'°~'+Math.round(w.max)+'°</span>':'')+
