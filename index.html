@@ -667,12 +667,12 @@ table.data tr.picked td{background:#EDF1FF}
 .lightbox .nav.l{left:18px}.lightbox .nav.r{right:18px}
 
 /* ═════════ 비·눈 효과 — tsParticles(MIT 공개 라이브러리) 입자 애니메이션, 3초마다 은은하게 나타났다 사라짐 ═════════ */
-.wxfx{position:absolute;pointer-events:none;z-index:10;overflow:hidden;opacity:0;animation:wxfade 3s ease-in-out infinite}
+.wxfx{position:absolute;pointer-events:none;z-index:10;overflow:hidden;opacity:0;animation:wxfade 10s ease-in-out infinite}
 .wxfx.rain{background:linear-gradient(180deg,rgba(78,100,138,.30) 0%,rgba(104,132,176,.17) 55%,rgba(140,166,205,.07) 100%)}
 .wxfx.snow{background:linear-gradient(180deg,rgba(132,152,186,.34) 0%,rgba(170,188,215,.2) 60%,rgba(214,226,242,.1) 100%)}
 .wxfx canvas{display:block}
 .mv-top .wxfx{inset:0;z-index:0}
-@keyframes wxfade{0%,100%{opacity:0}50%{opacity:.85}}
+@keyframes wxfade{0%,34%,100%{opacity:0}17%{opacity:.85}}  /* 10초마다 한 번, 약 3초 동안 나타났다 사라짐 */
 @media (prefers-reduced-motion:reduce){.wxfx{display:none}}
 
 /* ═════════ 모바일 전용 하루 보기 ═════════ */
