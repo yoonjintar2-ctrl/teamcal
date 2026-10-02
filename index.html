@@ -437,6 +437,15 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 .icgrid button.on{border-color:var(--accent);background:var(--accent-soft)}
 .icgrid img{width:100%;height:100%;object-fit:contain;display:block}
 .nvpick{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+/* 맨 위로 플로팅 버튼 */
+.totop{position:fixed;right:22px;bottom:22px;z-index:60;width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--ink);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  opacity:0;transform:translateY(12px) scale(.9);pointer-events:none;transition:opacity .2s,transform .2s}
+.totop.show{opacity:.92;transform:none;pointer-events:auto}
+.totop:hover{opacity:1;transform:translateY(-2px)}
+.totop svg{width:17px;height:17px}
+.totop span{font-size:9px;font-weight:800;letter-spacing:.4px;margin-top:-1px}
+@media (max-width:760px){ .totop{right:14px;bottom:16px;width:42px;height:42px} }
 .rsrch{display:flex;gap:6px}
 .rsrch input{flex:1}
 .rpickwrap{display:flex;gap:10px;align-items:stretch}
@@ -449,7 +458,7 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 .rmk.on{background:var(--accent);color:#fff;transform:scale(1.15)}
 @media (max-width:760px){ .rpickwrap{flex-direction:column} .rmini{min-height:180px} }
 .nvpick:empty{display:none}
-.nvitem{display:grid;grid-template-columns:auto 1fr;gap:1px 8px;text-align:left;border:1px solid var(--line);background:#fff;
+.nvitem{cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:1px 8px;text-align:left;border:1px solid var(--line);background:#fff;
   border-radius:9px;padding:7px 10px;cursor:pointer}
 .nvitem:hover{border-color:#B9C4FF;background:#F7F9FF}
 .nvitem.on{border-color:var(--accent);background:var(--accent-soft)}
@@ -459,6 +468,9 @@ table.data .no{color:var(--tx3);font-variant-numeric:tabular-nums}
 .nvitem.on .nvn{background:var(--accent);color:#fff}
 .nvitem span{font-size:11px;color:var(--tx3);align-self:center}
 .nvitem em{grid-column:1/-1;font-style:normal;font-size:11.5px;color:var(--tx2)}
+.nvitem .nvopen{grid-column:1/-1;justify-self:start;font-size:11px;color:#03A94D;font-weight:700;text-decoration:none;margin-top:1px}
+.nvitem .nvopen:hover{text-decoration:underline}
+.nvpick{max-height:300px;overflow:auto}
 .nvnone{font-size:12px;color:var(--tx3);padding:4px 2px}
 .schemabar{display:none;align-items:center;gap:10px;padding:8px 14px;background:#FFF4D6;border-bottom:1px solid #F0DDA0;
   font-size:12.8px;color:#6B5A22;flex:0 0 auto}
@@ -865,6 +877,7 @@ body.mv-table .mvback{display:block}
 </head>
 <body>
 
+<button id="toTop" class="totop" title="맨 위로" aria-label="맨 위로"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3.5M3.8 7.6L8 3.4l4.2 4.2"/></svg><span>TOP</span></button>
 <div id="boot"><div class="bootbox"><span class="spin"></span>불러오는 중…</div></div>
 
 <div class="topbar">
@@ -3756,7 +3769,7 @@ function openRow(kind,id){
         '<div class="rsrch"><input type="text" id="rA" value="'+esc(r?r.name:'')+'" placeholder="예) 훼미리손칼국수보쌈" autocomplete="off">'+
         '<button type="button" class="btn sm" id="rSearch">검색</button></div>'+
         '<div class="rpickwrap"><div class="nvpick" id="rPick"></div><div class="rmini" id="rMini"></div></div></div>'+
-      '<div class="fld"><label>네이버 지도 링크 <span style="font-weight:400">· 목록의 네이버지도↗ 버튼으로 연결됩니다</span></label><input type="text" id="rC" value="'+esc(r?r.url:'')+'" placeholder="https://naver.me/…"></div>'+
+      '<div class="fld"><label>네이버 지도 링크 <span style="font-weight:400">· 위에서 가게를 고르면 자동으로 채워집니다 (원하면 naver.me 공유 링크로 바꿔도 돼요)</span></label><input type="text" id="rC" value="'+esc(r?r.url:'')+'" placeholder="가게를 고르면 자동 입력"></div>'+
       (r?'<div class="fld"><label>종류 <span style="font-weight:400">· 자동 분류가 틀렸을 때만 고치세요</span></label><div class="chips" id="rCat">'+FOODCATS.map(function(c){
         return '<button class="chip'+(r.kind===c?' on':'')+'" data-cat="'+c+'">'+c+'</button>'; }).join('')+'</div></div>'
          :'<div class="hint">종류(한식·일식·양식·간편식)는 네이버에 등록된 분류로 자동으로 정해집니다.</div>')+
@@ -3812,6 +3825,11 @@ $('rwOk').onclick=function(){
 };
 /* 가게명 입력 → 네이버 검색 후보 (성동구 우선) */
 var _pickT=null, _pickQ='';
+/* 네이버 지도 링크 — 고른 가게를 네이버 지도에서 바로 여는 주소 (따로 링크를 찾아 붙여넣지 않아도 됨) */
+function nvMapUrl(name,addr){
+  var gu=((addr||'').match(/\S+구/)||[''])[0];
+  return 'https://map.naver.com/p/search/'+encodeURIComponent((name||'')+(gu?' '+gu:''));
+}
 function naverItems(q){
   if(!S.sb||!S.sb.functions) return Promise.resolve([]);
   return S.sb.functions.invoke('naver-place',{body:{query:q,url:''}}).then(function(r){
@@ -3824,12 +3842,13 @@ function drawPick(items,q){
   var box=$('rPick'); if(!box) return;
   if(!items){ box.innerHTML=''; miniKill(); return; }
   items.sort(function(a,b){ return (/성동구/.test((b.road||'')+(b.address||''))?1:0)-(/성동구/.test((a.road||'')+(a.address||''))?1:0); });
-  box.innerHTML=items.length? items.slice(0,5).map(function(it,i){
-      return '<button type="button" class="nvitem'+(RW.pick&&RW.pick.title===it.title&&RW.pick.road===it.road?' on':'')+'" data-pi="'+i+'">'+
+  box.innerHTML=items.length? items.slice(0,8).map(function(it,i){
+      return '<div role="button" tabindex="0" class="nvitem'+(RW.pick&&RW.pick.title===it.title&&RW.pick.road===it.road?' on':'')+'" data-pi="'+i+'">'+
         '<b><i class="nvn">'+(i+1)+'</i>'+esc(it.title)+'</b><span>'+esc((it.category||'').replace(/^음식점>/,''))+'</span>'+
-        '<em>'+esc(it.road||it.address||'')+'</em></button>'; }).join('')
+        '<em>'+esc(it.road||it.address||'')+'</em>'+
+        '<a class="nvopen" href="'+esc(nvMapUrl(it.title,it.road||it.address))+'" target="_blank" rel="noopener" title="네이버 지도에서 확인">네이버 지도에서 보기↗</a></div>'; }).join('')
     : '<div class="nvnone">“'+esc(q)+'” — 네이버에서 찾지 못했어요'+(NAVER.err?' ('+esc(NAVER.err)+')':'')+'. 이름을 다시 확인하거나, 저장 후 지도에서 직접 지정하세요.</div>';
-  box._items=items.slice(0,5);
+  box._items=items.slice(0,8);
   miniMap(box._items);
 }
 /* 후보 미니맵 — 메인 지도와 같은 엔진(네이버 지도 키가 있으면 네이버, 없으면 기본 지도) */
@@ -3890,9 +3909,11 @@ function runPick(q,delay){
   if(q.length<2){ drawPick(null); return; }
   _pickT=setTimeout(function(){
     _pickQ=q; $('rPick').innerHTML='<div class="nvnone">네이버에서 찾는 중…</div>';
-    naverItems(q+' 성수동').then(function(items){
-      if(!items.length) return naverItems(q);
-      return items;
+    Promise.all([naverItems(q+' 성수동'),naverItems(q),naverItems(q+' 성동구')]).then(function(rs){
+      var seen={}, out=[];
+      rs.forEach(function(list){ list.forEach(function(it){
+        var k=it.title+'|'+(it.road||it.address); if(seen[k]) return; seen[k]=1; out.push(it); }); });
+      return out;
     }).then(function(items){ if(_pickQ===q) drawPick(items,q); });
   },delay);
 }
@@ -3907,9 +3928,11 @@ $('rwBody').addEventListener('click',function(ev){
   if(ev.target.id==='rSearch'){ RW.pick=null; runPick((($('rA')||{}).value||'').trim(),0); }
 });
 $('rwBody').addEventListener('click',function(ev){
+  if(ev.target.closest('.nvopen')) return;            /* 새 창 링크는 선택 없이 열기만 */
   var b=ev.target.closest('.nvitem'); if(!b) return;
   var it=($('rPick')._items||[])[+b.dataset.pi]; if(!it) return;
   RW.pick=it; $('rA').value=it.title;
+  if($('rC')) $('rC').value=nvMapUrl(it.title,it.road||it.address);
   document.querySelectorAll('#rPick .nvitem').forEach(function(x){ x.classList.toggle('on',x===b); });
   if($('rNv')) $('rNv').innerHTML='📍 <b>'+esc(it.title)+'</b> — '+esc(it.road||it.address||'')+' 위치로 저장합니다';
   miniMark();
@@ -4062,6 +4085,22 @@ $('subnav').addEventListener('click',function(ev){
   var b=ev.target.closest('[data-sub]'); if(b) goTab(b.dataset.sub);
 });
 
+/* 맨 위로 — 지금 스크롤한 영역(표·목록·페이지)을 기억해 두었다가 한 번에 올립니다 */
+var TOP={el:null};
+function topScrollEl(t){
+  if(!t||t===document||t===document.documentElement||t===document.body) return document.scrollingElement||document.documentElement;
+  return t;
+}
+document.addEventListener('scroll',function(ev){
+  var t=topScrollEl(ev.target);
+  if(t.closest&&t.closest('.modal,#pop,.bellpanel,.nvpick,.icgrid,#mvStrip,.tabbar')) return;
+  TOP.el=t; $('toTop').classList.toggle('show',t.scrollTop>400);
+},true);
+$('toTop').addEventListener('click',function(){
+  var t=TOP.el||document.scrollingElement;
+  try{ t.scrollTo({top:0,behavior:'smooth'}); }catch(err){ t.scrollTop=0; }
+  $('toTop').classList.remove('show');
+});
 function closeAll(){
   if(typeof miniKill==='function') miniKill();
   ['mMember','mHome','mItem','mRow','mSetup','mTeam','mWho','mSet'].forEach(function(id){
@@ -4610,7 +4649,7 @@ function renderFoods(){
         '<td class="c no cno">'+(i+1)+'</td>'+
         '<td>'+(hasPos(f)||f.closed?'':'<span class="nopos" title="지도 위치 없음 — 누르면 지정">'+ICO.pinmap+'</span>')+
           '<b'+(f.closed?' style="text-decoration:line-through"':'')+'>'+esc(f.name)+'</b>'+(f.closed?' <span class="closedtag">폐업</span>':'')+
-          (f.url?' <a class="nvlink" href="'+esc(f.url)+'" target="_blank" rel="noopener" title="네이버 지도에서 영업시간·리뷰 보기">네이버지도↗</a>':'')+'</td>'+
+          ' <a class="nvlink" href="'+esc(f.url||nvMapUrl(f.name,f.addr))+'" target="_blank" rel="noopener" title="네이버 지도에서 영업시간·리뷰 보기">네이버지도↗</a></td>'+
         '<td class="c"><span class="catchip">'+esc(f.kind||'')+'</span></td>'+
         '<td class="memo cmemo">'+esc(f.note||'')+'</td>'+
         '<td class="c rate">'+heartsHtml(f,S.me)+'</td>'+
