@@ -101,7 +101,9 @@ table.sched{border-collapse:separate;border-spacing:0;width:max-content;table-la
   box-shadow:0 0 0 1px rgba(16,20,28,.05),0 0 14px rgba(16,20,28,.10),0 0 44px rgba(16,20,28,.09),0 0 110px rgba(16,20,28,.07)}
 /* 날짜 칸 날씨 */
 .dcell .wx{font-size:11px;color:var(--tx3);margin-top:2px;white-space:nowrap;font-variant-numeric:tabular-nums;letter-spacing:-.3px}
-.dcell .wx i{font-style:normal;font-size:12px;margin-right:2px}
+.dcell .wx i{font-style:normal;font-size:12px;margin-right:1px}
+img.wxico{width:18px;height:18px;vertical-align:-5px;opacity:.6;filter:grayscale(1)}
+.mvday i img.wxico{width:15px;height:15px;vertical-align:top}
 .hdlabel .wxsrc{font-size:9px;font-weight:500;opacity:.45;margin-top:1px;letter-spacing:0}
 table.sched tr.today .dcell .wx{color:#8A6100}
 table.sched th,table.sched td{padding:0;margin:0}
@@ -203,7 +205,7 @@ table.sched tbody td.rtflash{animation:rtflash 1.6s ease-out}
 
 /* ───────────────────────── 네임카드 ───────────────────────── */
 .nc{position:relative;display:flex;gap:5px;padding:7px 7px;text-align:left;cursor:pointer;height:100%;
-  min-height:98px;background:var(--ink);overflow:hidden;isolation:isolate}
+  min-height:112px;background:var(--ink);overflow:hidden;isolation:isolate}
 /* 시그니처 컬러가 은은하게 흐르는 앰비언트 배경 */
 .nc::before{content:'';position:absolute;inset:-60%;z-index:0;pointer-events:none;
   background:
@@ -246,7 +248,7 @@ table.sched tbody td.rtflash{animation:rtflash 1.6s ease-out}
 .nc .badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}
 /* 배지(생일·알림)가 있는 사람이 한 명이라도 있으면 모든 카드를 같은 높이로 — 위아래 검은 띠 방지 */
 table.sched thead th.c-mem{height:1px}
-#sThead.tall .nc{min-height:114px}
+#sThead.tall .nc{min-height:126px}
 .nc .bday,.nc .alertbadge{display:inline-flex;align-items:center;gap:2px;font-size:11px;font-weight:700;
   border-radius:5px;padding:1.5px 6px;white-space:nowrap}
 .nc .bday{background:rgba(255,213,79,.18);color:#FFD866}
@@ -667,7 +669,7 @@ table.data tr.picked td{background:#EDF1FF}
 .lightbox .nav.l{left:18px}.lightbox .nav.r{right:18px}
 
 /* ═════════ 비·눈 효과 — tsParticles(MIT 공개 라이브러리) 입자 애니메이션, 3초마다 은은하게 나타났다 사라짐 ═════════ */
-.wxfx{position:absolute;pointer-events:none;z-index:10;overflow:hidden;opacity:0;animation:wxfade 10s ease-in-out infinite}
+.wxfx{position:absolute;pointer-events:none;z-index:25;overflow:hidden;opacity:0;animation:wxfade 10s ease-in-out infinite}
 .wxfx.rain{background:linear-gradient(180deg,rgba(78,100,138,.30) 0%,rgba(104,132,176,.17) 55%,rgba(140,166,205,.07) 100%)}
 .wxfx.snow{background:linear-gradient(180deg,rgba(132,152,186,.34) 0%,rgba(170,188,215,.2) 60%,rgba(214,226,242,.1) 100%)}
 .wxfx canvas{display:block}
@@ -1934,7 +1936,7 @@ function nameCardHtml(m){
 function renderHead(){
   var vis=shownMembers();
   var h='<tr>'+
-    '<th class="c-date"><div class="hdlabel">날짜<div class="wxsrc" title="날씨 예보: Open-Meteo.com (CC BY 4.0)">날씨 Open-Meteo</div></div></th>'+
+    '<th class="c-date"><div class="hdlabel" title="날씨 예보: Open-Meteo.com (CC BY 4.0) · 아이콘: Meteocons (MIT)">날짜</div></th>'+
     '<th class="c-common"><div class="hdlabel">공통 일정</div></th>';
   vis.forEach(function(m){ h+='<th class="c-mem">'+nameCardHtml(m)+'</th>'; });
   h+='<th class="c-add"><button class="addcol" id="btnTeam" title="팀원 추가 / 삭제">＋</button></th>';
@@ -1999,10 +2001,28 @@ var WX_ICON=[[0,'☀️','맑음'],[1,'🌤️','대체로 맑음'],[2,'⛅','�
   [71,'🌨️','눈'],[73,'🌨️','눈'],[75,'❄️','많은 눈'],[77,'🌨️','싸락눈'],[80,'🌦️','소나기'],[81,'🌦️','소나기'],[82,'⛈️','강한 소나기'],
   [85,'🌨️','눈 소나기'],[86,'🌨️','눈 소나기'],[95,'⛈️','뇌우'],[96,'⛈️','뇌우·우박'],[99,'⛈️','뇌우·우박']];
 function wxInfo(c){ for(var i=0;i<WX_ICON.length;i++) if(WX_ICON[i][0]===+c) return WX_ICON[i]; return [c,'🌡️','']; }
+/* 날씨 아이콘 — Meteocons(MIT, Bas Milius) 단색 정지 아이콘을 회색 톤으로 */
+var WX_SVG='https://cdn.jsdelivr.net/npm/@meteocons/svg-static@0.1.0/monochrome/';
+function wxSlug(c){
+  c=+c;
+  if(c===0) return 'clear-day'; if(c===1) return 'mostly-clear-day'; if(c===2) return 'partly-cloudy-day'; if(c===3) return 'overcast';
+  if(c===45||c===48) return 'fog';
+  if(c>=51&&c<=55) return 'drizzle';
+  if(c===56||c===57||c===66||c===67) return 'sleet';
+  if(c===61||c===63) return 'rain';
+  if(c===65||c===82) return 'extreme-rain';
+  if(c>=71&&c<=77) return 'snow';
+  if(c===80||c===81) return 'partly-cloudy-day-rain';
+  if(c===85||c===86) return 'partly-cloudy-day-snow';
+  if(c===96||c===99) return 'hail';
+  if(c>=95) return 'thunderstorms-rain';
+  return 'overcast';
+}
+function wxIcon(c){ return '<img class="wxico" src="'+WX_SVG+wxSlug(c)+'.svg" alt="'+esc(wxInfo(c)[2])+'" width="18" height="18">'; }
 function wxHtml(ds){
   var w=WX.days[ds]; if(!w||ds<today()) return '';
   var inf=wxInfo(w.c);
-  return '<div class="wx" title="성수동 '+esc(inf[2])+' · 최저 '+Math.round(w.min)+'° / 최고 '+Math.round(w.max)+'°"><i>'+inf[1]+'</i>'+
+  return '<div class="wx" title="성수동 '+esc(inf[2])+' · 최저 '+Math.round(w.min)+'° / 최고 '+Math.round(w.max)+'°"><i>'+wxIcon(w.c)+'</i>'+
     Math.round(w.min)+'°~'+Math.round(w.max)+'°</div>';
 }
 /* 비·눈 오는 날 — 행 전체에 살짝 보였다 사라지는 효과 */
@@ -2092,12 +2112,25 @@ function wxfxTargets(){
       last.bottom=top+b.height; last.tr=tr; last.n++; return;
     }
     last={tr:tr,kind:kind,d:tr.getAttribute('data-d'),n:1,l:b.left-wr.left+wrap.scrollLeft,t:top,w:b.width,bottom:top+b.height};
+    /* 날짜 열(가로 고정)까지 덮도록, 행 중 지금 화면에 보이는 폭만큼만 덮고 가로 스크롤을 따라갑니다 */
+    var vw=Math.min(b.width,wrap.clientWidth);
+    last.rowL=last.l; last.rowW=b.width; last.w=vw; last.l=wxfxLeft(last.rowL,b.width,vw,wrap);
     list.push(last);
   });
   return list.map(function(g){
     var h=Math.round(g.bottom-g.t);
-    return {id:'wxfx-'+g.d+'-'+g.n,kind:g.kind,host:wrap,h:h,
+    return {id:'wxfx-'+g.d+'-'+g.n,kind:g.kind,host:wrap,h:h,row:{l:g.rowL,w:g.rowW,vw:g.w},
       box:{l:Math.round(g.l),t:Math.round(g.t),w:Math.round(g.w),h:h}};
+  });
+}
+function wxfxLeft(rowL,rowW,vw,wrap){
+  return Math.max(rowL,Math.min(wrap.scrollLeft,rowL+rowW-vw));
+}
+function wxfxScroll(){
+  var wrap=$('gridwrap'); if(!wrap) return;
+  Object.keys(WXFX.on).forEach(function(id){
+    var o=WXFX.on[id]; if(!o.row) return;
+    o.el.style.left=Math.round(wxfxLeft(o.row.l,o.row.w,o.row.vw,wrap))+'px';
   });
 }
 function syncWxFx(){
@@ -2109,11 +2142,11 @@ function syncWxFx(){
     list.forEach(function(t){
       var o=WXFX.on[t.id], sz=t.box?t.box.w+'x'+t.box.h:t.host.offsetWidth+'x'+t.host.offsetHeight;
       if(o&&(o.kind!==t.kind||o.el.parentNode!==t.host||o.sz!==sz)){ wxfxKill(t.id); o=null; }
-      if(o){ if(t.box){ o.el.style.left=t.box.l+'px'; o.el.style.top=t.box.t+'px'; } return; }
+      if(o){ o.row=t.row; if(t.box){ o.el.style.left=t.box.l+'px'; o.el.style.top=t.box.t+'px'; } return; }
       var d=document.createElement('div'); d.className='wxfx '+t.kind; d.id=t.id; d.setAttribute('aria-hidden','true');
       if(t.box) d.style.cssText='left:'+t.box.l+'px;top:'+t.box.t+'px;width:'+t.box.w+'px;height:'+t.box.h+'px';
       t.host.appendChild(d);
-      o=WXFX.on[t.id]={el:d,kind:t.kind,sz:sz,c:null};
+      o=WXFX.on[t.id]={el:d,kind:t.kind,sz:sz,c:null,row:t.row};
       lib.load({id:t.id,element:d,options:wxfxOpts(t.kind,t.h)}).then(function(c){
         if(WXFX.on[t.id]===o) o.c=c; else if(c) c.destroy();
       }).catch(function(){});
@@ -2122,6 +2155,7 @@ function syncWxFx(){
 }
 function queueWxFx(){ clearTimeout(WXFX.timer); WXFX.timer=setTimeout(syncWxFx,150); }
 window.addEventListener('resize',queueWxFx);
+(function(){ var w=$('gridwrap'); if(w) w.addEventListener('scroll',wxfxScroll,{passive:true}); })();
 if(window.ResizeObserver){ try{ new ResizeObserver(queueWxFx).observe($('sTbody')); }catch(err){} }
 function loadWeather(force){
   if(!force){
@@ -2312,14 +2346,14 @@ function renderMobile(){
   queueWxFx();
   $('mvDate').innerHTML='<b class="'+(hol||dow===0?'red':dow===6?'blue':'')+'">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DOW[dow]+')</b>'+
     (rel?'<span class="mv-rel">'+rel+'</span>':'')+
-    (w&&ds>=t?'<span class="mv-wx">'+wi[1]+' '+Math.round(w.min)+'°~'+Math.round(w.max)+'°</span>':'')+
+    (w&&ds>=t?'<span class="mv-wx">'+wxIcon(w.c)+' '+Math.round(w.min)+'°~'+Math.round(w.max)+'°</span>':'')+
     (hol?'<span class="mv-hol">'+esc(hol)+'</span>':'');
   /* 2주 날짜 띠 — 오늘 3일 전부터 */
   var st=addDays(new Date(),-3), h='';
   for(var i=0;i<17;i++){
     var dd=addDays(st,i), k=fmt(dd), wd=dd.getDay(), hw=WX.days[k];
     h+='<button class="mvday'+(k===ds?' on':'')+(k===t?' today':'')+(holidayOf(k)||wd===0?' red':wd===6?' blue':'')+(k<t?' past':'')+'" data-mvd="'+k+'">'+
-      '<span>'+DOW[wd]+'</span><b>'+dd.getDate()+'</b><i>'+(hw&&k>=t?wxInfo(hw.c)[1]:'')+'</i></button>';
+      '<span>'+DOW[wd]+'</span><b>'+dd.getDate()+'</b><i>'+(hw&&k>=t?wxIcon(hw.c):'')+'</i></button>';
   }
   $('mvStrip').innerHTML=h;
   var on=el('#mvStrip .mvday.on'); if(on&&on.scrollIntoView&&!MV.stripped){ MV.stripped=true; on.scrollIntoView({inline:'center',block:'nearest'}); }
