@@ -655,6 +655,22 @@ table.data tr.picked td{background:#EDF1FF}
 .lightbox .nav:hover{background:rgba(255,255,255,.24)}
 .lightbox .nav.l{left:18px}.lightbox .nav.r{right:18px}
 
+/* ═════════ 비·눈 효과 — 3초마다 서서히 나타났다 사라짐 ═════════ */
+table.sched tr.wx-rain td,table.sched tr.wx-snow td{position:relative}
+table.sched tr.wx-rain td.c-date,table.sched tr.wx-snow td.c-date{position:sticky}
+table.sched tr.wx-rain td::after,table.sched tr.wx-snow td::after,
+.mv-top.wx-rain::after,.mv-top.wx-snow::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0}
+table.sched tr.wx-rain td::after,.mv-top.wx-rain::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cg stroke='%234F7FD9' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M8 2l-3 9'/%3E%3Cpath d='M30 14l-3 9'/%3E%3Cpath d='M19 30l-3 9'/%3E%3Cpath d='M42 34l-3 9'/%3E%3C/g%3E%3C/svg%3E");background-size:48px 48px;
+  animation:wxfade 3s ease-in-out infinite,rainfall .7s linear infinite}
+table.sched tr.wx-snow td::after,.mv-top.wx-snow::after{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cg fill='%2390A4BE'%3E%3Ccircle cx='9' cy='8' r='2'/%3E%3Ccircle cx='38' cy='18' r='1.6'/%3E%3Ccircle cx='22' cy='36' r='2.2'/%3E%3Ccircle cx='50' cy='47' r='1.8'/%3E%3Ccircle cx='6' cy='52' r='1.4'/%3E%3C/g%3E%3C/svg%3E");background-size:60px 60px;
+  animation:wxfade 3s ease-in-out infinite,snowfall 5s linear infinite}
+@keyframes wxfade{0%,100%{opacity:0}50%{opacity:.38}}
+@keyframes rainfall{from{background-position:0 0}to{background-position:-16px 48px}}
+@keyframes snowfall{from{background-position:0 0}to{background-position:12px 60px}}
+@media (prefers-reduced-motion:reduce){
+  table.sched tr.wx-rain td::after,table.sched tr.wx-snow td::after,.mv-top.wx-rain::after,.mv-top.wx-snow::after{animation:none;opacity:0}
+}
+
 /* ═════════ 모바일 전용 하루 보기 ═════════ */
 #mview,.mvback{display:none}
 body.mv-on #gridwrap{display:none}
@@ -1920,8 +1936,18 @@ function wxHtml(ds){
   return '<div class="wx" title="성수동 '+esc(inf[2])+' · 최저 '+Math.round(w.min)+'° / 최고 '+Math.round(w.max)+'°"><i>'+inf[1]+'</i>'+
     Math.round(w.min)+'°~'+Math.round(w.max)+'°</div>';
 }
+/* 비·눈 오는 날 — 행 전체에 살짝 보였다 사라지는 효과 */
+function wxFx(ds){
+  var w=WX.days[ds]; if(!w||ds<today()) return '';
+  var c=+w.c;
+  if((c>=71&&c<=77)||c===85||c===86) return 'snow';
+  if((c>=51&&c<=67)||(c>=80&&c<=82)||c>=95) return 'rain';
+  return '';
+}
 function paintWx(){
   document.querySelectorAll('#sTbody tr[data-d]').forEach(function(tr){
+    var fx=wxFx(tr.getAttribute('data-d'));
+    tr.classList.toggle('wx-rain',fx==='rain'); tr.classList.toggle('wx-snow',fx==='snow');
     var dc=tr.querySelector('.dcell'); if(!dc) return;
     var old=dc.querySelector('.wx'); if(old) old.remove();
     var h=wxHtml(tr.getAttribute('data-d')); if(!h) return;
@@ -1996,6 +2022,7 @@ function renderBody(){
     if(dow===6) cls.push('sat');
     if(dow===0) cls.push('sun');
     if(hol) cls.push('holi');
+    var fx=wxFx(ds); if(fx) cls.push('wx-'+fx);
     var offday=!!hol||dow===0||dow===6;
     var mk=ds.slice(0,7); if(mk!==lastM){ cls.push('mstart'); lastM=mk; }
 
@@ -2111,6 +2138,8 @@ function renderMobile(){
   var ds=mvDay(), d=parseD(ds), dow=d.getDay(), hol=holidayOf(ds), t=today();
   var rel= ds===t?'오늘':ds===fmt(addDays(new Date(),1))?'내일':ds===fmt(addDays(new Date(),-1))?'어제':'';
   var w=WX.days[ds], wi=w?wxInfo(w.c):null;
+  var mfx=wxFx(ds); var mt=el('#mview .mv-top');
+  if(mt){ mt.classList.toggle('wx-rain',mfx==='rain'); mt.classList.toggle('wx-snow',mfx==='snow'); }
   $('mvDate').innerHTML='<b class="'+(hol||dow===0?'red':dow===6?'blue':'')+'">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DOW[dow]+')</b>'+
     (rel?'<span class="mv-rel">'+rel+'</span>':'')+
     (w&&ds>=t?'<span class="mv-wx">'+wi[1]+' '+Math.round(w.min)+'°~'+Math.round(w.max)+'°</span>':'')+
