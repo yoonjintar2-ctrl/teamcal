@@ -2046,18 +2046,18 @@ function wxfxLib(){
   return WXFX.loading;
 }
 function wxfxOpts(kind,h){
-  var rain=kind==='rain', small=h<90;
+  var rain=kind==='rain', cnt=function(k,lo,hi){ return Math.max(lo,Math.min(hi,Math.round(h*k))); };
   return {fullScreen:{enable:false},background:{color:'transparent'},fpsLimit:30,detectRetina:true,
     pauseOnBlur:true,pauseOnOutsideViewport:true,
     particles: rain ? {
-      number:{value:small?36:60,density:{enable:false}},
+      number:{value:cnt(.7,36,140),density:{enable:false}},
       color:{value:'#eef4ff'},shape:{type:'line'},
       stroke:{width:1.2,color:{value:'#eef4ff'}},
       size:{value:{min:3,max:6}},rotate:{value:100},
       opacity:{value:{min:.5,max:.85}},
       move:{enable:true,direction:'bottom',straight:true,speed:{min:3,max:5},outModes:{default:'out'}}
     } : {
-      number:{value:small?30:50,density:{enable:false}},
+      number:{value:cnt(.55,30,120),density:{enable:false}},
       color:{value:'#ffffff'},shape:{type:'circle'},
       size:{value:{min:1.2,max:3}},
       opacity:{value:{min:.6,max:.95}},
@@ -2082,12 +2082,23 @@ function wxfxTargets(){
   }
   var wrap=$('gridwrap'); if(!wrap||!wrap.offsetWidth) return list;
   var wr=wrap.getBoundingClientRect();
+  /* 같은 날씨가 연달아 이어지면 한 덩어리로 합쳐서 그라데이션이 끊기지 않게 합니다 */
+  var last=null;
   document.querySelectorAll('#sTbody tr.wx-rain, #sTbody tr.wx-snow').forEach(function(tr){
     var b=tr.getBoundingClientRect(); if(!b.width||!b.height) return;
-    list.push({id:'wxfx-'+tr.getAttribute('data-d'),kind:tr.classList.contains('wx-snow')?'snow':'rain',host:wrap,h:b.height,
-      box:{l:Math.round(b.left-wr.left+wrap.scrollLeft),t:Math.round(b.top-wr.top+wrap.scrollTop),w:Math.round(b.width),h:Math.round(b.height)}});
+    var kind=tr.classList.contains('wx-snow')?'snow':'rain';
+    var top=b.top-wr.top+wrap.scrollTop;
+    if(last&&last.kind===kind&&last.tr===tr.previousElementSibling){
+      last.bottom=top+b.height; last.tr=tr; last.n++; return;
+    }
+    last={tr:tr,kind:kind,d:tr.getAttribute('data-d'),n:1,l:b.left-wr.left+wrap.scrollLeft,t:top,w:b.width,bottom:top+b.height};
+    list.push(last);
   });
-  return list;
+  return list.map(function(g){
+    var h=Math.round(g.bottom-g.t);
+    return {id:'wxfx-'+g.d+'-'+g.n,kind:g.kind,host:wrap,h:h,
+      box:{l:Math.round(g.l),t:Math.round(g.t),w:Math.round(g.w),h:h}};
+  });
 }
 function syncWxFx(){
   var list=wxfxTargets(), keep={};
