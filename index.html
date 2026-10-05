@@ -124,6 +124,51 @@ th.c-add{width:var(--w-add);min-width:var(--w-add);max-width:var(--w-add)}
 .addcol{width:100%;height:100%;border:none;background:transparent;color:var(--ink-tx);
   font-size:17px;line-height:1;padding:12px 0;opacity:.55}
 .addcol:hover{opacity:1;background:rgba(255,255,255,.09)}
+/* ── 수정 히스토리 ── */
+.addstack{display:flex;flex-direction:column;align-items:center;height:100%}
+.addstack .addcol{flex:1 1 auto;padding:4px 0}
+.histbtn{margin-top:6px;width:22px;height:22px;flex:0 0 22px;border-radius:50%;border:none;cursor:pointer;padding:0;
+  background:rgba(255,255,255,.12);color:#A9B0BB;display:grid;place-items:center}
+.histbtn svg{width:14px;height:14px}
+.histbtn:hover{background:rgba(255,255,255,.22);color:#fff}
+.histbtn.on{background:#fff;color:var(--ink)}
+.histpane{display:none;flex:0 0 300px;width:300px;flex-direction:column;background:#fff;border-left:1px solid var(--line);min-height:0}
+body.hist-on #p-schedule.on{flex-direction:row}
+body.hist-on #p-schedule.on #gridwrap{flex:1 1 auto;min-width:0}
+body.hist-on .histpane{display:flex}
+.hp-hd{display:flex;align-items:center;gap:6px;padding:12px 12px 10px;border-bottom:1px solid var(--line)}
+.hp-hd b{font-size:14px}
+.hp-sub{font-size:11px;color:var(--tx4);flex:1}
+.hp-x{border:none;background:none;font-size:18px;line-height:1;color:var(--tx3);cursor:pointer;width:26px;height:26px;border-radius:6px}
+.hp-x:hover{background:var(--line3)}
+.hp-body{flex:1 1 auto;overflow:auto;padding:4px 0 20px}
+.hp-day{position:sticky;top:0;background:#F6F7F9;font-size:11.5px;font-weight:700;color:var(--tx2);padding:6px 12px;border-bottom:1px solid var(--line2);z-index:1}
+.hp-day em{font-style:normal;font-weight:500;color:var(--tx4);margin-left:4px}
+.hp-it{display:flex;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line2);cursor:default}
+.hp-it:hover{background:#F3F6FF}
+.hp-it .pav{width:28px;height:28px;flex:0 0 28px;margin:0;border-width:2px;box-shadow:none;cursor:default}
+.hp-main{flex:1;min-width:0}
+.hp-meta{display:flex;align-items:baseline;gap:6px;font-size:11.5px;color:var(--tx3)}
+.hp-meta b{font-size:12.5px;color:var(--tx)}
+.hp-meta .t{margin-left:auto;font-variant-numeric:tabular-nums}
+.hp-what{font-size:12px;color:var(--tx2);margin-top:2px;line-height:1.45}
+.hp-what .tg{font-weight:700;color:var(--tx)}
+.hp-what s{color:var(--tx4)}
+.hp-what .ar{color:var(--tx4);margin:0 3px}
+.hp-what .gone{font-size:10.5px;color:var(--tx4);margin-left:4px}
+.hp-empty{padding:30px 16px;text-align:center;font-size:12.5px;color:var(--tx3);line-height:1.6}
+.hp-warn{margin:8px 12px;padding:8px 10px;border-radius:8px;background:#FFF6E0;color:#7A5500;font-size:11.5px;line-height:1.5}
+table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-3px;z-index:8;
+  background-image:linear-gradient(0deg,rgba(255,138,0,.16),rgba(255,138,0,.16))!important;animation:histpulse 1.2s ease-in-out infinite}
+@keyframes histpulse{50%{outline-color:#FFC266}}
+.histtip{position:fixed;z-index:200;width:168px;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.3);
+  pointer-events:none;display:none;color:var(--ink-tx)}
+.histtip.show{display:block}
+.histtip .nc{cursor:default}
+@media (max-width:760px){
+  .histpane{position:fixed;left:0;right:0;bottom:0;top:30%;width:auto;z-index:70;border-left:none;border-top:1px solid var(--line);
+    border-radius:14px 14px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.2)}
+}
 
 table.sched td{border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);
   vertical-align:top;background:var(--page)}
@@ -927,7 +972,12 @@ body.mv-table .mvback{display:block}
   </div>
   <button class="mvback" id="mvBack">📱 카드로 보기</button>
   <div id="gridwrap"><span id="yrNow"></span><table class="sched" id="sched"><thead id="sThead"></thead><tbody id="sTbody"></tbody></table></div>
+  <aside id="histPane" class="histpane" aria-label="수정 히스토리">
+    <div class="hp-hd"><b>수정 히스토리</b><span class="hp-sub" id="histSub"></span><button class="hp-x" id="histClose" title="닫기">×</button></div>
+    <div class="hp-body" id="histBody"></div>
+  </aside>
 </section>
+<div class="histtip" id="histTip"></div>
 
 <!-- ══════════════ 중고거래 ══════════════ -->
 <section class="panel" id="p-market"><div class="pad">
@@ -1832,7 +1882,7 @@ function onDbChange(p){
     if(ev==='DELETE'||!n.text) delete S.commons[d2]; else S.commons[d2]=n.text;
     saveLocalSoon(); patchCell(d2,'__c__',true); return;
   }
-  if(t==='join_requests'||t==='photos'){ reloadTable(t); return; }
+  if(t==='join_requests'||t==='photos'||t==='edit_history'){ reloadTable(t); return; }
   queueReload();
 }
 var _slTimer=null;
@@ -1861,12 +1911,13 @@ window.addEventListener('online',function(){ if(S.sb){ sbRealtime(); queueReload
 
 /* ── 추가 테이블 (합류 요청 · 사진첩) ─────────────────────────────
    SQL 을 아직 다시 실행하지 않아 테이블이 없더라도 나머지 기능은 그대로 동작합니다 */
-var EXTRA={join_requests:'joinReqs',photos:'photos'};
+var EXTRA={join_requests:'joinReqs',photos:'photos',edit_history:'hist'};
 var MISSING={};
 function reloadTable(t){
   if(!S.sb) return Promise.resolve();
   var q=S.sb.from(t).select('*');
   if(t!=='join_requests') q=q.order('created_at',{ascending:false});
+  if(t==='edit_history') q=q.limit(500);
   return q.then(function(r){
     if(r.error){ MISSING[t]=r.error.message; return; }
     delete MISSING[t];
@@ -1881,6 +1932,7 @@ function checkSchema(){
   var miss=[];
   if(MISSING.join_requests) miss.push('합류 요청');
   if(MISSING.photos) miss.push('팀 사진첩');
+  if(MISSING.edit_history) miss.push('수정 히스토리');
   S.sb.from('foods').select('lat,lng,addr').limit(1).then(function(r){
     if(r.error) miss.push('맛집 지도 위치');
     var bar=$('schemaBar'); if(!bar) return;
@@ -1900,6 +1952,7 @@ $('schemaBar').addEventListener('click',function(ev){
 function afterExtra(t){
   if(t==='join_requests'){ checkMyJoin(); renderBell(); }
   if(t==='photos'  && $('p-photos').classList.contains('on'))  renderPhotos();
+  if(t==='edit_history') renderHist();
 }
 
 /* ── 동시 접속자 (구글 문서처럼 우측 상단 원형 아바타) ─────────────────────── */
@@ -1995,7 +2048,8 @@ function renderHead(){
     '<th class="c-date"><div class="hdlabel" title="날씨 예보: Open-Meteo.com (CC BY 4.0) · 아이콘: Meteocons (MIT)">날짜</div></th>'+
     '<th class="c-common"><div class="hdlabel">공통 일정</div></th>';
   vis.forEach(function(m){ h+='<th class="c-mem">'+nameCardHtml(m)+'</th>'; });
-  h+='<th class="c-add"><button class="addcol" id="btnTeam" title="팀원 추가 / 삭제">＋</button></th>';
+  h+='<th class="c-add"><div class="addstack"><button class="histbtn'+(HIST.open?' on':'')+'" id="btnHist" title="수정 히스토리"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.8"/><path d="M8 4.8V8l2.2 1.4"/></svg></button>'+
+     '<button class="addcol" id="btnTeam" title="팀원 추가 / 삭제">＋</button></div></th>';
   $('sThead').innerHTML=h+'</tr>';
   $('sThead').classList.toggle('tall',!!$('sThead').querySelector('.nc .badges'));
   /* 화면이 넓어도 표가 늘어나지 않도록 실제 폭을 고정합니다 */
@@ -2303,7 +2357,7 @@ function renderBody(){
     out.push(r);
   }
   $('sTbody').innerHTML=out.join('');
-  queueWxFx(); checkAway();
+  queueWxFx(); checkAway(); renderHist();
   queueYearRail();
   renderMobile();
 }
@@ -2533,9 +2587,124 @@ function anyModal(){
     var n=$(id); return n&&n.classList.contains('show'); });
 }
 
+/* ==========================================================================
+   수정 히스토리 — 누가 · 언제 · 어느 칸을 · 무엇으로 바꿨는지
+   서버 표 edit_history 에 저장 (없으면 이 브라우저에만 임시 기록)
+========================================================================== */
+var HIST={open:false,local:[],hlTimer:null};
+try{ HIST.local=JSON.parse(localStorage.getItem(LS+'.hist')||'[]'); }catch(err){ HIST.local=[]; }
+try{ HIST.open=localStorage.getItem(LS+'.histOpen')==='1'; }catch(err){}
+function histDiff(before,after,isCommon){
+  var out=[];
+  function add(f,a,b){ a=a||''; b=b||''; if(a!==b) out.push({f:f,a:a,b:b}); }
+  if(isCommon){
+    add('공통 일정',before.text,after.text);
+    add('임시공휴일',before.holi,after.holi);
+  }else{
+    var vl=function(k){ return k?(VMAP[k]?VMAP[k].label:k):''; }, ll=function(k){ return k?(LMAP[k]||k):''; };
+    add('근태',vl(before.vacation),vl(after.vacation));
+    add('점심',ll(before.lunch),ll(after.lunch));
+    add('출근',before.arrive,after.arrive);
+    add('메모',before.memo,after.memo);
+  }
+  return out;
+}
+function histLog(ds,mid,changes){
+  if(!changes.length) return;
+  var rec={actor_id:S.me||null,date:ds,member_id:mid,changes:changes};
+  var keepLocal=function(){
+    HIST.local.unshift(Object.assign({id:'h_'+Date.now(),created_at:new Date().toISOString(),__local:true},rec));
+    HIST.local=HIST.local.slice(0,300);
+    try{ localStorage.setItem(LS+'.hist',JSON.stringify(HIST.local)); }catch(err){}
+    renderHist();
+  };
+  if(!S.sb||MISSING.edit_history){ keepLocal(); return; }
+  S.sb.from('edit_history').insert(rec).select().then(function(r){
+    if(r.error){ MISSING.edit_history=r.error.message; keepLocal(); checkSchema(); return; }
+    var row=r.data&&r.data[0];
+    if(row&&!(S.hist||[]).some(function(x){ return x.id===row.id; })){ S.hist=[row].concat(S.hist||[]); renderHist(); }
+  },function(){ keepLocal(); });
+}
+function histAll(){
+  return (S.hist||[]).concat(HIST.local||[]).slice().sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+}
+function hm2(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function histVal(v){ v=String(v||''); return esc(v.length>22?v.slice(0,22)+'…':v); }
+function histWhat(h){
+  var m=h.member_id==='__c__'?null:memberById(h.member_id), d=parseD(normDate(h.date));
+  var tgt=(h.member_id==='__c__'?'공통 일정':(m?m.name:'(삭제된 팀원)'))+' · '+(d.getMonth()+1)+'/'+d.getDate()+'('+DOW[d.getDay()]+')';
+  var ch=(h.changes||[]).map(function(c){
+    var body= !c.a ? histVal(c.b)+' <span class="gone">추가</span>'
+            : !c.b ? '<s>'+histVal(c.a)+'</s> <span class="gone">삭제</span>'
+            : '<s>'+histVal(c.a)+'</s><span class="ar">→</span>'+histVal(c.b);
+    return (h.member_id==='__c__'&&c.f==='공통 일정'?'':c.f+' ')+body;
+  }).join('<br>');
+  var inRange=!!el('#sTbody .cell[data-d="'+normDate(h.date)+'"][data-m="'+h.member_id+'"]');
+  return '<span class="tg">'+esc(tgt)+'</span>'+(inRange?'':'<span class="gone">· 표 범위 밖</span>')+'<br>'+ch;
+}
+function renderHist(){
+  document.body.classList.toggle('hist-on',HIST.open&&!document.body.classList.contains('mv-on'));
+  var b=$('btnHist'); if(b) b.classList.toggle('on',HIST.open);
+  if(!HIST.open) return;
+  var list=histAll(), box=$('histBody'); if(!box) return;
+  $('histSub').textContent=list.length?'최근 '+list.length+'건':'';
+  var warn=(S.sb&&MISSING.edit_history)?'<div class="hp-warn">서버에 기록 표가 아직 없어 <b>이 브라우저에만</b> 임시로 기록됩니다. '+
+    '관리자가 Supabase SQL Editor 에서 <b>supabase_schema.sql</b>(12번 수정 히스토리)을 실행하면 팀 전체가 같은 기록을 봅니다.</div>':'';
+  if(!list.length){ box.innerHTML=warn+'<div class="hp-empty">아직 수정 기록이 없어요.<br>스케줄 칸을 고치면 여기에 쌓입니다.</div>'; return; }
+  var t=today(), y=fmt(addDays(new Date(),-1)), out=[warn], last='';
+  list.forEach(function(h,i){
+    var d=new Date(h.created_at), k=fmt(d);
+    if(k!==last){ last=k;
+      out.push('<div class="hp-day">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DOW[d.getDay()]+')'+(k===t?'<em>오늘</em>':k===y?'<em>어제</em>':'')+'</div>'); }
+    var m=h.actor_id?memberById(h.actor_id):null;
+    out.push('<div class="hp-it" data-hi="'+i+'">'+
+      (m?pavHtml(m,'data-hm="'+esc(m.id)+'"'):'<span class="pav"></span>')+
+      '<div class="hp-main"><div class="hp-meta"><b>'+esc(m?m.name:'알 수 없음')+'</b>'+(m&&m.rank?esc(m.rank):'')+
+        '<span class="t">'+hm2(d)+'</span></div>'+
+      '<div class="hp-what">'+histWhat(h)+'</div></div></div>');
+  });
+  box.innerHTML=out.join('');
+  box._list=list;
+}
+function setHist(on){
+  HIST.open=on; try{ localStorage.setItem(LS+'.histOpen',on?'1':'0'); }catch(err){}
+  renderHist(); queueWxFx(); queueYearRail&&queueYearRail();
+}
+document.addEventListener('click',function(ev){
+  if(ev.target.closest('#btnHist')){ ev.stopPropagation(); setHist(!HIST.open); }
+  if(ev.target.closest('#histClose')) setHist(false);
+},true);
+/* 내역에 마우스를 올리면 해당 칸으로 표를 옮기고 강조 */
+function histClearHl(){ document.querySelectorAll('#sTbody td.histhl').forEach(function(x){ x.classList.remove('histhl'); }); }
+function histFocus(h){
+  histClearHl();
+  var cell=el('#sTbody .cell[data-d="'+normDate(h.date)+'"][data-m="'+h.member_id+'"]'); if(!cell) return;
+  var td=cell.closest('td')||cell, wrap=$('gridwrap'); td.classList.add('histhl');
+  var wr=wrap.getBoundingClientRect(), r=td.getBoundingClientRect();
+  var top=wrap.scrollTop+(r.top-wr.top)-(wrap.clientHeight-r.height)/2;
+  var left=wrap.scrollLeft+(r.left-wr.left)-(wrap.clientWidth-r.width)/2;
+  try{ wrap.scrollTo({top:Math.max(0,top),left:Math.max(0,left),behavior:'smooth'}); }catch(err){ wrap.scrollTop=top; }
+}
+(function(){
+  var body=$('histBody'), tip=$('histTip');
+  body.addEventListener('mouseover',function(ev){
+    var hm=ev.target.closest('[data-hm]');
+    if(hm){ var m=memberById(hm.dataset.hm); if(m){
+      tip.innerHTML=nameCardHtml(m); var r=hm.getBoundingClientRect();
+      tip.style.top=Math.max(8,Math.min(window.innerHeight-130,r.top-40))+'px'; tip.style.left=Math.max(8,r.left-180)+'px';
+      tip.classList.add('show'); } }
+    else tip.classList.remove('show');
+    var it=ev.target.closest('.hp-it'); if(!it||it===HIST.cur) return;
+    HIST.cur=it; clearTimeout(HIST.hlTimer);
+    HIST.hlTimer=setTimeout(function(){ var h=(body._list||[])[+it.dataset.hi]; if(h) histFocus(h); },140);
+  });
+  body.addEventListener('mouseleave',function(){ HIST.cur=null; clearTimeout(HIST.hlTimer); histClearHl(); tip.classList.remove('show'); });
+})();
+
 function savePop(){
   if(!EDIT) return;
   var ds=EDIT.d, mid=EDIT.m;
+  var _before=mid==='__c__'?{text:S.commons[ds]||'',holi:S.holiExtra[ds]||''}:Object.assign({vacation:'',lunch:'',arrive:'',memo:''},S.sched[ds+'|'+mid]||{});
   if(mid==='__c__'){
     var tx=($('fC').value||'').trim();
     if(tx) S.commons[ds]=tx; else delete S.commons[ds];
@@ -2556,6 +2725,8 @@ function savePop(){
         memo:e.memo,updated_at:new Date().toISOString()},'date,member_id');
     }
   }
+  var _after=mid==='__c__'?{text:S.commons[ds]||'',holi:S.holiExtra[ds]||''}:Object.assign({vacation:'',lunch:'',arrive:'',memo:''},S.sched[ds+'|'+mid]||{});
+  histLog(ds,mid,histDiff(_before,_after,mid==='__c__'));
   saveLocal(); closePop(); renderBody();
 }
 
