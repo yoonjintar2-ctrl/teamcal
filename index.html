@@ -162,6 +162,54 @@ body.hist-on .histpane{display:flex}
 table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-3px;z-index:8;
   background-image:linear-gradient(0deg,rgba(255,138,0,.16),rgba(255,138,0,.16))!important;animation:histpulse 1.2s ease-in-out infinite}
 @keyframes histpulse{50%{outline-color:#FFC266}}
+/* ── 쪽지 ── */
+.notestack{position:absolute;top:-5px;right:5px;display:flex;flex-direction:row-reverse;z-index:9;cursor:pointer;padding:2px}
+.notestack .nt{width:19px;height:21px;margin-left:-8px;border-radius:2px 2px 7px 2px;display:grid;place-items:center;
+  background:var(--nb);color:var(--nt);border:1px solid var(--nl);box-shadow:0 1px 3px rgba(0,0,0,.15);transform:rotate(4deg);
+  font-size:10px;font-weight:800;transition:transform .15s}
+.notestack .nt:nth-child(2){transform:rotate(-5deg)} .notestack .nt:nth-child(3){transform:rotate(2deg)}
+.notestack .nt svg{width:11px;height:11px}
+.notestack:hover .nt{transform:translateY(-2px) rotate(0)}
+.ctxmenu{position:fixed;z-index:220;display:none;background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px;min-width:150px;
+  box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:13px}
+.ctxmenu.show{display:block}
+.ctxmenu button{display:flex;align-items:center;gap:7px;width:100%;border:none;background:none;padding:7px 10px;border-radius:7px;cursor:pointer;text-align:left;color:var(--tx)}
+.ctxmenu button:hover{background:var(--accent-soft);color:var(--accent)}
+.ctxmenu .cm-h{font-size:11px;color:var(--tx4);padding:4px 10px 2px}
+.notepop{position:fixed;z-index:210;display:none;width:250px;max-height:70vh;overflow:auto}
+.notepop.show{display:flex;flex-direction:column;gap:8px}
+.npcard{background:var(--nb);color:var(--nt);border:1px solid var(--nl);border-radius:4px 4px 14px 4px;padding:11px 12px;box-shadow:0 10px 26px rgba(0,0,0,.2)}
+.npcard .np-hd{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.npcard .pav{width:32px;height:32px;flex:0 0 32px;margin:0;border-width:2px;box-shadow:none;cursor:default}
+.npcard .np-n{font-size:13px;font-weight:700}
+.npcard .np-n em{font-style:normal;font-weight:500;opacity:.8;margin-left:3px;font-size:12px}
+.npcard .np-t{font-size:11px;opacity:.75}
+.npcard .np-x{font-size:14px;line-height:1.5;word-break:break-word;white-space:pre-wrap}
+.npcard .np-to{font-size:11px;opacity:.7;margin-top:6px}
+.npcard .np-act{display:flex;justify-content:flex-end;margin-top:9px}
+.npcard .np-act button{border:1px solid var(--nl);background:#fff;color:var(--nt);border-radius:7px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer}
+.npwrite textarea{width:100%;min-height:62px;border:none;background:rgba(255,255,255,.55);border-radius:6px;padding:7px 8px;font-size:13.5px;color:var(--nt);resize:none;font-family:inherit}
+.npwrite textarea:focus{outline:2px solid var(--nl)}
+.npwrite .np-cnt{font-size:11px;opacity:.7}
+.npwrite .np-act{gap:6px;align-items:center}
+.npwrite .np-act .pri{background:var(--nt);color:#fff;border-color:var(--nt)}
+.inboxwrap{position:relative}
+.inboxbtn{display:inline-flex;align-items:center;gap:4px}
+.inboxbtn svg{width:14px;height:14px}
+.inboxbtn .ibdg{display:none;background:#FFE08A;color:#6B4708;border-radius:999px;padding:0 6px;font-size:10.5px;font-weight:800}
+.inboxbtn .ibdg.on{display:inline-block}
+.inboxpanel{position:absolute;right:0;top:40px;width:330px;max-height:70vh;overflow:auto;background:#fff;border:1px solid var(--line);
+  border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.18);z-index:120;display:none;padding:6px 0}
+.inboxpanel.show{display:block}
+.ib-h{font-size:12px;font-weight:700;color:var(--tx2);padding:8px 14px 6px}
+.ib-it{display:flex;gap:9px;padding:9px 12px;margin:0 6px 6px;border-radius:4px 4px 12px 4px;background:var(--nb);color:var(--nt);border:1px solid var(--nl);cursor:pointer}
+.ib-it.old{opacity:.72}
+.ib-it .pav{width:28px;height:28px;flex:0 0 28px;margin:0;border-width:2px;box-shadow:none}
+.ib-it .t{font-size:12px;font-weight:700}
+.ib-it .t span{font-weight:500;opacity:.75;margin-left:4px}
+.ib-it .x{font-size:13px;line-height:1.45;margin-top:2px;word-break:break-word}
+.ib-empty{padding:24px 14px;text-align:center;font-size:12.5px;color:var(--tx3)}
+@media (max-width:760px){ .inboxpanel{position:fixed;left:8px;right:8px;top:96px;width:auto} .inboxbtn{padding:5px 8px} }
 .histtip{position:fixed;z-index:200;width:168px;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.3);
   pointer-events:none;display:none;color:var(--ink-tx)}
 .histtip.show{display:block}
@@ -776,6 +824,8 @@ table.data tr.picked td{background:#EDF1FF}
 /* 비·눈 행은 날짜 칸 왼쪽에 파란 띠를 늘 표시 — 주말 음영과 구분 */
 table.sched tr.wx-rain td.c-date{box-shadow:inset 4px 0 0 #3B82F6}
 table.sched tr.wx-snow td.c-date{box-shadow:inset 4px 0 0 #7CC0FF}
+table.sched tr.today.wx-rain td.c-date{box-shadow:inset 2px 0 0 var(--today-line),inset 6px 0 0 #3B82F6,inset 0 2px 0 var(--today-line),inset 0 -2px 0 var(--today-line)}
+table.sched tr.today.wx-snow td.c-date{box-shadow:inset 2px 0 0 var(--today-line),inset 6px 0 0 #7CC0FF,inset 0 2px 0 var(--today-line),inset 0 -2px 0 var(--today-line)}
 .wxfx canvas{display:block}
 .mv-top .wxfx{inset:0;z-index:0}
 @keyframes wxfade{0%,34%,100%{opacity:0}17%{opacity:.85}}  /* 10초마다 한 번, 약 3초 동안 나타났다 사라짐 */
@@ -947,6 +997,10 @@ body.mv-table .mvback{display:block}
     <div class="presence" id="presence" title="지금 접속 중인 팀원"></div>
     <button class="btn sm" id="btnPastLess" title="지난 날짜 1일 숨기기">행 제거</button>
     <button class="btn sm" id="btnPastMore" title="지난 날짜 1일 더 보기">행 추가</button>
+    <div class="inboxwrap">
+      <button class="btn sm inboxbtn" id="btnInbox" title="내 쪽지함"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="M2.5 4.5L8 9l5.5-4.5"/></svg>쪽지함<b class="ibdg" id="inboxBadge"></b></button>
+      <div class="inboxpanel" id="inboxPanel"></div>
+    </div>
     <div class="bellwrap">
       <button class="iconbtn" id="btnBell" title="알림 · 합류 요청"><span class="bi"></span><b class="bdg" id="bellBadge"></b></button>
       <div class="bellpanel" id="bellPanel"></div>
@@ -985,6 +1039,8 @@ body.mv-table .mvback{display:block}
   </aside>
 </section>
 <div class="histtip" id="histTip"></div>
+<div class="ctxmenu" id="ctxMenu"></div>
+<div class="notepop" id="notePop"></div>
 
 <!-- ══════════════ 중고거래 ══════════════ -->
 <section class="panel" id="p-market"><div class="pad">
@@ -1889,7 +1945,7 @@ function onDbChange(p){
     if(ev==='DELETE'||!n.text) delete S.commons[d2]; else S.commons[d2]=n.text;
     saveLocalSoon(); patchCell(d2,'__c__',true); return;
   }
-  if(t==='join_requests'||t==='photos'||t==='edit_history'){ reloadTable(t); return; }
+  if(t==='join_requests'||t==='photos'||t==='edit_history'||t==='notes'){ reloadTable(t); return; }
   queueReload();
 }
 var _slTimer=null;
@@ -1918,13 +1974,14 @@ window.addEventListener('online',function(){ if(S.sb){ sbRealtime(); queueReload
 
 /* ── 추가 테이블 (합류 요청 · 사진첩) ─────────────────────────────
    SQL 을 아직 다시 실행하지 않아 테이블이 없더라도 나머지 기능은 그대로 동작합니다 */
-var EXTRA={join_requests:'joinReqs',photos:'photos',edit_history:'hist'};
+var EXTRA={join_requests:'joinReqs',photos:'photos',edit_history:'hist',notes:'notes'};
 var MISSING={};
 function reloadTable(t){
   if(!S.sb) return Promise.resolve();
   var q=S.sb.from(t).select('*');
   if(t!=='join_requests') q=q.order('created_at',{ascending:false});
   if(t==='edit_history') q=q.limit(500);
+  if(t==='notes') q=q.limit(1000);
   return q.then(function(r){
     if(r.error){ MISSING[t]=r.error.message; return; }
     delete MISSING[t];
@@ -1940,6 +1997,7 @@ function checkSchema(){
   if(MISSING.join_requests) miss.push('합류 요청');
   if(MISSING.photos) miss.push('팀 사진첩');
   if(MISSING.edit_history) miss.push('수정 히스토리');
+  if(MISSING.notes) miss.push('쪽지');
   S.sb.from('foods').select('lat,lng,addr').limit(1).then(function(r){
     if(r.error) miss.push('맛집 지도 위치');
     var bar=$('schemaBar'); if(!bar) return;
@@ -1960,6 +2018,8 @@ function afterExtra(t){
   if(t==='join_requests'){ checkMyJoin(); renderBell(); }
   if(t==='photos'  && $('p-photos').classList.contains('on'))  renderPhotos();
   if(t==='edit_history') renderHist();
+  if(t==='notes'){ paintNotes(); renderBell(); }
+  if(t==='guestbook') renderBell();
 }
 
 /* ── 동시 접속자 (구글 문서처럼 우측 상단 원형 아바타) ─────────────────────── */
@@ -2036,7 +2096,7 @@ function nameCardHtml(m){
       '<div class="nm">'+esc(m.name)+(m.rank?'<em>'+esc(m.rank)+'</em>':'')+'</div>'+
       '<div class="tm">'+esc(workHours(m))+'</div>'+
       ((nc||(dd!=null&&dd<=7))?'<div class="badges">'+
-        (nc?'<span class="alertbadge" title="중고거래 알림 '+nc+'건 — 네임카드를 눌러 확인">🔔 '+nc+'</span>':'')+
+        (nc?'<span class="alertbadge" title="새 알림 '+nc+'건 (쪽지·방명록·삼당마켓) — 네임카드를 눌러 확인">🔔 '+nc+'</span>':'')+
         (dd!=null&&dd<=7?'<span class="bday" title="'+(dd===0?'오늘 생일!':birthText((m.profile||{}).birth)+' 생일')+'">🎂 '+
           (dd===0?'오늘':'D-'+dd)+'</span>':'')+
       '</div>':'')+
@@ -2321,7 +2381,7 @@ function patchCell(ds,mid,flash){
   if(EDIT&&EDIT.d===ds&&EDIT.m===mid) return;           /* 바로 그 칸을 편집 중이면 건드리지 않음 */
   if(mid==='__c__') c.innerHTML=commonCellHtml(ds);
   else{ var m=memberById(mid); if(!m) return; c.innerHTML=memberCellHtml(m,ds); }
-  renderMobile();
+  renderMobile(); paintNotes();
   if(flash){ var td=c.closest('td'); if(td){ td.classList.remove('rtflash'); void td.offsetWidth; td.classList.add('rtflash');
     setTimeout(function(){ td.classList.remove('rtflash'); },1600); } }
 }
@@ -2365,7 +2425,7 @@ function renderBody(){
     out.push(r);
   }
   $('sTbody').innerHTML=out.join('');
-  queueWxFx(); checkAway(); renderHist();
+  queueWxFx(); checkAway(); renderHist(); paintNotes();
   queueYearRail();
   renderMobile();
 }
@@ -2783,6 +2843,184 @@ function sheetSync(rows,names){
   } finally { S.me=realMe; }
   saveLocal(); renderBody(); renderHead();
   return log;
+}
+
+/* ==========================================================================
+   쪽지 — 아무 칸에나 우클릭으로 붙이고, 받은 사람이 확인하면 쪽지함으로
+   표: notes (date, member_id = 칸 주인/__c__, sender_id, recipient_id, text, read_at)
+   지우기는 없음. 공통 일정 칸 쪽지는 날짜가 지나면 칸에서만 내려감.
+========================================================================== */
+var NOTE={ctx:null,write:null};
+S.notes=S.notes||[];
+var NOTE_ICO='<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 4h6M3 6.2h6M3 8.4h3.5"/></svg>';
+function noteColors(m){
+  var h=hueOf(m||{});
+  return '--nb:hsl('+h+',72%,87%);--nl:hsl('+h+',42%,68%);--nt:hsl('+h+',58%,22%)';
+}
+function cellNotes(ds,mid){
+  var t=today();
+  return (S.notes||[]).filter(function(n){
+    if(n.read_at||normDate(n.date)!==ds||n.member_id!==mid) return false;
+    if(mid==='__c__'&&ds<t) return false;
+    return true;
+  }).sort(function(a,b){ return new Date(a.created_at)-new Date(b.created_at); });
+}
+function paintNotes(){
+  document.querySelectorAll('#sTbody .notestack').forEach(function(x){ x.remove(); });
+  var seen={};
+  (S.notes||[]).forEach(function(n){ if(!n.read_at) seen[normDate(n.date)+'|'+n.member_id]=1; });
+  Object.keys(seen).forEach(function(k){
+    var p=k.split('|'), list=cellNotes(p[0],p[1]); if(!list.length) return;
+    var c=el('#sTbody .cell[data-d="'+p[0]+'"][data-m="'+p[1]+'"]'); if(!c) return;
+    var td=c.closest('td'), box=document.createElement('div');
+    box.className='notestack'; box.dataset.nd=p[0]; box.dataset.nm=p[1];
+    box.title='쪽지 '+list.length+'장 — 눌러서 보기';
+    var show=list.slice(-3), more=list.length-3;
+    box.innerHTML=show.map(function(n,i){
+      var who=memberById(n.sender_id);
+      var lbl=(i===0&&more>0)?'+'+more:NOTE_ICO;
+      return '<span class="nt" style="'+noteColors(who)+'">'+lbl+'</span>';
+    }).reverse().join('');
+    td.appendChild(box);
+  });
+  renderInbox();
+}
+function myInbox(){ return (S.notes||[]).filter(function(n){ return S.me&&n.recipient_id===S.me; })
+  .sort(function(a,b){ return (a.read_at?1:0)-(b.read_at?1:0)||new Date(b.created_at)-new Date(a.created_at); }); }
+function renderInbox(){
+  var bd=$('inboxBadge'); if(!bd) return;
+  var n=myInbox().filter(function(x){ return !x.read_at; }).length;
+  bd.textContent=n||''; bd.classList.toggle('on',n>0);
+  if($('inboxPanel').classList.contains('show')) drawInbox();
+}
+function noteCellLabel(n){
+  var d=parseD(normDate(n.date)), m=n.member_id==='__c__'?null:memberById(n.member_id);
+  return (d.getMonth()+1)+'/'+d.getDate()+'('+DOW[d.getDay()]+') · '+(n.member_id==='__c__'?'공통 일정':(m?m.name:''))+' 칸';
+}
+function drawInbox(){
+  var list=myInbox(), box=$('inboxPanel');
+  if(!S.me){ box.innerHTML='<div class="ib-empty">접속자를 먼저 선택하면 내 쪽지가 여기에 모입니다.</div>'; return; }
+  var unread=list.filter(function(n){return !n.read_at;}), old=list.filter(function(n){return n.read_at;});
+  var row=function(n,isOld){ var w=memberById(n.sender_id);
+    return '<div class="ib-it'+(isOld?' old':'')+'" data-inote="'+esc(n.id)+'" style="'+noteColors(w)+'">'+
+      (w?pavHtml(w):'<span class="pav"></span>')+'<div style="flex:1;min-width:0">'+
+      '<div class="t">'+esc(w?w.name:'알 수 없음')+(w&&w.rank?' '+esc(w.rank):'')+'<span>'+esc(noteCellLabel(n))+' · '+ago(n.created_at)+'</span></div>'+
+      '<div class="x">'+esc(n.text)+'</div></div></div>'; };
+  box.innerHTML='<div class="ib-h">새 쪽지 '+unread.length+'</div>'+
+    (unread.length?unread.map(function(n){return row(n,false);}).join(''):'<div class="ib-empty" style="padding:10px 14px">새 쪽지가 없어요.</div>')+
+    '<div class="ib-h">확인한 쪽지 '+old.length+'</div>'+
+    (old.length?old.map(function(n){return row(n,true);}).join(''):'<div class="ib-empty" style="padding:10px 14px">아직 없어요.</div>');
+}
+$('btnInbox').onclick=function(ev){
+  ev.stopPropagation(); var p=$('inboxPanel'), on=!p.classList.contains('show');
+  if(on){ drawInbox(); if(S.sb) reloadTable('notes'); } p.classList.toggle('show',on);
+};
+$('inboxPanel').addEventListener('click',function(ev){
+  ev.stopPropagation();
+  var it=ev.target.closest('[data-inote]'); if(!it) return;
+  var n=(S.notes||[]).filter(function(x){ return String(x.id)===it.dataset.inote; })[0]; if(!n) return;
+  $('inboxPanel').classList.remove('show');
+  goTab('schedule'); noteGoto(n, !n.read_at);
+});
+document.addEventListener('click',function(ev){
+  if(!ev.target.closest('.inboxwrap')) $('inboxPanel').classList.remove('show');
+  if(!ev.target.closest('#ctxMenu')) $('ctxMenu').classList.remove('show');
+  if(!ev.target.closest('#notePop')&&!ev.target.closest('.notestack')) closeNotePop();
+});
+/* 칸으로 이동해 쪽지 팝업 열기 */
+function noteGoto(n,open){
+  var c=el('#sTbody .cell[data-d="'+normDate(n.date)+'"][data-m="'+n.member_id+'"]');
+  if(!c){ toast('표에 보이는 기간 밖의 날짜예요'); return; }
+  histFocus(n); setTimeout(histClearHl,2200);
+  if(open) setTimeout(function(){ var st=el('#sTbody .notestack[data-nd="'+normDate(n.date)+'"][data-nm="'+n.member_id+'"]'); if(st) openNotePop(st); },450);
+}
+/* 쪽지 읽기 팝업 */
+function closeNotePop(){ var p=$('notePop'); if(p){ p.classList.remove('show'); p.innerHTML=''; } NOTE.write=null; }
+function placeNotePop(p,r){
+  var w=250, x=Math.min(window.innerWidth-w-10,Math.max(10,r.right-w+20)), y=r.bottom+6;
+  p.style.left=x+'px'; p.style.top=y+'px';
+  var h=p.offsetHeight; if(y+h>window.innerHeight-10) p.style.top=Math.max(10,r.top-h-6)+'px';
+}
+function openNotePop(stack){
+  var ds=stack.dataset.nd, mid=stack.dataset.nm, list=cellNotes(ds,mid).slice().reverse(), p=$('notePop');
+  NOTE.write=null;
+  p.innerHTML=list.map(function(n){
+    var w=memberById(n.sender_id), mine=S.me&&n.recipient_id===S.me, d=new Date(n.created_at);
+    return '<div class="npcard" style="'+noteColors(w)+'">'+
+      '<div class="np-hd">'+(w?pavHtml(w):'<span class="pav"></span>')+'<div><div class="np-n">'+esc(w?w.name:'알 수 없음')+(w&&w.rank?'<em>'+esc(w.rank)+'</em>':'')+'</div>'+
+      '<div class="np-t">'+(d.getMonth()+1)+'/'+d.getDate()+' '+hm2(d)+'</div></div></div>'+
+      '<div class="np-x">'+esc(n.text)+'</div>'+
+      (mine?'<div class="np-act"><button data-nread="'+esc(n.id)+'">확인 · 쪽지함으로</button></div>'
+           :'<div class="np-to">'+(n.recipient_id?'받는 사람: '+esc((memberById(n.recipient_id)||{}).name||''):'공통 일정 칸 쪽지')+'</div>')+
+    '</div>';
+  }).join('');
+  p.classList.add('show'); placeNotePop(p,stack.getBoundingClientRect());
+}
+$('sTbody').addEventListener('click',function(ev){
+  var st=ev.target.closest('.notestack'); if(!st) return;
+  ev.stopPropagation(); openNotePop(st);
+},true);
+$('notePop').addEventListener('click',function(ev){
+  ev.stopPropagation();
+  var rd=ev.target.closest('[data-nread]'); if(rd){ noteRead(rd.dataset.nread); return; }
+  if(ev.target.closest('[data-ncancel]')){ closeNotePop(); return; }
+  if(ev.target.closest('[data-nsend]')){ noteSend(); return; }
+});
+$('notePop').addEventListener('input',function(ev){
+  if(ev.target.id==='npText'){ var c=$('npCnt'); if(c) c.textContent=ev.target.value.length+' / 60'; }
+});
+function noteRead(id){
+  var n=(S.notes||[]).filter(function(x){ return String(x.id)===String(id); })[0]; if(!n) return;
+  n.read_at=new Date().toISOString();
+  if(S.sb&&!/^n_/.test(String(n.id))) S.sb.from('notes').update({read_at:n.read_at}).eq('id',n.id).then(function(r){ if(r.error) toast('저장 실패: '+r.error.message); });
+  closeNotePop(); paintNotes(); renderBell(); toast('쪽지함으로 옮겼어요');
+}
+/* 우클릭 메뉴 → 쪽지 쓰기 */
+$('sTbody').addEventListener('contextmenu',function(ev){
+  var td=ev.target.closest('td.c-cell'); if(!td) return;
+  var c=td.querySelector('.cell'); if(!c) return;
+  ev.preventDefault();
+  NOTE.ctx={d:c.dataset.d,m:c.dataset.m,td:td};
+  var m=c.dataset.m==='__c__'?null:memberById(c.dataset.m), dd=parseD(c.dataset.d);
+  var menu=$('ctxMenu');
+  menu.innerHTML='<div class="cm-h">'+(dd.getMonth()+1)+'/'+dd.getDate()+'('+DOW[dd.getDay()]+') · '+esc(m?m.name:'공통 일정')+'</div>'+
+    '<button data-cm="note">'+NOTE_ICO.replace('<svg','<svg width="14" height="14"')+' 쪽지 붙이기</button>'+
+    '<button data-cm="edit"><span style="width:14px;text-align:center">✎</span> 일정 편집</button>';
+  menu.style.left=Math.min(window.innerWidth-170,ev.clientX)+'px'; menu.style.top=Math.min(window.innerHeight-100,ev.clientY)+'px';
+  menu.classList.add('show');
+});
+$('ctxMenu').addEventListener('click',function(ev){
+  ev.stopPropagation();
+  var b=ev.target.closest('[data-cm]'); if(!b||!NOTE.ctx) return;
+  $('ctxMenu').classList.remove('show');
+  var cx=NOTE.ctx;
+  if(b.dataset.cm==='edit'){ var c=cx.td.querySelector('.cell'); if(c) openCell(c); return; }
+  openNoteWrite(cx);
+});
+function openNoteWrite(cx){
+  if(!S.me){ toast('접속자를 먼저 선택해 주세요 (오른쪽 위 이름)'); return; }
+  var me=memberById(S.me), m=cx.m==='__c__'?null:memberById(cx.m), dd=parseD(cx.d), p=$('notePop');
+  NOTE.write=cx;
+  p.innerHTML='<div class="npcard npwrite" style="'+noteColors(me)+'">'+
+    '<div class="np-t" style="margin-bottom:6px">'+(dd.getMonth()+1)+'/'+dd.getDate()+'('+DOW[dd.getDay()]+') · '+esc(m?m.name+(m.rank?' '+m.rank:''):'공통 일정')+' 칸에</div>'+
+    '<textarea id="npText" maxlength="60" placeholder="예) 설명회 잘 다녀오세요!"></textarea>'+
+    '<div class="np-act"><span class="np-cnt" id="npCnt">0 / 60</span><div style="flex:1"></div>'+
+      '<button data-ncancel="1">취소</button><button class="pri" data-nsend="1">붙이기</button></div></div>';
+  p.classList.add('show'); placeNotePop(p,cx.td.getBoundingClientRect());
+  setTimeout(function(){ var t=$('npText'); if(t) t.focus(); },30);
+}
+function noteSend(){
+  var cx=NOTE.write, t=$('npText'); if(!cx||!t) return;
+  var tx=(t.value||'').trim(); if(!tx){ t.focus(); return; }
+  var rec={date:cx.d,member_id:cx.m,sender_id:S.me,recipient_id:cx.m==='__c__'?null:cx.m,text:tx.slice(0,60)};
+  var local=Object.assign({id:'n_'+Date.now(),created_at:new Date().toISOString(),read_at:null},rec);
+  S.notes=(S.notes||[]).concat([local]);
+  closeNotePop(); paintNotes();
+  if(S.sb) S.sb.from('notes').insert(rec).select().then(function(r){
+    if(r.error){ toast('쪽지 저장 실패: '+r.error.message); return; }
+    var row=r.data&&r.data[0]; if(row){ S.notes=S.notes.map(function(x){ return x===local?row:x; }); paintNotes(); }
+  });
+  toast('쪽지를 붙였어요');
 }
 
 function savePop(){
@@ -3376,6 +3614,22 @@ function notifsFor(mid){
       text:(it.status==='sold'?'거래가 완료로 바뀌었습니다':'구매를 예약했습니다')});
   });
 
+  /* 쪽지 — 나에게 온 아직 확인 안 한 쪽지 */
+  (S.notes||[]).forEach(function(n){
+    if(n.recipient_id!==mid||n.read_at||n.sender_id===mid) return;
+    var id='n:'+n.id; if(read[id]) return;
+    var who=memberById(n.sender_id);
+    out.push({id:id,type:'note',time:new Date(n.created_at||0).getTime(),noteId:n.id,
+      who:(who?who.name:'누군가'),title:noteCellLabel(n),text:n.text});
+  });
+  /* 방명록 — 내 미니홈피에 남긴 글 */
+  (S.guestbook||[]).forEach(function(g){
+    if(g.owner_id!==mid||g.writer_id===mid||g.__local) return;
+    var t=new Date(g.created_at||0).getTime(); if(!(t>cutoff)) return;
+    var id='g:'+(g.id||g.created_at); if(read[id]) return;
+    var who=memberById(g.writer_id);
+    out.push({id:id,type:'gb',time:t,who:(who?who.name:'누군가'),title:'내 방명록',text:g.text});
+  });
   return out.sort(function(a,b){return b.time-a.time;});
 }
 function notifCount(mid){ return notifsFor(mid).length; }
@@ -3388,12 +3642,12 @@ function notifHtml(id){
     '<div style="display:flex;flex-direction:column;gap:7px">'+
     list.map(function(n){
       return '<div class="nfitem" data-nf="'+esc(n.id)+'" data-nfitem="'+esc(n.itemId)+'">'+
-        '<span class="nfico">'+(n.type==='comment'?'💬':'🤝')+'</span>'+
+        '<span class="nfico">'+({comment:'💬',note:'📝',gb:'📓'}[n.type]||'🤝')+'</span>'+
         '<div style="flex:1;min-width:0">'+
           '<div style="font-size:12.5px"><b>'+esc(n.who)+'</b>님이 '+
-            (n.type==='comment'?'문의를 남겼습니다':esc(n.text))+
+            (n.type==='comment'?'문의를 남겼습니다':n.type==='note'?'쪽지를 붙였습니다':n.type==='gb'?'방명록에 글을 남겼습니다':esc(n.text))+
             ' <span style="color:var(--tx3)">· '+esc(n.title)+'</span></div>'+
-          (n.type==='comment'?'<div style="font-size:12px;color:var(--tx2);margin-top:2px">'+esc(n.text)+'</div>':'')+
+          (n.type==='comment'||n.type==='note'||n.type==='gb'?'<div style="font-size:12px;color:var(--tx2);margin-top:2px">'+esc(n.text)+'</div>':'')+
         '</div>'+
         '<span style="font-size:10.5px;color:var(--tx3);white-space:nowrap">'+ago(new Date(n.time).toISOString())+'</span>'+
         '<button class="btn sm" data-nfok="'+esc(n.id)+'">확인</button></div>';
@@ -5279,9 +5533,16 @@ function drawBellPanel(){
   });
   h+='<div class="bp-h" style="margin-top:4px">내 알림 <span class="n">'+mine.length+'</span>'+
      (mine.length?'<div style="flex:1"></div><button class="btn sm ghost" id="bpAll">모두 확인</button>':'')+'</div>';
-  if(!me) h+='<div class="bp-empty">접속자를 선택하면 중고거래 문의·예약 알림이 여기에 모입니다.</div>';
+  if(!me) h+='<div class="bp-empty">접속자를 선택하면 쪽지·방명록·삼당마켓 알림이 여기에 모입니다.</div>';
   else if(!mine.length) h+='<div class="bp-empty">새 알림이 없습니다.</div>';
   mine.forEach(function(n){
+    if(n.type==='note'||n.type==='gb'){
+      h+='<div class="bp-it" data-bnf="'+esc(n.id)+'" '+(n.type==='note'?'data-bnote="'+esc(n.noteId)+'"':'data-bgb="1"')+' style="cursor:pointer">'+
+        '<span class="ic">'+(n.type==='note'?'📝':'📓')+'</span><div style="flex:1;min-width:0">'+
+        '<div class="t"><b>'+esc(n.who)+'</b>님이 '+(n.type==='note'?'쪽지를 붙였습니다':'방명록에 글을 남겼습니다')+'</div>'+
+        '<div class="s">“'+esc(String(n.text||'').slice(0,40))+'” · '+esc(n.title)+' · '+ago(new Date(n.time).toISOString())+'</div></div></div>';
+      return;
+    }
     h+='<div class="bp-it" data-bnf="'+esc(n.id)+'" data-bitem="'+esc(n.itemId)+'" style="cursor:pointer">'+
       '<span class="ic">'+(n.type==='comment'?'💬':'🤝')+'</span><div style="flex:1;min-width:0">'+
       '<div class="t"><b>'+esc(n.who)+'</b>님이 '+(n.type==='comment'?'문의를 남겼습니다':esc(n.text))+'</div>'+
@@ -5305,6 +5566,12 @@ $('bellPanel').addEventListener('click',function(ev){
   var ok=ev.target.closest('[data-jok]'); if(ok){ approveJoin(ok.dataset.jok); return; }
   var no=ev.target.closest('[data-jno]'); if(no){ rejectJoin(no.dataset.jno); return; }
   if(ev.target.id==='bpAll'){ markRead(notifsFor(S.me).map(function(n){return n.id;})); refreshNotifs(); return; }
+  var bn=ev.target.closest('[data-bnote]');
+  if(bn){ markRead([bn.dataset.bnf]); $('bellPanel').classList.remove('show'); refreshNotifs();
+    var n=(S.notes||[]).filter(function(x){ return String(x.id)===bn.dataset.bnote; })[0];
+    if(n){ goTab('schedule'); noteGoto(n,true); } return; }
+  var bg=ev.target.closest('[data-bgb]');
+  if(bg){ markRead([bg.dataset.bnf]); $('bellPanel').classList.remove('show'); refreshNotifs(); if(S.me) openHome(S.me); return; }
   var it=ev.target.closest('[data-bitem]');
   if(it){ var item=itemById(it.dataset.bitem); markRead([it.dataset.bnf]);
     $('bellPanel').classList.remove('show'); refreshNotifs();
