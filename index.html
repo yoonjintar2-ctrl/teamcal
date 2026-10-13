@@ -146,6 +146,7 @@ body.hist-on .histpane{display:flex}
 .hp-day em{font-style:normal;font-weight:500;color:var(--tx4);margin-left:4px}
 .hp-it{display:flex;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line2);cursor:default}
 .hp-it:hover{background:#F3F6FF}
+.hp-it .pav.sheetav{display:grid;place-items:center;background:#E7F5EC;border-color:#34A853;color:#188038;font-size:15px;font-weight:700}
 .hp-it .pav{width:28px;height:28px;flex:0 0 28px;margin:0;border-width:2px;box-shadow:none;cursor:default}
 .hp-main{flex:1;min-width:0}
 .hp-meta{display:flex;align-items:baseline;gap:6px;font-size:11.5px;color:var(--tx3)}
@@ -2656,10 +2657,10 @@ function renderHist(){
     var d=new Date(h.created_at), k=fmt(d);
     if(k!==last){ last=k;
       out.push('<div class="hp-day">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DOW[d.getDay()]+')'+(k===t?'<em>오늘</em>':k===y?'<em>어제</em>':'')+'</div>'); }
-    var m=h.actor_id?memberById(h.actor_id):null;
+    var m=h.actor_id?memberById(h.actor_id):null, sheet=h.actor_id==='sheet';
     out.push('<div class="hp-it" data-hi="'+i+'">'+
-      (m?pavHtml(m,'data-hm="'+esc(m.id)+'"'):'<span class="pav"></span>')+
-      '<div class="hp-main"><div class="hp-meta"><b>'+esc(m?m.name:'알 수 없음')+'</b>'+(m&&m.rank?esc(m.rank):'')+
+      (m?pavHtml(m,'data-hm="'+esc(m.id)+'"'):sheet?'<span class="pav sheetav" title="구글 시트 자동 반영">▦</span>':'<span class="pav"></span>')+
+      '<div class="hp-main"><div class="hp-meta"><b>'+esc(m?m.name:sheet?'구글 시트 동기화':'알 수 없음')+'</b>'+(m&&m.rank?esc(m.rank):'')+
         '<span class="t">'+hm2(d)+'</span></div>'+
       '<div class="hp-what">'+histWhat(h)+'</div></div></div>');
   });
@@ -2700,6 +2701,74 @@ function histFocus(h){
   });
   body.addEventListener('mouseleave',function(){ HIST.cur=null; clearTimeout(HIST.hlTimer); histClearHl(); tip.classList.remove('show'); });
 })();
+
+/* ==========================================================================
+   구글 스프레드시트(기존 팀 주간 스케줄) → 사이트 반영
+   시트에 있는데 사이트에 없는 것만 채웁니다. 사이트 값은 지우거나 덮어쓰지 않습니다.
+   rows: [[날짜 YYYY-MM-DD, 주요일정, 팀원1칸, 팀원2칸, …]], names: 팀원 이름 배열(칸 순서)
+========================================================================== */
+function sheetTokens(txt){
+  var out={vacation:'',lunch:'',arrive:'',memo:[]};
+  String(txt||'').split(/[\/+\n]/).map(function(x){ return x.trim(); }).filter(Boolean).forEach(function(t){
+    var c=t.replace(/\s+/g,'');
+    var tm=/^(\d{1,2})(?::(\d{2}))?to(\d{1,2})(?::(\d{2}))?$/i.exec(c);
+    if(tm){ var h=+tm[1]; if(h<7) h+=12; out.arrive=String(h).padStart(2,'0')+':'+(tm[2]||'00'); return; }
+    if(/^(휴가|연차|종일휴가)$/.test(c)){ out.vacation='annual'; return; }
+    if(/휴가$/.test(c)&&!/반/.test(c)){ out.vacation='annual'; out.memo.push(t); return; }
+    if(/^오전반반차$/.test(c)){ out.vacation='am_quarter'; return; }
+    if(/^오후반반차$/.test(c)){ out.vacation='pm_quarter'; return; }
+    if(/^오전반차$/.test(c)){ out.vacation='am_half'; return; }
+    if(/^오후반차$/.test(c)){ out.vacation='pm_half'; return; }
+    if(/^(점약|점심약속|약속)$/.test(c)){ out.lunch='appt'; return; }
+    if(/^도시락$/.test(c)){ out.lunch='bento'; return; }
+    if(/^(간단히|간편식)$/.test(c)){ out.lunch='light'; return; }
+    if(/^(점심생략|생략)$/.test(c)){ out.lunch='skip'; return; }
+    if(/점심/.test(c)&&!out.lunch) out.lunch='appt';
+    out.memo.push(t);
+  });
+  return out;
+}
+function sheetSync(rows,names){
+  var byName={}; S.members.forEach(function(m){ byName[m.name]=m; });
+  var log=[], realMe=S.me; S.me='sheet';
+  try{
+    (rows||[]).forEach(function(r){
+      var ds=r[0]; if(!/^\d{4}-\d{2}-\d{2}$/.test(ds)) return;
+      /* 공통 일정 */
+      var ct=(r[1]||'').trim();
+      if(ct){
+        var cur=S.commons[ds]||'';
+        if(cur.replace(/\s/g,'').indexOf(ct.replace(/\s/g,''))<0){
+          var nx=cur?cur+' / '+ct:ct; S.commons[ds]=nx;
+          sbUp('commons',{date:ds,text:nx,updated_at:new Date().toISOString()},'date');
+          histLog(ds,'__c__',[{f:'공통 일정',a:cur,b:nx}]);
+          log.push(ds+' 공통 일정: '+ct);
+        }
+      }
+      /* 팀원 칸 */
+      (names||[]).forEach(function(nm,i){
+        var txt=(r[2+i]||'').trim(); if(!txt) return;
+        var m=byName[nm]; if(!m){ log.push(ds+' '+nm+': 팀원을 찾지 못해 건너뜀'); return; }
+        var k=ds+'|'+m.id, e0=Object.assign({vacation:'',lunch:'',arrive:'',memo:''},S.sched[k]||{}), e=Object.assign({},e0);
+        var tk=sheetTokens(txt);
+        if(tk.vacation&&!e.vacation) e.vacation=tk.vacation;
+        if(tk.lunch&&!e.lunch) e.lunch=tk.lunch;
+        if(tk.arrive&&!e.arrive&&tk.arrive!==m.start_time) e.arrive=tk.arrive;
+        tk.memo.forEach(function(t){
+          if((e.memo||'').replace(/\s/g,'').indexOf(t.replace(/\s/g,''))<0) e.memo=e.memo?e.memo+' / '+t:t;
+        });
+        var ch=histDiff(e0,e,false); if(!ch.length) return;
+        S.sched[k]=e;
+        sbUp('schedules',{date:ds,member_id:m.id,vacation:e.vacation,lunch:e.lunch,arrive:e.arrive,memo:e.memo,
+          updated_at:new Date().toISOString()},'date,member_id');
+        histLog(ds,m.id,ch);
+        log.push(ds+' '+nm+': '+ch.map(function(c){ return c.f+' '+(c.b||'-'); }).join(', '));
+      });
+    });
+  } finally { S.me=realMe; }
+  saveLocal(); renderBody(); renderHead();
+  return log;
+}
 
 function savePop(){
   if(!EDIT) return;
