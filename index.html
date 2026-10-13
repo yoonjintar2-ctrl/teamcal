@@ -2089,7 +2089,7 @@ function rangeEnd(){ return addDays(new Date(),FUTURE_DAYS); }
 function nameCardHtml(m){
   var ints=(m.interests||[]).slice(0,3);
   var dd=daysToBirthday((m.profile||{}).birth);
-  var nc=notifCount(m.id);
+  var nc=0;   /* 알림은 네임카드에 표시하지 않음 — 본인 종 아이콘에서만 */
   var idx=S.members.indexOf(m); if(idx<0) idx=0;
   var away=awayState(m), lsrc=away?'':lunchSignSrc(m), le=S.sched[today()+'|'+m.id], lkey=le&&le.lunch;
   return '<div class="nc'+(away?' away':'')+(lsrc?' lunch':'')+'" data-nc="'+m.id+'" style="--sig:'+hueOf(m)+
@@ -3657,6 +3657,7 @@ function notifsFor(mid){
 function notifCount(mid){ return notifsFor(mid).length; }
 
 function notifHtml(id){
+  if(!S.me||id!==S.me) return '';                       /* 알림은 본인에게만 */
   var list=notifsFor(id);
   if(!list.length) return '';
   return '<div class="sect"><h4>🔔 알림<span class="s">'+list.length+'건 · 확인하면 사라집니다 (10일 후 자동 만료)</span>'+
