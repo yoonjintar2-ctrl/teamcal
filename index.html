@@ -2728,6 +2728,16 @@ function sheetTokens(txt){
   });
   return out;
 }
+/* 사이트 문구에 시트 문구가 이미 들어 있는지 — 띄어쓰기·순서가 달라도 핵심 단어가 모두 있으면 같은 내용으로 봄 */
+function sheetHas(cur,t){
+  cur=String(cur||''); t=String(t||'');
+  if(!cur) return false;
+  var c=cur.replace(/\s/g,''); if(c.indexOf(t.replace(/\s/g,''))>=0) return true;
+  var words=t.split(/[\s()\[\]·,]+/).filter(function(w){ return w.length>=2; });
+  if(!words.length) return false;
+  var hit=words.filter(function(w){ return c.indexOf(w)>=0; }).length;
+  return hit===words.length;
+}
 function sheetSync(rows,names){
   var byName={}; S.members.forEach(function(m){ byName[m.name]=m; });
   var log=[], realMe=S.me; S.me='sheet';
@@ -2738,7 +2748,7 @@ function sheetSync(rows,names){
       var ct=(r[1]||'').trim();
       if(ct){
         var cur=S.commons[ds]||'';
-        if(cur.replace(/\s/g,'').indexOf(ct.replace(/\s/g,''))<0){
+        if(!sheetHas(cur,ct)){
           var nx=cur?cur+' / '+ct:ct; S.commons[ds]=nx;
           sbUp('commons',{date:ds,text:nx,updated_at:new Date().toISOString()},'date');
           histLog(ds,'__c__',[{f:'공통 일정',a:cur,b:nx}]);
@@ -2754,9 +2764,7 @@ function sheetSync(rows,names){
         if(tk.vacation&&!e.vacation) e.vacation=tk.vacation;
         if(tk.lunch&&!e.lunch) e.lunch=tk.lunch;
         if(tk.arrive&&!e.arrive&&tk.arrive!==m.start_time) e.arrive=tk.arrive;
-        tk.memo.forEach(function(t){
-          if((e.memo||'').replace(/\s/g,'').indexOf(t.replace(/\s/g,''))<0) e.memo=e.memo?e.memo+' / '+t:t;
-        });
+        tk.memo.forEach(function(t){ if(!sheetHas(e.memo,t)) e.memo=e.memo?e.memo+' / '+t:t; });
         var ch=histDiff(e0,e,false); if(!ch.length) return;
         S.sched[k]=e;
         sbUp('schedules',{date:ds,member_id:m.id,vacation:e.vacation,lunch:e.lunch,arrive:e.arrive,memo:e.memo,
