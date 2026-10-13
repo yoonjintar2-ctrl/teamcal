@@ -178,7 +178,10 @@ table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-
 .ctxmenu .cm-h{font-size:11px;color:var(--tx4);padding:4px 10px 2px}
 .notepop{position:fixed;z-index:210;display:none;width:250px;max-height:70vh;overflow:auto}
 .notepop.show{display:flex;flex-direction:column;gap:8px}
-.npcard{background:var(--nb);color:var(--nt);border:1px solid var(--nl);border-radius:4px 4px 14px 4px;padding:11px 12px;box-shadow:0 10px 26px rgba(0,0,0,.2)}
+.npcard .np-close{position:absolute;top:5px;right:6px;width:22px;height:22px;border:none;border-radius:50%;background:rgba(255,255,255,.6);
+  color:var(--nt);font-size:16px;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.npcard .np-close:hover{background:#fff}
+.npcard{position:relative;background:var(--nb);color:var(--nt);border:1px solid var(--nl);border-radius:4px 4px 14px 4px;padding:11px 12px;box-shadow:0 10px 26px rgba(0,0,0,.2)}
 .npcard .np-hd{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .npcard .pav{width:32px;height:32px;flex:0 0 32px;margin:0;border-width:2px;box-shadow:none;cursor:default}
 .npcard .np-n{font-size:13px;font-weight:700}
@@ -2952,7 +2955,7 @@ function openNotePop(stack){
   NOTE.write=null;
   p.innerHTML=list.map(function(n){
     var w=memberById(n.sender_id), mine=S.me&&n.recipient_id===S.me, d=new Date(n.created_at);
-    return '<div class="npcard" style="'+noteColors(w)+'">'+
+    return '<div class="npcard" style="'+noteColors(w)+'"><button class="np-close" data-nclose="1" title="닫기" aria-label="닫기">×</button>'+
       '<div class="np-hd">'+(w?pavHtml(w):'<span class="pav"></span>')+'<div><div class="np-n">'+esc(w?w.name:'알 수 없음')+(w&&w.rank?'<em>'+esc(w.rank)+'</em>':'')+'</div>'+
       '<div class="np-t">'+(d.getMonth()+1)+'/'+d.getDate()+' '+hm2(d)+'</div></div></div>'+
       '<div class="np-x">'+esc(n.text)+'</div>'+
@@ -2972,7 +2975,7 @@ $('notePop').addEventListener('click',function(ev){
   ev.stopPropagation();
   var rd=ev.target.closest('[data-nread]'); if(rd){ noteRead(rd.dataset.nread); return; }
   var dl=ev.target.closest('[data-ndel]'); if(dl){ noteDelete(dl.dataset.ndel); return; }
-  if(ev.target.closest('[data-ncancel]')){ closeNotePop(); return; }
+  if(ev.target.closest('[data-ncancel]')||ev.target.closest('[data-nclose]')){ closeNotePop(); return; }
   if(ev.target.closest('[data-nsend]')){ noteSend(); return; }
 });
 $('notePop').addEventListener('input',function(ev){
@@ -3020,7 +3023,7 @@ function openNoteWrite(cx){
   if(!S.me){ toast('접속자를 먼저 선택해 주세요 (오른쪽 위 이름)'); return; }
   var me=memberById(S.me), m=cx.m==='__c__'?null:memberById(cx.m), dd=parseD(cx.d), p=$('notePop');
   NOTE.write=cx;
-  p.innerHTML='<div class="npcard npwrite" style="'+noteColors(me)+'">'+
+  p.innerHTML='<div class="npcard npwrite" style="'+noteColors(me)+'"><button class="np-close" data-nclose="1" title="닫기" aria-label="닫기">×</button>'+
     '<div class="np-t" style="margin-bottom:6px">'+(dd.getMonth()+1)+'/'+dd.getDate()+'('+DOW[dd.getDay()]+') · '+esc(m?m.name+(m.rank?' '+m.rank:''):'공통 일정')+' 칸에</div>'+
     '<textarea id="npText" maxlength="60" placeholder="예) 설명회 잘 다녀오세요!"></textarea>'+
     '<div class="np-act"><span class="np-cnt" id="npCnt">0 / 60</span><div style="flex:1"></div>'+
