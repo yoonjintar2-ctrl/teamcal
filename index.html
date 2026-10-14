@@ -2086,6 +2086,14 @@ function isEditing(){
 function rangeStart(){ return addDays(new Date(),-S.pastDays); }
 function rangeEnd(){ return addDays(new Date(),FUTURE_DAYS); }
 
+/* 네임카드 시간 — 오늘 출근시간을 바꿨거나 반차면 오늘 실제 근무시간으로 (의자 표시와 같은 기준) */
+function todayHours(m){
+  var t=today(), w=parseD(t).getDay();
+  if(holidayOf(t)||w===0||w===6) return workHours(m);
+  var e=S.sched[t+'|'+m.id];
+  if(!e||(!e.arrive&&!e.vacation)) return workHours(m);
+  var tm=calcTimes(m,e); return tm.allDay?'연차':tm.text;
+}
 function nameCardHtml(m){
   var ints=(m.interests||[]).slice(0,3);
   var dd=daysToBirthday((m.profile||{}).birth);
@@ -2097,7 +2105,7 @@ function nameCardHtml(m){
     '<i class="amb"></i>'+
     '<div class="l">'+
       '<div class="nm">'+esc(m.name)+(m.rank?'<em>'+esc(m.rank)+'</em>':'')+'</div>'+
-      '<div class="tm">'+esc(workHours(m))+'</div>'+
+      '<div class="tm">'+esc(todayHours(m))+'</div>'+
       ((nc||(dd!=null&&dd<=7))?'<div class="badges">'+
         (nc?'<span class="alertbadge" title="새 알림 '+nc+'건 (쪽지·방명록·삼당마켓) — 네임카드를 눌러 확인">🔔 '+nc+'</span>':'')+
         (dd!=null&&dd<=7?'<span class="bday" title="'+(dd===0?'오늘 생일!':birthText((m.profile||{}).birth)+' 생일')+'">🎂 '+
