@@ -231,6 +231,9 @@ table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-
   .teamlunch .tl-m{width:72px;height:72px;margin:0 -8px}
   .teamlunch .tl-m b{font-size:10.5px;padding:2px 7px;bottom:6px}
 }
+table.sched tbody td.peercell{box-shadow:inset 0 0 0 2px var(--pc)}
+.peertag{position:absolute;top:-9px;left:4px;z-index:8;display:flex;gap:2px;pointer-events:none}
+.peertag span{font-size:10px;font-weight:800;color:#fff;padding:1px 6px;border-radius:4px 4px 4px 0;box-shadow:0 1px 3px rgba(0,0,0,.2);white-space:nowrap}
 .histtip{position:fixed;z-index:200;width:168px;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.3);
   pointer-events:none;display:none;color:var(--ink-tx)}
 .histtip.show{display:block}
@@ -1592,6 +1595,24 @@ function renderTeamLunch(){
     return '<div class="tl-m" style="--c:'+sig(m)+'">'+bustHtml(m,132)+'<b>'+esc(m.name)+'</b></div>';
   }).join('')+'</div>';
 }
+/* 매주 첫 영업일(보통 월요일) 공통 일정에 '팀점' 자동 등록 — 날짜마다 한 번만 (지우면 다시 넣지 않음) */
+function autoTeamLunch(){
+  if(!S.online||!S.sb) return;
+  var done=(S.team.tlAuto=S.team.tlAuto||{}), changed=false, t=today(), end=addDays(parseD(t),42);   /* 앞으로 6주치씩, 접속할 때마다 이어서 */
+  var d=parseD(t); d=addDays(d,-((d.getDay()+6)%7));
+  for(;d<=end;d=addDays(d,7)){
+    var first=null;
+    for(var i=0;i<5;i++){ var x=fmt(addDays(d,i)); if(!holidayOf(x)){ first=x; break; } }
+    if(!first||first<t||done[first]) continue;
+    done[first]=1; changed=true;
+    var cur=S.commons[first]||'';
+    if(/팀\s*점/.test(cur)) continue;
+    var nx=cur?cur+' / 팀점':'팀점'; S.commons[first]=nx;
+    sbUp('commons',{date:first,text:nx,updated_at:new Date().toISOString()},'date');
+    var real=S.me; S.me='auto'; histLog(first,'__c__',[{f:'공통 일정',a:cur,b:nx}]); S.me=real;
+  }
+  if(changed){ saveTeam(); renderBody(); }
+}
 function awaySig(){
   var tl=teamLunchList();
   return shownMembers().map(function(m){ return awayState(m)?'a':(lunchSignSrc(m)?'l':'0'); }).join('')+(window.LUNCH_SIGNS?'L':'')+
@@ -1893,6 +1914,7 @@ function sbLoadAll(silent){
       if(st&&st.value) S.team=Object.assign(S.team,st.value);
 
       S.online=true; setStat('on','연결됨'); saveLocal(); reconcileAssets(false); renderAll();
+      setTimeout(autoTeamLunch,1500);
       RT.last=Date.now();
       sbLoadExtras();
       if(!silent) toast('불러왔습니다');
@@ -2083,14 +2105,40 @@ function presenceStart(){
   try{ if(S.pres) S.sb.removeChannel(S.pres); }catch(err){}
   try{
     S.pres=S.sb.channel('teamws-presence',{config:{presence:{key:clientId()}}});
-    S.pres.on('presence',{event:'sync'},renderPresence)
+    S.pres.on('presence',{event:'sync'},function(){ renderPresence(); paintPeerCells(); })
           .subscribe(function(st){ if(st==='SUBSCRIBED') presenceTrack(); });
   }catch(err){}
 }
 function presenceTrack(){
   if(!S.pres) return;
-  try{ var pr=S.pres.track({mid:S.me||null,at:Date.now()}); if(pr&&pr.catch) pr.catch(function(){}); }catch(err){}
+  try{ var pr=S.pres.track({mid:S.me||null,at:Date.now(),cell:PEER.my||null}); if(pr&&pr.catch) pr.catch(function(){}); }catch(err){}
 }
+/* ── 다른 사람이 보고 있는 칸 (구글 시트처럼) — 마우스를 올린 칸·편집 중인 칸을 실시간 공유 ── */
+var PEER={my:null,t:null};
+function peerSetCell(c){
+  var v=c?c.d+'|'+c.m:null; if(v===PEER.my) return;
+  PEER.my=v; clearTimeout(PEER.t); PEER.t=setTimeout(presenceTrack,250);
+}
+function paintPeerCells(){
+  document.querySelectorAll('#sTbody td.peercell').forEach(function(td){ td.classList.remove('peercell'); td.style.removeProperty('--pc'); var t=td.querySelector('.peertag'); if(t) t.remove(); });
+  var st={}; try{ st=S.pres?S.pres.presenceState():{}; }catch(err){}
+  var me=clientId(), by={};
+  Object.keys(st).forEach(function(k){ if(k===me) return; (st[k]||[]).forEach(function(p){
+    if(!p||!p.cell||!p.mid||p.mid===S.me) return; var m=memberById(p.mid); if(!m) return;
+    (by[p.cell]=by[p.cell]||[]); if(by[p.cell].indexOf(m)<0) by[p.cell].push(m); }); });
+  Object.keys(by).forEach(function(k){
+    var q=k.split('|'), c=el('#sTbody .cell[data-d="'+q[0]+'"][data-m="'+q[1]+'"]'); if(!c) return;
+    var td=c.closest('td'), ms=by[k]; td.classList.add('peercell'); td.style.setProperty('--pc',sig(ms[0]));
+    var tag=document.createElement('div'); tag.className='peertag';
+    tag.innerHTML=ms.map(function(m){ return '<span style="background:'+sig(m)+'">'+esc(m.name)+'</span>'; }).join('');
+    td.appendChild(tag);
+  });
+}
+(function(){
+  var tb=$('sTbody');
+  tb.addEventListener('mouseover',function(ev){ var td=ev.target.closest('td.c-cell'); if(!td) return; var c=td.querySelector('.cell'); if(c) peerSetCell({d:c.dataset.d,m:c.dataset.m}); });
+  tb.addEventListener('mouseleave',function(){ if(!EDIT) peerSetCell(null); });
+})();
 function onlineIds(){
   var st={}; try{ st=S.pres?S.pres.presenceState():{}; }catch(err){}
   var seen={}, ids=[];
@@ -2485,7 +2533,7 @@ function renderBody(){
     out.push(r);
   }
   $('sTbody').innerHTML=out.join('');
-  queueWxFx(); checkAway(); renderHist(); paintNotes();
+  queueWxFx(); checkAway(); renderHist(); paintNotes(); if(typeof paintPeerCells==='function') paintPeerCells();
   queueYearRail();
   renderMobile();
 }
@@ -2644,7 +2692,7 @@ function openCell(node){
   var ds=node.dataset.d, mid=node.dataset.m;
   document.querySelectorAll('.cell.editing').forEach(function(x){x.classList.remove('editing');});
   node.classList.add('editing');
-  EDIT={d:ds,m:mid,node:node};
+  EDIT={d:ds,m:mid,node:node}; peerSetCell({d:ds,m:mid});
   var dow=DOW[parseD(ds).getDay()], hol=holidayOf(ds);
   $('popS').textContent=ds+' ('+dow+')'+(hol?' · '+hol:'');
 
@@ -2784,10 +2832,10 @@ function renderHist(){
     var d=new Date(h.created_at), k=fmt(d);
     if(k!==last){ last=k;
       out.push('<div class="hp-day">'+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+DOW[d.getDay()]+')'+(k===t?'<em>오늘</em>':k===y?'<em>어제</em>':'')+'</div>'); }
-    var m=h.actor_id?memberById(h.actor_id):null, sheet=h.actor_id==='sheet';
+    var m=h.actor_id?memberById(h.actor_id):null, sheet=h.actor_id==='sheet'||h.actor_id==='auto';
     out.push('<div class="hp-it" data-hi="'+i+'">'+
       (m?pavHtml(m,'data-hm="'+esc(m.id)+'"'):sheet?'<span class="pav sheetav" title="구글 시트 자동 반영">▦</span>':'<span class="pav"></span>')+
-      '<div class="hp-main"><div class="hp-meta"><b>'+esc(m?m.name:sheet?'구글 시트 동기화':'알 수 없음')+'</b>'+(m&&m.rank?esc(m.rank):'')+
+      '<div class="hp-main"><div class="hp-meta"><b>'+esc(m?m.name:h.actor_id==='auto'?'자동 등록 (매주 팀점)':sheet?'구글 시트 동기화':'알 수 없음')+'</b>'+(m&&m.rank?esc(m.rank):'')+
         '<span class="t">'+hm2(d)+'</span></div>'+
       '<div class="hp-what">'+histWhat(h)+'</div></div></div>');
   });
@@ -2795,6 +2843,10 @@ function renderHist(){
   box._list=list;
 }
 function setHist(on){
+  var wrap=$('gridwrap');
+  if(on&&!HIST.open&&wrap) HIST.scroll={t:wrap.scrollTop,l:wrap.scrollLeft};      /* 열기 전 위치 기억 */
+  if(!on&&HIST.open&&wrap&&HIST.scroll){ var sc=HIST.scroll; HIST.scroll=null; histClearHl();
+    setTimeout(function(){ try{ wrap.scrollTo({top:sc.t,left:sc.l,behavior:'smooth'}); }catch(err){ wrap.scrollTop=sc.t; wrap.scrollLeft=sc.l; } },30); }
   HIST.open=on; try{ localStorage.setItem(LS+'.histOpen',on?'1':'0'); }catch(err){}
   renderHist(); queueWxFx(); queueYearRail&&queueYearRail();
 }
