@@ -213,6 +213,24 @@ table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-
 .ib-it .x{font-size:13px;line-height:1.45;margin-top:2px;word-break:break-word}
 .ib-empty{padding:24px 14px;text-align:center;font-size:12.5px;color:var(--tx3)}
 @media (max-width:760px){ .inboxpanel{position:fixed;left:8px;right:8px;top:96px;width:auto} .inboxbtn{padding:5px 8px} }
+/* ── 팀점 — 공통 일정에 '팀점'이 있는 평일 11:15~13:00, 화면 아래 가운데에 참석자 흉상 ── */
+.teamlunch{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:50;pointer-events:none;display:none;
+  flex-direction:column;align-items:center}
+.teamlunch.show{display:flex;animation:tlup .5s ease-out}
+@keyframes tlup{from{transform:translate(-50%,30px);opacity:0}to{transform:translateX(-50%);opacity:1}}
+.teamlunch .tl-t{font-size:120px;font-weight:900;letter-spacing:-6px;line-height:.9;color:rgba(40,44,52,.82);
+  -webkit-text-stroke:3px rgba(255,255,255,.9);paint-order:stroke fill;margin-bottom:-58px;position:relative;z-index:0;
+  text-shadow:0 6px 18px rgba(0,0,0,.18)}
+.teamlunch .tl-row{display:flex;align-items:flex-end;position:relative;z-index:1}
+.teamlunch .tl-m{position:relative;width:132px;height:132px;margin:0 -18px}
+.teamlunch .tl-m img{width:100%;height:100%;object-fit:contain;object-position:bottom;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))}
+.teamlunch .tl-m b{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);white-space:nowrap;font-size:13px;font-weight:800;
+  color:#fff;padding:3px 11px;border-radius:999px;background:var(--c);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+@media (max-width:760px){
+  .teamlunch .tl-t{font-size:64px;letter-spacing:-3px;margin-bottom:-28px;-webkit-text-stroke:2px rgba(255,255,255,.9)}
+  .teamlunch .tl-m{width:72px;height:72px;margin:0 -8px}
+  .teamlunch .tl-m b{font-size:10.5px;padding:2px 7px;bottom:6px}
+}
 .histtip{position:fixed;z-index:200;width:168px;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.3);
   pointer-events:none;display:none;color:var(--ink-tx)}
 .histtip.show{display:block}
@@ -1045,6 +1063,7 @@ body.mv-table .mvback{display:block}
 <div class="histtip" id="histTip"></div>
 <div class="ctxmenu" id="ctxMenu"></div>
 <div class="notepop" id="notePop"></div>
+<div class="teamlunch" id="teamLunch" aria-hidden="true"></div>
 
 <!-- ══════════════ 중고거래 ══════════════ -->
 <section class="panel" id="p-market"><div class="pad">
@@ -1527,8 +1546,8 @@ function awayState(m,ds){
   if(cur>=tm.end) return (e.vacation==='pm_half'||e.vacation==='pm_quarter')?(VMAP[e.vacation].label+' · '+toHM(tm.end)+' 퇴근'):'퇴근 · '+toHM(tm.end);
   return '';
 }
-/* 점심 팻말 — 오늘 11:25 ~ 13:00 사이, 점심 일정(점약·도시락·간단히)이 있으면 팻말 든 캐릭터로 */
-var LUNCH_SIGN_FROM=11*60+25;
+/* 점심 팻말 — 오늘 11:15 ~ 13:00 사이, 점심 일정(점약·도시락·간단히)이 있으면 팻말 든 캐릭터로 */
+var LUNCH_SIGN_FROM=11*60+15;
 var LSIGN={loading:false,failed:false};
 function lunchSignSrc(m){
   var d=new Date(), cur=d.getHours()*60+d.getMinutes();
@@ -1547,8 +1566,36 @@ function loadLunchSigns(){
   sc.onerror=function(){ LSIGN.loading=false; LSIGN.failed=true; };
   document.head.appendChild(sc);
 }
+/* 팀점 참석자 — 연차·오전반차, 점심 일정(점약·도시락·간단히·생략)이 있는 사람은 제외 */
+var TL_FROM=11*60+15;
+function teamLunchList(){
+  var t=today(), w=parseD(t).getDay();
+  if(w===0||w===6||holidayOf(t)) return null;
+  if(!/팀\s*점/.test(S.commons[t]||'')) return null;
+  var d=new Date(), cur=d.getHours()*60+d.getMinutes();
+  if(cur<TL_FROM||cur>=LUNCH_TO) return null;
+  return shownMembers().filter(function(m){
+    var e=S.sched[t+'|'+m.id]||{};
+    if(e.vacation==='annual'||e.vacation==='am_half') return false;
+    if(e.lunch==='appt'||e.lunch==='bento'||e.lunch==='light'||e.lunch==='skip') return false;
+    return true;
+  });
+}
+function renderTeamLunch(){
+  var box=$('teamLunch'); if(!box) return;
+  var list=teamLunchList(), on=!!(list&&list.length)&&$('p-schedule').classList.contains('on');
+  box.classList.toggle('show',on);
+  if(!on){ box.innerHTML=''; return; }
+  var key=list.map(function(m){return m.id;}).join(',');
+  if(box.dataset.k===key) return; box.dataset.k=key;
+  box.innerHTML='<div class="tl-t">팀점</div><div class="tl-row">'+list.map(function(m){
+    return '<div class="tl-m" style="--c:'+sig(m)+'">'+bustHtml(m,132)+'<b>'+esc(m.name)+'</b></div>';
+  }).join('')+'</div>';
+}
 function awaySig(){
-  return shownMembers().map(function(m){ return awayState(m)?'a':(lunchSignSrc(m)?'l':'0'); }).join('')+(window.LUNCH_SIGNS?'L':'');
+  var tl=teamLunchList();
+  return shownMembers().map(function(m){ return awayState(m)?'a':(lunchSignSrc(m)?'l':'0'); }).join('')+(window.LUNCH_SIGNS?'L':'')+
+    '|'+(tl?tl.map(function(m){return m.id;}).join(','):'');
 }
 function interestHtml(id,size){
   var src=iconSrc(id), px=size||18;
@@ -2137,6 +2184,7 @@ function renderHead(){
   var total=px('--w-date')+px('--w-common')+px('--w-mem')*vis.length+px('--w-add');
   $('sched').style.width=total+'px';
   AWAY.sig=awaySig();
+  renderTeamLunch();
 }
 /* 출근 시각·반차 시각이 지나면 네임카드의 의자 ↔ 캐릭터를 자동으로 바꿉니다 (1분마다 확인) */
 var AWAY={sig:''};
@@ -4606,7 +4654,7 @@ function goTab(name){
   if(name==='food')    renderFoods();
   if(name==='photos')  renderPhotos();
   if(name==='adnews'){ var af=$('adFrame'); if(af&&!af.getAttribute('src')) af.setAttribute('src',ADNEWS_URL); }
-  queueYearRail();
+  queueYearRail(); renderTeamLunch();
   try{ localStorage.setItem(LS+'.tab',name); if(inArch) localStorage.setItem(LS+'.arch',name); }catch(err){}
 }
 $('tabs').addEventListener('click',function(ev){
