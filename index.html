@@ -263,7 +263,7 @@ table.sched tbody td.peercell{box-shadow:inset 0 0 0 2px var(--pc)}
 /* ── 클로드 비서 (오리지널 8비트 픽셀 로봇) ── */
 .botbtn{position:relative;width:38px;height:34px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;padding:0;
   display:grid;place-items:center;overflow:visible}
-.botbtn:hover{background:#F2FBF9;border-color:#9FD8CE}
+.botbtn:hover{background:#FFF2F7;border-color:#F4B6CC}
 .botbtn.away .botspr{opacity:0}
 .botspr{display:block;width:28px;height:28px;animation:botbob 2.4s ease-in-out infinite}
 .botspr svg,.botact svg{width:100%;height:100%;display:block;shape-rendering:crispEdges;image-rendering:pixelated}
@@ -292,12 +292,12 @@ table.sched tbody tr.rowfold td{transition:padding .3s,height .3s,font-size .3s;
 @keyframes wipe{from{background-position:120% 0}to{background-position:-30% 0}}
 .botmenu{position:fixed;z-index:520;width:290px;background:#fff;border:2px solid #2B2F36;border-radius:12px;box-shadow:4px 4px 0 #2B2F36;display:none;overflow:hidden}
 .botmenu.show{display:block;animation:dddrop .16s ease-out}
-.botmenu .bm-hd{display:flex;gap:10px;align-items:center;padding:12px 12px 10px;background:#EEF9F6;border-bottom:2px solid #2B2F36}
+.botmenu .bm-hd{display:flex;gap:10px;align-items:center;padding:12px 12px 10px;background:#FFF0F5;border-bottom:2px solid #2B2F36}
 .botmenu .bm-hd .botspr{width:40px;height:40px;flex:0 0 40px}
 .botmenu .bm-hd b{display:block;font-size:13.5px}
 .botmenu .bm-hd span{font-size:12px;color:var(--tx2);line-height:1.45}
 .botmenu .bm-it{display:flex;align-items:center;gap:9px;width:100%;border:none;background:none;padding:10px 14px;font-size:13.5px;text-align:left;cursor:pointer;color:var(--tx)}
-.botmenu .bm-it:hover{background:#F2FBF9}
+.botmenu .bm-it:hover{background:#FFF4F8}
 .botmenu .bm-it i{font-style:normal;width:18px;text-align:center}
 .botmenu .bm-it small{margin-left:auto;font-size:11px;color:var(--tx4)}
 .botmenu .bm-sep{height:1px;background:var(--line2);margin:2px 0}
@@ -3256,22 +3256,24 @@ function noteSend(){
    평소엔 오른쪽 위 버튼 안에서 쉬다가, 시트 동기화·행 추가/제거 때 나와서 칸을 하나씩 손보고,
    가끔 화면을 빗자루로 쓸거나 네임카드를 걸레로 닦고 들어갑니다.
 ========================================================================== */
-var BOTPX={K:'#2B2F36',T:'#3AAE9C',D:'#2C8C7D',W:'#EAF8F5',E:'#1D2026',Y:'#FFC53D',B:'#8A5A2B',S:'#F2C94C',G:'#A7AFBB'};
+var BOTPX={K:'#8C3D5A',P:'#F7A8C4',L:'#FCD9E6',E:'#3A2430',N:'#6B3346',A:'#6FCFBE',H:'#F48FB1',B:'#8A5A2B',S:'#F2C94C',G:'#A7AFBB'};
+/* 오리지널 8비트 분홍 곰 비서 (민트 스카프) */
 var BOTMAP=[
- '.......YY.......',
- '.......KK.......',
- '....KKKKKKKK....',
- '...KTTTTTTTTK...',
- '...KTWWWWWWTK...',
- '...KTWEWWEWTK...',
- '...KTWWWWWWTK...',
- '...KTTTTTTTTK...',
- '..KKDTTTTTTDKK..',
- '.KTKDTTTTTTDKTK.',
- '.KTKDTTTTTTDKTK.',
- '..K.KDDDDDDK.K..',
- '....KDK..KDK....',
- '....KK....KK....'];
+ '..KK........KK..',
+ '.KLLK......KLLK.',
+ '.KLPKKKKKKKKPLK.',
+ '..KPPPPPPPPPPK..',
+ '.KPPPPPPPPPPPPK.',
+ '.KPPEPPPPPPEPPK.',
+ '.KPHPPPNNPPPHPK.',
+ '.KPPPPPPPPPPPPK.',
+ '..KPPPPPPPPPPK..',
+ '..KAAAAAAAAAAK..',
+ '.KPKAAAAAAAAKPK.',
+ '.KPKPPPPPPPPKPK.',
+ '..KKPPPPPPPPKK..',
+ '...KPPK..KPPK...',
+ '...KKK....KKK...'];
 var TOOLMAP={broom:['..............B.','.............B..','............B...','...........B....','..........B.....','.........SSS....','........SSSS....','........SSS.....'],
   mop:['..............B.','.............B..','............B...','...........B....','..........B.....','.........GGG....','........GGGG....','........G.GG....']};
 function botSvg(tool){
