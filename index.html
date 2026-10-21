@@ -285,6 +285,14 @@ table.sched tbody td.rowin{animation:rowin .45s cubic-bezier(.2,.8,.3,1.2)}
 table.sched tbody td.rowout{animation:rowout .35s ease-in forwards}
 @keyframes rowout{to{transform:translateX(26px) rotate(2deg);opacity:0;filter:blur(1px)}}
 table.sched tbody tr.rowfold td{transition:padding .3s,height .3s,font-size .3s;line-height:0;font-size:0;padding-top:0!important;padding-bottom:0!important}
+.sheetstop{position:fixed;z-index:498;width:46px;height:56px;border-radius:6px;background:#fff;border:2px solid #1FA463;box-shadow:0 8px 20px rgba(0,0,0,.18);
+  display:grid;place-items:center;pointer-events:none;animation:dddrop .2s ease-out}
+.sheetstop svg{width:30px;height:30px}
+.sheetstop b{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:800;color:#1A7F4C;white-space:nowrap}
+table.sched tbody td.botwrite{animation:botwrite .7s ease-out}
+table.sched tbody td.botwrite::before{content:'';position:absolute;left:8px;bottom:6px;height:2px;background:#1FA463;border-radius:2px;animation:penline .55s ease-out forwards}
+@keyframes botwrite{0%{background-color:#E8F6EE}100%{background-color:transparent}}
+@keyframes penline{from{width:0;opacity:1}to{width:calc(100% - 16px);opacity:0}}
 .dust{position:fixed;z-index:499;width:6px;height:6px;background:#C9CFD8;pointer-events:none;animation:dust .7s ease-out forwards}
 @keyframes dust{to{transform:translate(var(--dx),-14px);opacity:0}}
 .nc.wiped::after{opacity:1!important;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%)!important;
@@ -3049,7 +3057,7 @@ function sheetSync(rows,names){
     });
   } finally { S.me=realMe; botEnd(); }
   saveLocal(); renderBody(); renderHead();
-  if(touched.length) setTimeout(function(){ botTour(touched,'시트 반영 중…'); },300);
+  setTimeout(function(){ botSheetRun(touched); },300);
   return log;
 }
 
@@ -3258,7 +3266,8 @@ function noteSend(){
    평소엔 오른쪽 위 버튼 안에서 쉬다가, 시트 동기화·행 추가/제거 때 나와서 칸을 하나씩 손보고,
    가끔 화면을 빗자루로 쓸거나 네임카드를 걸레로 닦고 들어갑니다.
 ========================================================================== */
-var BOTPX={K:'#8C3D5A',P:'#F7A8C4',L:'#FCD9E6',E:'#3A2430',N:'#6B3346',A:'#6FCFBE',H:'#F48FB1',B:'#8A5A2B',S:'#F2C94C',G:'#A7AFBB'};
+var BOTPX={K:'#8C3D5A',P:'#F7A8C4',L:'#FCD9E6',E:'#3A2430',N:'#6B3346',A:'#6FCFBE',H:'#F48FB1',B:'#8A5A2B',S:'#F2C94C',G:'#A7AFBB',
+  w:'#FFFFFF',o:'#5B6575',g:'#1FA463',y:'#FFC53D',r:'#E8564A',d:'#2B2F36'};
 /* 오리지널 8비트 분홍 곰 비서 (민트 스카프) */
 var BOTMAP=[
  '..KK........KK..',
@@ -3276,7 +3285,11 @@ var BOTMAP=[
  '..KKPPPPPPPPKK..',
  '...KPPK..KPPK...',
  '...KKK....KKK...'];
-var TOOLMAP={broom:['..............B.','.............B..','............B...','...........B....','..........B.....','.........SSS....','........SSSS....','........SSS.....'],
+var TOOLMAP={
+  pen:['...............d','..............y.','.............yy.','............yy..','...........yy...','..........rr....','................','................'],
+  mail:['................','................','................','.........oooooo.','.........owwwwo.','.........oowwoo.','.........owoowo.','.........oooooo.'],
+  sheet:['................','................','.........gggggg.','.........gwwwwg.','.........gwgwwg.','.........ggggggg','.........gwgwwg.','.........gggggg.'],
+  broom:['..............B.','.............B..','............B...','...........B....','..........B.....','.........SSS....','........SSSS....','........SSS.....'],
   mop:['..............B.','.............B..','............B...','...........B....','..........B.....','.........GGG....','........GGGG....','........G.GG....']};
 function botSvg(tool){
   var r='';
@@ -3315,6 +3328,50 @@ async function botTour(keys,say){
     }
     $('botBubble').textContent='끝!'; await botSleep(450);
     await botIn();
+  } finally { BOTA.busy=false; }
+}
+/* 스프레드시트에 데이터 가지러 다녀오기 — 화면 오른쪽에 시트를 띄우고 가서 챙겨 옴 */
+async function botFetchSheet(ok){
+  await botOut('','시트 다녀올게요!');
+  var st=document.createElement('div'); st.className='sheetstop';
+  st.innerHTML='<svg viewBox="0 0 16 16"><rect x="2.5" y="1.5" width="11" height="13" rx="1.8" fill="#1FA463"/><rect x="4.5" y="5" width="7" height="7" rx=".6" fill="#fff"/><path d="M4.5 7.4h7M4.5 9.7h7M7.6 5v7" stroke="#1FA463" stroke-width="1"/></svg><b>구버전 캘린더</b>';
+  var sx=window.innerWidth-70, sy=Math.round(window.innerHeight*0.45);
+  st.style.left=(sx-23)+'px'; st.style.top=(sy-28)+'px'; document.body.appendChild(st);
+  await botGo(sx-44,sy,800);
+  $('botBubble').textContent=ok===false?'어? 문이 잠겼어요 🔒':'데이터 챙기는 중…'; await botSleep(900);
+  if(ok!==false) $('botSvg').innerHTML=botSvg('sheet');
+  st.remove();
+}
+/* 받아 온 데이터를 칸마다 펜으로 적기 */
+async function botWriteCells(keys){
+  $('botSvg').innerHTML=botSvg('pen');
+  for(var i=0;i<Math.min(keys.length,30);i++){
+    var q=keys[i].split('|'), c=el('#sTbody .cell[data-d="'+q[0]+'"][data-m="'+q[1]+'"]'); if(!c) continue;
+    var td=c.closest('td'); td.scrollIntoView({block:'nearest',inline:'nearest'});
+    var r=td.getBoundingClientRect(); await botGo(r.left+r.width-16,r.top+r.height/2-4,420);
+    $('botBubble').textContent='✍ 적는 중 '+(i+1)+'/'+keys.length;
+    td.classList.remove('botwrite'); void td.offsetWidth; td.classList.add('botwrite');
+    await botSleep(520);
+  }
+}
+async function botSheetRun(keys){
+  if(BOTA.busy) return; BOTA.busy=true;
+  try{
+    await botFetchSheet(true);
+    if(keys&&keys.length){ await botWriteCells(keys); $('botBubble').textContent='다 적었어요!'; }
+    else $('botBubble').textContent='새로 적을 게 없어요';
+    await botSleep(600); await botIn();
+  } finally { BOTA.busy=false; }
+}
+/* 개편 희망사항 — 편지를 들고 관리자에게 전달하러 다녀옴 */
+async function botDeliver(){
+  if(BOTA.busy) return; BOTA.busy=true;
+  try{
+    await botOut('mail','전달하러 갈게요!');
+    var x=window.innerWidth+40, y=Math.round(window.innerHeight*0.3);
+    await botGo(window.innerWidth-90,y,700); $('botBubble').textContent='슝~'; await botGo(x,y,500);
+    await botSleep(500); $('botSvg').innerHTML=botSvg(); $('botBubble').textContent='전달 완료!';
+    await botGo(window.innerWidth-90,y,500); await botSleep(400); await botIn();
   } finally { BOTA.busy=false; }
 }
 /* 행 추가 — 비서가 표 맨 위로 가서 새 줄을 끌어내리고, 칸을 왼쪽부터 하나씩 깔아 줌 */
@@ -3436,7 +3493,7 @@ $('botMenu').addEventListener('click',function(ev){
   }
   if(k==='back'){ openBotMenu(); return; }
   if(k==='wishsend'){ var tx=(($('wishText')||{}).value||'').trim(); if(!tx){ $('wishText').focus(); return; }
-    if(sendWish(tx,'개편 희망')){ closeBotMenu(); toast('관리자에게 전달했어요. 고마워요!'); botSweep('전달 완료!'); } return; }
+    if(sendWish(tx,'개편 희망')){ closeBotMenu(); toast('관리자에게 전달했어요. 고마워요!'); botDeliver(); } return; }
   closeBotMenu();
   if(k==='hist'){ goTab('schedule'); setHist(!HIST.open); return; }
   if(k==='more'){ goTab('schedule'); botRowAdd(); return; }
@@ -3455,7 +3512,11 @@ function parseCsv(t){
 function runSheetSync(){
   goTab('schedule');
   if(!S.team.sheetCsv){
-    if(sendWish('구글 시트 → 사이트 반영을 부탁드려요','시트 동기화 요청')){ toast('시트 동기화를 관리자에게 요청했어요'); botSweep('요청 완료!'); }
+    /* 비공개 시트라 사이트에서 직접 열 수 없음 — 쪽지는 보내지 않고 안내만 */
+    (async function(){ if(BOTA.busy) return; BOTA.busy=true;
+      try{ await botFetchSheet(false); await botSleep(400); await botIn(); } finally { BOTA.busy=false; }
+      toast('구버전 스프레드시트가 비공개라 사이트에서 바로 가져올 수 없어요. 관리자가 시트 연결을 설정하면 이 버튼으로 바로 반영돼요.');
+    })();
     return;
   }
   toast('시트를 읽는 중…');
