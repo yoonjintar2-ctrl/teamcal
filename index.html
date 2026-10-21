@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>팀 공유시트</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2215%22%20fill%3D%22%231C1F26%22/%3E%3Crect%20x%3D%2213%22%20y%3D%2215%22%20width%3D%2238%22%20height%3D%2234%22%20rx%3D%226%22%20fill%3D%22%23fff%22/%3E%3Crect%20x%3D%2213%22%20y%3D%2215%22%20width%3D%2238%22%20height%3D%229%22%20rx%3D%224%22%20fill%3D%22%233B5BFD%22/%3E%3Crect%20x%3D%2213%22%20y%3D%2220%22%20width%3D%2238%22%20height%3D%224%22%20fill%3D%22%233B5BFD%22/%3E%3Cpath%20d%3D%22M26%2024v25M38%2024v25M13%2032.5h38M13%2041h38%22%20stroke%3D%22%23C9CFDA%22%20stroke-width%3D%222%22/%3E%3Crect%20x%3D%2227.5%22%20y%3D%2234%22%20width%3D%229%22%20height%3D%225.5%22%20rx%3D%221.5%22%20fill%3D%22%23FFC53D%22/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2215%22%20fill%3D%22%23FFFFFF%22/%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%2262%22%20height%3D%2262%22%20rx%3D%2214%22%20fill%3D%22none%22%20stroke%3D%22%23DCE2EC%22%20stroke-width%3D%222%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2214%22%20width%3D%2240%22%20height%3D%2236%22%20rx%3D%226%22%20fill%3D%22%23F4F7FB%22%20stroke%3D%22%233B5BFD%22%20stroke-width%3D%222.5%22/%3E%3Cpath%20d%3D%22M12%2025h40%22%20stroke%3D%22%233B5BFD%22%20stroke-width%3D%227%22/%3E%3Cpath%20d%3D%22M25.5%2025v25M38.5%2025v25M12%2033.5h40M12%2042h40%22%20stroke%3D%22%23B9C3D3%22%20stroke-width%3D%222%22/%3E%3Crect%20x%3D%2227%22%20y%3D%2235%22%20width%3D%2210%22%20height%3D%225.5%22%20rx%3D%221.5%22%20fill%3D%22%23FFC53D%22/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 :root{
@@ -148,6 +148,7 @@ th.c-add{width:var(--w-add);min-width:var(--w-add);max-width:var(--w-add)}
 /* ── 수정 히스토리 ── */
 .addstack{display:flex;flex-direction:column;align-items:center;height:100%}
 .addstack .addcol{flex:1 1 auto;padding:4px 0}
+#btnHist,#btnPastLess,#btnPastMore{display:none!important}
 .histtop{display:inline-flex;align-items:center;gap:4px;color:var(--tx2)}
 .histtop svg{width:14px;height:14px}
 .histtop.on{background:var(--ink);color:var(--ink-tx);border-color:var(--ink)}
@@ -259,6 +260,44 @@ table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-
 table.sched tbody td.peercell{box-shadow:inset 0 0 0 2px var(--pc)}
 .peertag{position:absolute;top:-9px;left:4px;z-index:8;display:flex;gap:2px;pointer-events:none}
 .peertag span{font-size:10px;font-weight:800;color:#fff;padding:1px 6px;border-radius:4px 4px 4px 0;box-shadow:0 1px 3px rgba(0,0,0,.2);white-space:nowrap}
+/* ── 클로드 비서 (오리지널 8비트 픽셀 로봇) ── */
+.botbtn{position:relative;width:38px;height:34px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;padding:0;
+  display:grid;place-items:center;overflow:visible}
+.botbtn:hover{background:#F2FBF9;border-color:#9FD8CE}
+.botbtn.away .botspr{opacity:0}
+.botspr{display:block;width:28px;height:28px;animation:botbob 2.4s ease-in-out infinite}
+.botspr svg,.botact svg{width:100%;height:100%;display:block;shape-rendering:crispEdges;image-rendering:pixelated}
+@keyframes botbob{50%{transform:translateY(-1.5px)}}
+.botact{position:fixed;z-index:500;width:30px;height:30px;pointer-events:none;display:none;transition:left .42s cubic-bezier(.4,.1,.3,1),top .42s cubic-bezier(.4,.1,.3,1),width .3s,height .3s}
+.botact.show{display:block}
+.botact.big{width:58px;height:58px}
+.botact.walk svg{animation:botwalk .26s steps(2) infinite}
+@keyframes botwalk{50%{transform:translateY(-3px) rotate(-3deg)}}
+.botact .bubble{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:4px;white-space:nowrap;background:#fff;
+  border:2px solid #2B2F36;border-radius:8px;padding:2px 8px;font-size:11px;font-weight:800;color:#2B2F36;box-shadow:2px 2px 0 #2B2F36}
+.botact .bubble:empty{display:none}
+table.sched tbody td.botfix{animation:botfix .6s ease-out}
+@keyframes botfix{0%{box-shadow:inset 0 0 0 3px #3AAE9C;background-color:#E6F7F3}100%{box-shadow:inset 0 0 0 0 #3AAE9C}}
+.dust{position:fixed;z-index:499;width:6px;height:6px;background:#C9CFD8;pointer-events:none;animation:dust .7s ease-out forwards}
+@keyframes dust{to{transform:translate(var(--dx),-14px);opacity:0}}
+.nc.wiped::after{opacity:1!important;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%)!important;
+  background-size:250% 100%!important;animation:wipe .7s ease-out}
+@keyframes wipe{from{background-position:120% 0}to{background-position:-30% 0}}
+.botmenu{position:fixed;z-index:520;width:290px;background:#fff;border:2px solid #2B2F36;border-radius:12px;box-shadow:4px 4px 0 #2B2F36;display:none;overflow:hidden}
+.botmenu.show{display:block;animation:dddrop .16s ease-out}
+.botmenu .bm-hd{display:flex;gap:10px;align-items:center;padding:12px 12px 10px;background:#EEF9F6;border-bottom:2px solid #2B2F36}
+.botmenu .bm-hd .botspr{width:40px;height:40px;flex:0 0 40px}
+.botmenu .bm-hd b{display:block;font-size:13.5px}
+.botmenu .bm-hd span{font-size:12px;color:var(--tx2);line-height:1.45}
+.botmenu .bm-it{display:flex;align-items:center;gap:9px;width:100%;border:none;background:none;padding:10px 14px;font-size:13.5px;text-align:left;cursor:pointer;color:var(--tx)}
+.botmenu .bm-it:hover{background:#F2FBF9}
+.botmenu .bm-it i{font-style:normal;width:18px;text-align:center}
+.botmenu .bm-it small{margin-left:auto;font-size:11px;color:var(--tx4)}
+.botmenu .bm-sep{height:1px;background:var(--line2);margin:2px 0}
+.wishbox{padding:10px 12px 12px}
+.wishbox textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:vertical}
+.wishbox .acts{display:flex;justify-content:flex-end;gap:6px;margin-top:8px}
+@media (prefers-reduced-motion:reduce){.botact{transition:none}.botspr{animation:none}}
 .histtip{position:fixed;z-index:200;width:168px;border-radius:10px;overflow:hidden;box-shadow:0 10px 28px rgba(0,0,0,.3);
   pointer-events:none;display:none;color:var(--ink-tx)}
 .histtip.show{display:block}
@@ -1058,7 +1097,8 @@ body.mv-table .mvback{display:block}
       <div class="bellpanel" id="bellPanel"></div>
     </div>
     <button class="mebtn" id="btnMe" title="접속자 변경"></button>
-    <button class="iconbtn" id="btnGear" title="설정"><span class="bi"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.6v1.6M8 12.8v1.6M1.6 8h1.6M12.8 8h1.6M3.5 3.5l1.1 1.1M11.4 11.4l1.1 1.1M3.5 12.5l1.1-1.1M11.4 4.6l1.1-1.1"/></svg></span></button>
+    <button class="botbtn" id="btnBot" title="클로드 비서"><span class="botspr" id="botIdle"></span></button>
+    <button class="iconbtn" id="btnGear" title="설정" style="display:none"><span class="bi"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.2"/><path d="M8 1.6v1.6M8 12.8v1.6M1.6 8h1.6M12.8 8h1.6M3.5 3.5l1.1 1.1M11.4 11.4l1.1 1.1M3.5 12.5l1.1-1.1M11.4 4.6l1.1-1.1"/></svg></span></button>
   </div>
 </div>
 
@@ -1094,6 +1134,8 @@ body.mv-table .mvback{display:block}
 <div class="ctxmenu" id="ctxMenu"></div>
 <div class="notepop" id="notePop"></div>
 <div class="teamlunch" id="teamLunch" aria-hidden="true"></div>
+<div class="botact" id="botAct" aria-hidden="true"><div class="bubble" id="botBubble"></div><div id="botSvg"></div></div>
+<div class="botmenu" id="botMenu"></div>
 
 <!-- ══════════════ 중고거래 ══════════════ -->
 <section class="panel" id="p-market"><div class="pad">
@@ -2963,7 +3005,7 @@ function sheetHas(cur,t){
 function sheetSync(rows,names){
   var byName={}; S.members.forEach(function(m){ byName[m.name]=m; });
   botStart('구글 시트 동기화 봇');
-  var log=[], realMe=S.me; S.me='sheet';
+  var log=[], realMe=S.me, touched=[]; S.me='sheet';
   try{
     (rows||[]).forEach(function(r){
       var ds=r[0]; if(!/^\d{4}-\d{2}-\d{2}$/.test(ds)) return;
@@ -2974,7 +3016,7 @@ function sheetSync(rows,names){
         if(!sheetHas(cur,ct)){
           var nx=cur?cur+' / '+ct:ct; S.commons[ds]=nx;
           sbUp('commons',{date:ds,text:nx,updated_at:new Date().toISOString()},'date');
-          histLog(ds,'__c__',[{f:'공통 일정',a:cur,b:nx}]);
+          histLog(ds,'__c__',[{f:'공통 일정',a:cur,b:nx}]); touched.push(ds+'|__c__');
           log.push(ds+' 공통 일정: '+ct);
         }
       }
@@ -2992,12 +3034,13 @@ function sheetSync(rows,names){
         S.sched[k]=e;
         sbUp('schedules',{date:ds,member_id:m.id,vacation:e.vacation,lunch:e.lunch,arrive:e.arrive,memo:e.memo,
           updated_at:new Date().toISOString()},'date,member_id');
-        histLog(ds,m.id,ch);
+        histLog(ds,m.id,ch); touched.push(ds+'|'+m.id);
         log.push(ds+' '+nm+': '+ch.map(function(c){ return c.f+' '+(c.b||'-'); }).join(', '));
       });
     });
   } finally { S.me=realMe; botEnd(); }
   saveLocal(); renderBody(); renderHead();
+  if(touched.length) setTimeout(function(){ botTour(touched,'시트 반영 중…'); },300);
   return log;
 }
 
@@ -3050,6 +3093,7 @@ function renderInbox(){
   if($('inboxPanel').classList.contains('show')) drawInbox();
 }
 function noteCellLabel(n){
+  if(n.member_id==='__wish__') return '클로드 비서 전달';
   var d=parseD(normDate(n.date)), m=n.member_id==='__c__'?null:memberById(n.member_id);
   return (d.getMonth()+1)+'/'+d.getDate()+'('+DOW[d.getDay()]+') · '+(n.member_id==='__c__'?'공통 일정':(m?m.name:''))+' 칸';
 }
@@ -3076,6 +3120,7 @@ $('inboxPanel').addEventListener('click',function(ev){
   var it=ev.target.closest('[data-inote]'); if(!it) return;
   var n=(S.notes||[]).filter(function(x){ return String(x.id)===it.dataset.inote; })[0]; if(!n) return;
   $('inboxPanel').classList.remove('show');
+  if(n.member_id==='__wish__'){ if(!n.read_at) noteRead(n.id); return; }
   goTab('schedule'); noteGoto(n, !n.read_at);
 });
 document.addEventListener('click',function(ev){
@@ -3196,6 +3241,177 @@ function noteSend(){
     var row=r.data&&r.data[0]; if(row){ S.notes=S.notes.map(function(x){ return x===local?row:x; }); paintNotes(); }
   });
   toast('쪽지를 붙였어요');
+}
+
+
+/* ==========================================================================
+   클로드 비서 — 이 사이트를 관리하는 8비트 픽셀 로봇 (오리지널 디자인)
+   평소엔 오른쪽 위 버튼 안에서 쉬다가, 시트 동기화·행 추가/제거 때 나와서 칸을 하나씩 손보고,
+   가끔 화면을 빗자루로 쓸거나 네임카드를 걸레로 닦고 들어갑니다.
+========================================================================== */
+var BOTPX={K:'#2B2F36',T:'#3AAE9C',D:'#2C8C7D',W:'#EAF8F5',E:'#1D2026',Y:'#FFC53D',B:'#8A5A2B',S:'#F2C94C',G:'#A7AFBB'};
+var BOTMAP=[
+ '.......YY.......',
+ '.......KK.......',
+ '....KKKKKKKK....',
+ '...KTTTTTTTTK...',
+ '...KTWWWWWWTK...',
+ '...KTWEWWEWTK...',
+ '...KTWWWWWWTK...',
+ '...KTTTTTTTTK...',
+ '..KKDTTTTTTDKK..',
+ '.KTKDTTTTTTDKTK.',
+ '.KTKDTTTTTTDKTK.',
+ '..K.KDDDDDDK.K..',
+ '....KDK..KDK....',
+ '....KK....KK....'];
+var TOOLMAP={broom:['..............B.','.............B..','............B...','...........B....','..........B.....','.........SSS....','........SSSS....','........SSS.....'],
+  mop:['..............B.','.............B..','............B...','...........B....','..........B.....','.........GGG....','........GGGG....','........G.GG....']};
+function botSvg(tool){
+  var r='';
+  BOTMAP.forEach(function(row,y){ for(var x=0;x<row.length;x++){ var c=row[x]; if(c!=='.') r+='<rect x="'+x+'" y="'+(y+2)+'" width="1" height="1" fill="'+BOTPX[c]+'"/>'; } });
+  if(tool&&TOOLMAP[tool]) TOOLMAP[tool].forEach(function(row,y){ for(var x=0;x<row.length;x++){ var c=row[x]; if(c!=='.') r+='<rect x="'+(x+4)+'" y="'+(y+8)+'" width="1" height="1" fill="'+BOTPX[c]+'"/>'; } });
+  return '<svg viewBox="0 0 20 18" xmlns="http://www.w3.org/2000/svg">'+r+'</svg>';
+}
+$('botIdle').innerHTML=botSvg();
+var BOTA={busy:false};
+function botSleep(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
+function botHome(){ var r=$('btnBot').getBoundingClientRect(); return {x:r.left+r.width/2,y:r.top+r.height/2}; }
+function botPlace(x,y){ var a=$('botAct'), w=a.offsetWidth||30; a.style.left=(x-w/2)+'px'; a.style.top=(y-w/2)+'px'; }
+async function botOut(tool,say){
+  var a=$('botAct'), h=botHome();
+  $('botSvg').innerHTML=botSvg(tool); $('botBubble').textContent=say||'';
+  a.style.transition='none'; botPlace(h.x,h.y); a.classList.add('show'); $('btnBot').classList.add('away');
+  void a.offsetWidth; a.style.transition=''; a.classList.add('big'); await botSleep(260);
+}
+async function botIn(){
+  var a=$('botAct'), h=botHome();
+  $('botBubble').textContent=''; a.classList.add('walk'); botPlace(h.x,h.y); await botSleep(450);
+  a.classList.remove('big','walk'); await botSleep(250); a.classList.remove('show'); $('btnBot').classList.remove('away');
+}
+async function botGo(x,y,ms){ var a=$('botAct'); a.classList.add('walk'); botPlace(x,y); await botSleep(ms||460); a.classList.remove('walk'); }
+/* 칸을 하나씩 방문하며 손보는 애니메이션 */
+async function botTour(keys,say){
+  if(BOTA.busy||!keys||!keys.length) return; BOTA.busy=true;
+  try{
+    await botOut('',say||'일정 정리 중…');
+    for(var i=0;i<Math.min(keys.length,24);i++){
+      var q=keys[i].split('|'), c=el('#sTbody .cell[data-d="'+q[0]+'"][data-m="'+q[1]+'"]'); if(!c) continue;
+      var td=c.closest('td'); td.scrollIntoView({block:'nearest',inline:'nearest'});
+      var r=td.getBoundingClientRect(); await botGo(r.left+r.width-18,r.top+10);
+      td.classList.remove('botfix'); void td.offsetWidth; td.classList.add('botfix');
+      $('botBubble').textContent='뚝딱 '+(i+1)+'/'+keys.length; await botSleep(220);
+    }
+    $('botBubble').textContent='끝!'; await botSleep(450);
+    await botIn();
+  } finally { BOTA.busy=false; }
+}
+/* 빗자루질 — 화면 아래를 쓸고 들어감 */
+async function botSweep(say){
+  if(BOTA.busy) return; BOTA.busy=true;
+  try{
+    await botOut('broom',say||'');
+    var y=window.innerHeight-46, x0=40, x1=window.innerWidth-60;
+    await botGo(x0,y,700);
+    for(var x=x0;x<=x1;x+=110){ await botGo(x,y,300); for(var k=0;k<3;k++){ var d=document.createElement('i'); d.className='dust';
+      d.style.left=(x-14+Math.random()*10)+'px'; d.style.top=(y+18)+'px'; d.style.setProperty('--dx',(-10-Math.random()*16)+'px'); document.body.appendChild(d);
+      setTimeout(function(n){ return function(){ n.remove(); }; }(d),800); } }
+    await botIn();
+  } finally { BOTA.busy=false; }
+}
+/* 걸레질 — 네임카드를 하나씩 닦음 */
+async function botMop(){
+  if(BOTA.busy) return; var ncs=[].slice.call(document.querySelectorAll('#sThead .nc')); if(!ncs.length) return; BOTA.busy=true;
+  try{
+    await botOut('mop','반짝반짝');
+    for(var i=0;i<ncs.length;i++){ var r=ncs[i].getBoundingClientRect(); if(!r.width) continue;
+      await botGo(r.left+r.width/2,r.bottom-14,380); ncs[i].classList.remove('wiped'); void ncs[i].offsetWidth; ncs[i].classList.add('wiped');
+      setTimeout(function(n){ return function(){ n.classList.remove('wiped'); }; }(ncs[i]),800); await botSleep(160); }
+    await botIn();
+  } finally { BOTA.busy=false; }
+}
+/* 가끔 나와서 청소 (4~8분마다, 팀 스케줄을 보고 있을 때만) */
+(function idle(){
+  setTimeout(function(){
+    if(document.visibilityState==='visible'&&document.body.classList.contains('on-sched')&&!isEditing()&&!document.body.classList.contains('mv-on')){
+      (Math.random()<.5?botSweep():botMop());
+    }
+    idle();
+  },(4+Math.random()*4)*60000);
+})();
+/* 비서 메뉴 */
+function openBotMenu(){
+  var m=$('botMenu'), r=$('btnBot').getBoundingClientRect();
+  m.innerHTML='<div class="bm-hd"><span class="botspr">'+botSvg()+'</span><div><b>안녕하세요! 클로드 비서예요</b><span>이 사이트를 관리하는 클로드 비서예요. 필요한 일을 골라 주세요.</span></div></div>'+
+    '<button class="bm-it" data-bm="sync"><i>🔄</i>스프레드시트 동기화</button>'+
+    '<button class="bm-it" data-bm="wish"><i>💌</i>개편 희망사항 전달<small>관리자에게</small></button>'+
+    '<div class="bm-sep"></div>'+
+    '<button class="bm-it" data-bm="hist"><i>🕘</i>수정 히스토리'+(HIST.open?'<small>열려 있음</small>':'')+'</button>'+
+    '<button class="bm-it" data-bm="more"><i>➕</i>행 추가<small>지난 날짜 1일 더</small></button>'+
+    '<button class="bm-it" data-bm="less"><i>➖</i>행 제거<small>지난 날짜 1일 숨김</small></button>'+
+    '<div class="bm-sep"></div>'+
+    '<button class="bm-it" data-bm="sweep"><i>🧹</i>청소 한 번 부탁해</button>';
+  m.style.top=(r.bottom+8)+'px'; m.style.left=Math.max(8,Math.min(window.innerWidth-298,r.right-290))+'px';
+  m.classList.add('show');
+}
+function closeBotMenu(){ $('botMenu').classList.remove('show'); }
+$('btnBot').addEventListener('click',function(ev){ ev.stopPropagation(); $('botMenu').classList.contains('show')?closeBotMenu():openBotMenu(); });
+document.addEventListener('click',function(ev){ if(!ev.target.closest('#botMenu')&&!ev.target.closest('#btnBot')) closeBotMenu(); });
+var ADMIN_ID='m_seokjin';
+function sendWish(text,kind){
+  if(!S.me){ toast('접속자를 먼저 선택해 주세요'); return false; }
+  var rec={date:today(),member_id:'__wish__',sender_id:S.me,recipient_id:ADMIN_ID,text:(kind?'['+kind+'] ':'')+text};
+  var local=Object.assign({id:'n_'+Date.now(),created_at:new Date().toISOString(),read_at:null},rec);
+  S.notes=(S.notes||[]).concat([local]); renderInbox(); renderBell();
+  if(S.sb) S.sb.from('notes').insert(rec).select().then(function(r){ if(r.error){ toast('전달 실패: '+r.error.message); return; }
+    var row=r.data&&r.data[0]; if(row){ S.notes=S.notes.map(function(x){ return x===local?row:x; }); } });
+  return true;
+}
+$('botMenu').addEventListener('click',function(ev){
+  ev.stopPropagation();
+  var b=ev.target.closest('[data-bm]'); if(!b) return;
+  var k=b.dataset.bm;
+  if(k==='wish'){
+    $('botMenu').innerHTML='<div class="bm-hd"><span class="botspr">'+botSvg()+'</span><div><b>개편 희망사항</b><span>적어 주시면 관리자('+esc((memberById(ADMIN_ID)||{}).name||'관리자')+')에게 쪽지로 전해 드릴게요.</span></div></div>'+
+      '<div class="wishbox"><textarea id="wishText" maxlength="500" placeholder="예) 맛집 목록에 가격대도 보이면 좋겠어요"></textarea>'+
+      '<div class="acts"><button class="btn sm" data-bm="back">취소</button><button class="btn sm primary" data-bm="wishsend">보내기</button></div></div>';
+    setTimeout(function(){ var t=$('wishText'); if(t) t.focus(); },30); return;
+  }
+  if(k==='back'){ openBotMenu(); return; }
+  if(k==='wishsend'){ var tx=(($('wishText')||{}).value||'').trim(); if(!tx){ $('wishText').focus(); return; }
+    if(sendWish(tx,'개편 희망')){ closeBotMenu(); toast('관리자에게 전달했어요. 고마워요!'); botSweep('전달 완료!'); } return; }
+  closeBotMenu();
+  if(k==='hist'){ goTab('schedule'); setHist(!HIST.open); return; }
+  if(k==='more'){ goTab('schedule'); S.pastDays++; saveLocal(); renderBody(); var f=el('#sTbody tr'); if(f) botTour([f.getAttribute('data-d')+'|__c__'],'행 추가!'); return; }
+  if(k==='less'){ goTab('schedule'); if(S.pastDays<=0){ toast('오늘보다 이전 날짜가 이미 없습니다'); return; }
+    var f2=el('#sTbody tr'); (f2?botTour([f2.getAttribute('data-d')+'|__c__'],'행 정리!'):Promise.resolve()).then(function(){ S.pastDays--; saveLocal(); renderBody(); }); return; }
+  if(k==='sweep'){ botSweep('쓱싹쓱싹'); return; }
+  if(k==='sync'){ runSheetSync(); return; }
+});
+/* 스프레드시트 동기화 — '웹에 게시'한 CSV 주소(S.team.sheetCsv)가 있으면 바로, 없으면 관리자에게 요청 */
+function parseCsv(t){
+  var rows=[],row=[],f='',q=false;
+  for(var i=0;i<t.length;i++){ var c=t[i];
+    if(q){ if(c==='"'){ if(t[i+1]==='"'){ f+='"'; i++; } else q=false; } else f+=c; continue; }
+    if(c==='"') q=true; else if(c===','){ row.push(f); f=''; } else if(c==='\n'){ row.push(f); rows.push(row); row=[]; f=''; } else if(c!=='\r') f+=c; }
+  row.push(f); rows.push(row); return rows;
+}
+function runSheetSync(){
+  goTab('schedule');
+  if(!S.team.sheetCsv){
+    if(sendWish('구글 시트 → 사이트 반영을 부탁드려요','시트 동기화 요청')){ toast('시트 동기화를 관리자에게 요청했어요'); botSweep('요청 완료!'); }
+    return;
+  }
+  toast('시트를 읽는 중…');
+  fetch(S.team.sheetCsv).then(function(r){ return r.text(); }).then(function(t){
+    var rows=parseCsv(t), hdr=rows.filter(function(c){ return c.some(function(x){ return /^\s*이장/.test(x||''); }); })[0];
+    var names=(hdr||[]).slice(4,11).map(function(x){ return (x||'').replace(/\(.*$/,'').trim(); });
+    var t0=today(), out=[];
+    rows.forEach(function(c){ var m=/^(\d{4})\. (\d{2})\. (\d{2})$/.exec((c[1]||'').trim()); if(!m) return; var ds=m[1]+'-'+m[2]+'-'+m[3]; if(ds<t0) return;
+      var v=[ds,(c[3]||'').trim()].concat(c.slice(4,11).map(function(x){ return (x||'').trim(); })); if(v.slice(1).some(Boolean)) out.push(v); });
+    var lg=sheetSync(out,names); toast(lg.length?('시트에서 '+lg.length+'건 반영했어요'):'새로 반영할 내용이 없어요');
+    if(!lg.length) botSweep('이미 최신이에요');
+  }).catch(function(e){ toast('시트를 읽지 못했어요: '+e.message); });
 }
 
 function savePop(){
@@ -5774,6 +5990,7 @@ $('bellPanel').addEventListener('click',function(ev){
   var bn=ev.target.closest('[data-bnote]');
   if(bn){ markRead([bn.dataset.bnf]); $('bellPanel').classList.remove('show'); refreshNotifs();
     var n=(S.notes||[]).filter(function(x){ return String(x.id)===bn.dataset.bnote; })[0];
+    if(n&&n.member_id==='__wish__'){ $('inboxPanel').classList.add('show'); drawInbox(); return; }
     if(n){ goTab('schedule'); noteGoto(n,true); } return; }
   var bg=ev.target.closest('[data-bgb]');
   if(bg){ markRead([bg.dataset.bnf]); $('bellPanel').classList.remove('show'); refreshNotifs(); if(S.me) openHome(S.me); return; }
