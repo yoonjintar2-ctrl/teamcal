@@ -668,6 +668,9 @@ table.data tr.picked td{background:#EDF1FF}
 .embedwrap iframe{display:block;width:100%;height:calc(100vh - 230px);min-height:420px;border:none}
 
 /* ───────────────────────── 우측 상단: 동시 접속자 · 알림 · 접속자 ───────────────────────── */
+.presence .botav{display:grid;place-items:center;background:#EAF2FF;border-color:#5B8DEF;color:#2F5FCF;animation:botpulse 1.6s ease-in-out infinite}
+.presence .botav svg{width:17px;height:17px}
+@keyframes botpulse{50%{box-shadow:0 0 0 4px rgba(91,141,239,.25)}}
 .presence{display:flex;align-items:center;padding-right:6px;margin-right:2px}
 .presence:empty{display:none}
 .pav{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--c,#9AA3AD);background:var(--bg,#F1F3F6);
@@ -1604,6 +1607,7 @@ function autoTeamLunch(){
     var first=null;
     for(var i=0;i<5;i++){ var x=fmt(addDays(d,i)); if(!holidayOf(x)){ first=x; break; } }
     if(!first||first<t||done[first]) continue;
+    if(!changed) botStart('매주 팀점 등록 봇');
     done[first]=1; changed=true;
     var cur=S.commons[first]||'';
     if(/팀\s*점/.test(cur)) continue;
@@ -1611,7 +1615,7 @@ function autoTeamLunch(){
     sbUp('commons',{date:first,text:nx,updated_at:new Date().toISOString()},'date');
     var real=S.me; S.me='auto'; histLog(first,'__c__',[{f:'공통 일정',a:cur,b:nx}]); S.me=real;
   }
-  if(changed){ saveTeam(); renderBody(); }
+  if(changed){ saveTeam(); renderBody(); botEnd(); }
 }
 function awaySig(){
   var tl=teamLunchList();
@@ -2111,10 +2115,23 @@ function presenceStart(){
 }
 function presenceTrack(){
   if(!S.pres) return;
-  try{ var pr=S.pres.track({mid:S.me||null,at:Date.now(),cell:PEER.my||null}); if(pr&&pr.catch) pr.catch(function(){}); }catch(err){}
+  try{ var pr=S.pres.track({mid:S.me||null,at:Date.now(),cell:PEER.my||null,bot:BOT.on?BOT.label:null}); if(pr&&pr.catch) pr.catch(function(){}); }catch(err){}
 }
 /* ── 다른 사람이 보고 있는 칸 (구글 시트처럼) — 마우스를 올린 칸·편집 중인 칸을 실시간 공유 ── */
 var PEER={my:null,t:null};
+/* 자동 업데이트 봇 — 시트 반영·매주 팀점 등록 중에는 접속자 명단에 봇 아이콘 표시 (작업 후 2분간 유지) */
+var BOT={on:false,label:'',t:null};
+function botStart(label){
+  BOT.on=true; BOT.label=label||'자동 업데이트 봇'; clearTimeout(BOT.t); presenceTrack(); renderPresence();
+}
+function botEnd(){ clearTimeout(BOT.t); BOT.t=setTimeout(function(){ BOT.on=false; BOT.label=''; presenceTrack(); renderPresence(); },120000); }
+function onlineBots(){
+  var st={}; try{ st=S.pres?S.pres.presenceState():{}; }catch(err){}
+  var seen={}, out=[];
+  Object.keys(st).forEach(function(k){ (st[k]||[]).forEach(function(p){ if(p&&p.bot&&!seen[p.bot]){ seen[p.bot]=1; out.push(p.bot); } }); });
+  if(BOT.on&&!seen[BOT.label]) out.push(BOT.label);
+  return out;
+}
 function peerSetCell(c){
   var v=c?c.d+'|'+c.m:null; if(v===PEER.my) return;
   PEER.my=v; clearTimeout(PEER.t); PEER.t=setTimeout(presenceTrack,250);
@@ -2164,6 +2181,9 @@ function renderPresence(){
     out+=pavHtml(m,'data-pv="'+id+'" title="'+esc(m.name)+(m.rank?' '+esc(m.rank):'')+(id===S.me?' (나)':'')+' · 접속 중"');
   });
   if(ids.length>MAX) out+='<span class="pav more" title="'+ids.slice(MAX).map(function(i){return esc(memberById(i).name);}).join(', ')+'">+'+(ids.length-MAX)+'</span>';
+  onlineBots().forEach(function(b){
+    out='<span class="pav botav" title="'+esc(b)+' · 지금 일정을 자동으로 반영하고 있어요"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9.5 13h.01M14.5 13h.01M9.5 16.2h5M3 13v2M21 13v2"/></svg></span>'+out;
+  });
   box.innerHTML=out;
 }
 $('presence').addEventListener('click',function(ev){
@@ -2888,7 +2908,7 @@ function histFocus(h){
 ========================================================================== */
 function sheetTokens(txt){
   var out={vacation:'',lunch:'',arrive:'',memo:[]};
-  String(txt||'').split(/[\/+\n]/).map(function(x){ return x.trim(); }).filter(Boolean).forEach(function(t){
+  String(txt||'').split(/[\/+\n,]/).map(function(x){ return x.trim(); }).filter(Boolean).forEach(function(t){
     var c=t.replace(/\s+/g,'');
     var tm=/^(\d{1,2})(?::(\d{2}))?to(\d{1,2})(?::(\d{2}))?$/i.exec(c);
     if(tm){ var h=+tm[1]; if(h<7) h+=12; out.arrive=String(h).padStart(2,'0')+':'+(tm[2]||'00'); return; }
@@ -2919,6 +2939,7 @@ function sheetHas(cur,t){
 }
 function sheetSync(rows,names){
   var byName={}; S.members.forEach(function(m){ byName[m.name]=m; });
+  botStart('구글 시트 동기화 봇');
   var log=[], realMe=S.me; S.me='sheet';
   try{
     (rows||[]).forEach(function(r){
@@ -2952,7 +2973,7 @@ function sheetSync(rows,names){
         log.push(ds+' '+nm+': '+ch.map(function(c){ return c.f+' '+(c.b||'-'); }).join(', '));
       });
     });
-  } finally { S.me=realMe; }
+  } finally { S.me=realMe; botEnd(); }
   saveLocal(); renderBody(); renderHead();
   return log;
 }
