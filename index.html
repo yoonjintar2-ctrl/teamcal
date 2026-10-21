@@ -278,6 +278,13 @@ table.sched tbody td.peercell{box-shadow:inset 0 0 0 2px var(--pc)}
 .botact .bubble:empty{display:none}
 table.sched tbody td.botfix{animation:botfix .6s ease-out}
 @keyframes botfix{0%{box-shadow:inset 0 0 0 3px #3AAE9C;background-color:#E6F7F3}100%{box-shadow:inset 0 0 0 0 #3AAE9C}}
+table.sched tbody td.rowpre > *{opacity:0}
+table.sched tbody td.rowpre{background:#F3FBF9!important}
+table.sched tbody td.rowin{animation:rowin .45s cubic-bezier(.2,.8,.3,1.2)}
+@keyframes rowin{from{transform:translateY(-14px) scaleY(.4);opacity:0;background:#DDF3EE}to{transform:none;opacity:1}}
+table.sched tbody td.rowout{animation:rowout .35s ease-in forwards}
+@keyframes rowout{to{transform:translateX(26px) rotate(2deg);opacity:0;filter:blur(1px)}}
+table.sched tbody tr.rowfold td{transition:padding .3s,height .3s,font-size .3s;line-height:0;font-size:0;padding-top:0!important;padding-bottom:0!important}
 .dust{position:fixed;z-index:499;width:6px;height:6px;background:#C9CFD8;pointer-events:none;animation:dust .7s ease-out forwards}
 @keyframes dust{to{transform:translate(var(--dx),-14px);opacity:0}}
 .nc.wiped::after{opacity:1!important;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%)!important;
@@ -3306,6 +3313,52 @@ async function botTour(keys,say){
     await botIn();
   } finally { BOTA.busy=false; }
 }
+/* 행 추가 — 비서가 표 맨 위로 가서 새 줄을 끌어내리고, 칸을 왼쪽부터 하나씩 깔아 줌 */
+async function botRowAdd(){
+  if(BOTA.busy) return; BOTA.busy=true;
+  try{
+    var wrap=$('gridwrap'); wrap.scrollTo({top:0,behavior:'smooth'});
+    await botOut('','새 줄 가져올게요');
+    var th=$('sThead').getBoundingClientRect();
+    await botGo(th.left+40,th.bottom+6,520);
+    $('botBubble').textContent='영차!'; await botSleep(260);
+    S.pastDays++; saveLocal(); renderBody(); wrap.scrollTop=0;
+    var tr=el('#sTbody tr'); if(!tr){ await botIn(); return; }
+    var tds=[].slice.call(tr.children);
+    tds.forEach(function(td){ td.classList.add('rowpre'); });
+    for(var i=0;i<tds.length;i++){
+      var r=tds[i].getBoundingClientRect();
+      if(r.width){ await botGo(r.left+r.width/2,r.top+r.height/2-6,180); }
+      tds[i].classList.remove('rowpre'); tds[i].classList.add('rowin');
+    }
+    $('botBubble').textContent='한 줄 추가 완료!'; await botSleep(500);
+    tds.forEach(function(td){ td.classList.remove('rowin'); });
+    await botIn();
+  } finally { BOTA.busy=false; }
+}
+/* 행 제거 — 맨 위 줄을 빗자루로 오른쪽 끝까지 쓸어 내고 접음 */
+async function botRowRemove(){
+  if(BOTA.busy) return; BOTA.busy=true;
+  try{
+    var wrap=$('gridwrap'); wrap.scrollTo({top:0,behavior:'smooth'}); await botSleep(250);
+    var tr=el('#sTbody tr'); if(!tr){ return; }
+    await botOut('broom','이 줄 치울게요');
+    var tds=[].slice.call(tr.children), r0=tds[0].getBoundingClientRect();
+    await botGo(r0.left-6,r0.top+r0.height/2,520);
+    for(var i=0;i<tds.length;i++){
+      var r=tds[i].getBoundingClientRect(); if(!r.width) continue;
+      await botGo(r.left+r.width/2,r.top+r.height/2,200);
+      tds[i].classList.add('rowout');
+      for(var k=0;k<2;k++){ var d=document.createElement('i'); d.className='dust'; d.style.left=(r.left+r.width/2-10+Math.random()*16)+'px';
+        d.style.top=(r.top+r.height/2+8)+'px'; d.style.setProperty('--dx',(-8-Math.random()*14)+'px'); document.body.appendChild(d);
+        setTimeout(function(n){ return function(){ n.remove(); }; }(d),800); }
+    }
+    tr.classList.add('rowfold'); await botSleep(380);
+    S.pastDays--; saveLocal(); renderBody();
+    $('botBubble').textContent='깔끔!'; await botSleep(450);
+    await botIn();
+  } finally { BOTA.busy=false; }
+}
 /* 빗자루질 — 화면 아래를 쓸고 들어감 */
 async function botSweep(say){
   if(BOTA.busy) return; BOTA.busy=true;
@@ -3382,9 +3435,8 @@ $('botMenu').addEventListener('click',function(ev){
     if(sendWish(tx,'개편 희망')){ closeBotMenu(); toast('관리자에게 전달했어요. 고마워요!'); botSweep('전달 완료!'); } return; }
   closeBotMenu();
   if(k==='hist'){ goTab('schedule'); setHist(!HIST.open); return; }
-  if(k==='more'){ goTab('schedule'); S.pastDays++; saveLocal(); renderBody(); var f=el('#sTbody tr'); if(f) botTour([f.getAttribute('data-d')+'|__c__'],'행 추가!'); return; }
-  if(k==='less'){ goTab('schedule'); if(S.pastDays<=0){ toast('오늘보다 이전 날짜가 이미 없습니다'); return; }
-    var f2=el('#sTbody tr'); (f2?botTour([f2.getAttribute('data-d')+'|__c__'],'행 정리!'):Promise.resolve()).then(function(){ S.pastDays--; saveLocal(); renderBody(); }); return; }
+  if(k==='more'){ goTab('schedule'); botRowAdd(); return; }
+  if(k==='less'){ goTab('schedule'); if(S.pastDays<=0){ toast('오늘보다 이전 날짜가 이미 없습니다'); return; } botRowRemove(); return; }
   if(k==='sweep'){ botSweep('쓱싹쓱싹'); return; }
   if(k==='sync'){ runSheetSync(); return; }
 });
