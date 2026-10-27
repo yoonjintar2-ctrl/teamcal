@@ -3509,8 +3509,41 @@ function parseCsv(t){
     if(c==='"') q=true; else if(c===','){ row.push(f); f=''; } else if(c==='\n'){ row.push(f); rows.push(row); row=[]; f=''; } else if(c!=='\r') f+=c; }
   row.push(f); rows.push(row); return rows;
 }
+/* 구버전 시트 통로(Apps Script 웹 앱) — SMTOWN 구글 계정으로 로그인된 브라우저에서 JSONP 로 읽음 */
+var SHEET_API='https://script.google.com/a/macros/smtown.com/s/AKfycbw5hmFmn20lh5nv9FquTxF1r193lhKZkmHcVlB9Ofc6XHrDIuWxsJPgiVpE5uAnAny0/exec', SHEET_KEY='m3sync-7Qe2Lx9';
+function loadSheetApi(){
+  return new Promise(function(res,rej){
+    var cb='__sheetCb'+Date.now(), sc=document.createElement('script'), done=false;
+    window[cb]=function(d){ done=true; res(d); cleanup(); };
+    function cleanup(){ try{ delete window[cb]; }catch(e){ window[cb]=undefined; } sc.remove(); }
+    sc.onerror=function(){ if(!done){ rej(new Error('통로에 접속하지 못했어요 (SMTOWN 구글 계정 로그인 필요)')); cleanup(); } };
+    setTimeout(function(){ if(!done){ rej(new Error('응답이 없어요')); cleanup(); } },20000);
+    sc.src=SHEET_API+'?k='+encodeURIComponent(SHEET_KEY)+'&callback='+cb;
+    document.head.appendChild(sc);
+  });
+}
+function sheetRowsToSync(rows){
+  var hdr=rows.filter(function(c){ return c.some(function(x){ return /^\s*이장/.test(x||''); }); })[0];
+  var names=(hdr||[]).slice(4,11).map(function(x){ return String(x||'').replace(/\(.*$/,'').trim(); });
+  var t0=today(), out=[];
+  rows.forEach(function(c){ var m=/^(\d{4})\. ?(\d{1,2})\. ?(\d{1,2})\.?$/.exec(String(c[1]||'').trim()); if(!m) return;
+    var ds=m[1]+'-'+String(m[2]).padStart(2,'0')+'-'+String(m[3]).padStart(2,'0'); if(ds<t0) return;
+    var v=[ds,String(c[3]||'').trim()].concat(c.slice(4,11).map(function(x){ return String(x||'').trim(); })); if(v.slice(1).some(Boolean)) out.push(v); });
+  return {names:names,rows:out};
+}
 function runSheetSync(){
   goTab('schedule');
+  if(SHEET_API){
+    toast('구버전 캘린더를 읽는 중…');
+    loadSheetApi().then(function(d){
+      if(!d||d.error||!d.rows) throw new Error(d&&d.error||'데이터 없음');
+      var x=sheetRowsToSync(d.rows);
+      if(x.names.join(',')!=='이장,이건우,김예지,양연주,최소영,박지윤,윤석진') throw new Error('시트 열 구성이 바뀌었어요');
+      var lg=sheetSync(x.rows,x.names);
+      toast(lg.length?('구버전 캘린더에서 '+lg.length+'건 반영했어요'):'새로 반영할 내용이 없어요');
+    }).catch(function(e){ toast('동기화 실패: '+e.message); });
+    return;
+  }
   if(!S.team.sheetCsv){
     /* 비공개 시트라 사이트에서 직접 열 수 없음 — 쪽지는 보내지 않고 안내만 */
     (async function(){ if(BOTA.busy) return; BOTA.busy=true;
