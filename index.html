@@ -2327,7 +2327,7 @@ function fitColumns(){
   var root=document.documentElement, vis=shownMembers(), n=Math.max(1,vis.length);
   if(window.innerWidth<=760){ root.style.removeProperty('--w-mem'); root.style.removeProperty('--w-common'); }
   else{
-    var wrap=$('gridwrap'), avail=(wrap&&wrap.clientWidth?wrap.clientWidth:window.innerWidth)-4;
+    var wrap=$('gridwrap'), avail=(wrap&&wrap.clientWidth?wrap.clientWidth:window.innerWidth)-14;
     var D=78, A=32, C=176, M=168;
     if(D+C+A+M*n>avail) C=150;
     if(D+C+A+M*n>avail) M=Math.max(136,Math.floor((avail-D-C-A)/n));
