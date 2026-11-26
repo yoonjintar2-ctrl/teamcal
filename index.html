@@ -2386,6 +2386,7 @@ function rangeEnd(){ return addDays(new Date(),FUTURE_DAYS); }
 
 /* 네임카드 시간 — 오늘 출근시간을 바꿨거나 반차면 오늘 실제 근무시간으로 (의자 표시와 같은 기준) */
 function todayHours(m){
+  if(onLeave(m,today())) return leaveKind(m)+' 중';   /* 휴직 기간이 오면 '육아휴직 중' 등 */
   return workHours(m);   /* 네임카드는 항상 프로필에 설정한 기본 시간 */
   var t=today(), w=parseD(t).getDay();
   if(holidayOf(t)||w===0||w===6) return workHours(m);
