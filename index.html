@@ -2277,7 +2277,7 @@ function presenceTrack(){
   try{ var pr=S.pres.track({mid:S.me||null,at:Date.now(),cell:PEER.tab==='schedule'?(PEER.my||null):null,tab:PEER.tab||'schedule',bot:BOT.on?BOT.label:null}); if(pr&&pr.catch) pr.catch(function(){}); }catch(err){}
 }
 /* ── 다른 사람이 보고 있는 메뉴 — 팀 스케줄이 아닌 메뉴에 있으면 그 메뉴 버튼을 그 사람 색으로 표시 ── */
-var PEER_TAB_ON=false;   /* 메뉴 하이라이트 디자인 확정 전까지 꺼 둠 */
+var PEER_TAB_ON=true;    /* 다른 접속자가 보는 메뉴 — A안(고유색 테두리·연한 배경·점) */
 function paintPeerTabs(){
   if(!PEER_TAB_ON) return;
   document.querySelectorAll('#tabs > button.peertab').forEach(function(b){
@@ -2385,6 +2385,7 @@ function rangeEnd(){ return addDays(new Date(),FUTURE_DAYS); }
 
 /* 네임카드 시간 — 오늘 출근시간을 바꿨거나 반차면 오늘 실제 근무시간으로 (의자 표시와 같은 기준) */
 function todayHours(m){
+  return workHours(m);   /* 네임카드는 항상 프로필에 설정한 기본 시간 */
   var t=today(), w=parseD(t).getDay();
   if(holidayOf(t)||w===0||w===6) return workHours(m);
   var e=S.sched[t+'|'+m.id];
