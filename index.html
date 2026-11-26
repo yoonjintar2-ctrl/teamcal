@@ -355,7 +355,7 @@ table.sched tr.past.holi .dcell .wd,
 table.sched tr.past.sat .dcell .d1,table.sched tr.past.sun .dcell .d1,
 table.sched tr.past.sat .dcell .wd,table.sched tr.past.sun .dcell .wd{color:#CFA9A5}
 table.sched tr.past .cellbody{opacity:.52}
-table.sched tr.mstart td{border-top:2px solid #D8DDE3}
+table.sched tr:has(+ tr.mstart) td{border-bottom-color:#D8DDE3}   /* 월이 바뀌는 줄 — 굵기는 다른 테두리와 같게, 색만 조금 진하게 */
 
 /* 오늘 — 모든 셀에 위/아래 선, 양 끝 셀에 좌/우 선을 넣어 테두리가 끊기지 않게 */
 table.sched tr.today td{background:var(--today);
