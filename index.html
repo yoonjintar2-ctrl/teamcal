@@ -1136,6 +1136,13 @@ body.locked #ov{background:rgba(24,22,30,.58);backdrop-filter:blur(10px)}
 .tmean p{margin:0;font-size:13px;line-height:1.6}
 .ftbox .ftcard,.ftbox .biocard{border:none;padding:0;background:transparent}
 @media (max-width:980px){ .ftcols{grid-template-columns:1fr} .fthero{flex-wrap:wrap} }
+/* 근무일 빈 칸의 ＋ 는 마우스를 올릴 때만 */
+.cell .ph.ph-h{opacity:0;transition:opacity .15s}
+.cell:hover .ph.ph-h{opacity:1}
+/* 근태(연차·반차) 강조 — 검정 대신 코랄 */
+.ln.vac > svg{color:#E0654F}
+.kbadge.vac{color:#D4553F}
+.kbadge.vac-a{background:#FDEBE6;border-radius:5px;padding:1px 7px}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous">
 </head>
@@ -2438,17 +2445,18 @@ function line(icon,val,cls){
 
 function cellInner(m,e,offday){
   var out='';
-  /* 1) 출퇴근시간 — 입력이 없어도 항상 맨 위 (휴일·주말 제외) */
+  /* 1) 출퇴근시간 — 기본 시간과 다를 때만 맨 위에 (휴일·주말·연차 제외) */
   if(!offday){
-    var t=calcTimes(m,e||{});
-    out+=line(ICO.time,esc(t.text),'tm');
+    var t=calcTimes(m,e||{}), b=calcTimes(m,{});
+    if(!t.allDay&&(t.start!==b.start||t.end!==b.end)) out+=line(ICO.time,esc(t.text),'tm');
   }
-  if(!e) return out||'<span class="ph">＋</span>';
+  var PH='<span class="ph ph-h">＋</span>';
+  if(!e) return out||PH;
   /* 2) 근태 3) 점심 4) 메모 */
-  if(e.vacation) out+=line(vacIcon(e.vacation),'<span class="kbadge">'+esc(VMAP[e.vacation]?VMAP[e.vacation].label:e.vacation)+'</span>');
+  if(e.vacation) out+=line(vacIcon(e.vacation),'<span class="kbadge vac'+(e.vacation==='annual'?' vac-a':'')+'">'+esc(VMAP[e.vacation]?VMAP[e.vacation].label:e.vacation)+'</span>','vac');
   if(e.lunch)    out+=line(ICO.lunch,'<span class="kbadge">점심 '+esc(LMAP[e.lunch]||e.lunch)+'</span>');
   if(e.memo)     out+=line(ICO.memo,esc(e.memo));
-  return out||'<span class="ph">＋</span>';
+  return out||PH;
 }
 
 /* ── 날씨 예보 (성수동, Open-Meteo · 키 불필요) ────────────────────────────
