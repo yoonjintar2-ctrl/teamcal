@@ -258,8 +258,16 @@ table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-
   .teamlunch .tl-m b{font-size:10.5px;padding:2px 7px;bottom:6px}
 }
 table.sched tbody td.peercell{box-shadow:inset 0 0 0 2px var(--pc)}
+table.sched tbody td.c-cell.leave{background:#F0F2F5}
+.leavetx{font-size:11.5px;color:var(--tx4);letter-spacing:-.2px}
+.leavetx + .ph{display:none}
 .peertag{position:absolute;top:-9px;left:4px;z-index:8;display:flex;gap:2px;pointer-events:none}
 .peertag span{font-size:10px;font-weight:800;color:#fff;padding:1px 6px;border-radius:4px 4px 4px 0;box-shadow:0 1px 3px rgba(0,0,0,.2);white-space:nowrap}
+/* 다른 사람이 보고 있는 메뉴 — 그 사람 고유색 */
+.tabbar button.peertab{position:relative;box-shadow:inset 0 0 0 1.5px var(--pc);background:var(--pcs)}
+.tabbar button.peertab.on{box-shadow:inset 0 0 0 1.5px var(--pc),0 0 0 2px var(--pcs)}
+.peerdots{position:absolute;top:-3px;right:-3px;display:flex;gap:1px;pointer-events:none}
+.peerdots i{width:8px;height:8px;border-radius:50%;border:1.5px solid #fff;box-sizing:content-box}
 /* ── 클로드 비서 (오리지널 8비트 픽셀 로봇) ── */
 .botbtn{position:relative;width:38px;height:34px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;padding:0;
   display:grid;place-items:center;overflow:visible}
@@ -1690,13 +1698,14 @@ function awayState(m,ds){
   var hol=holidayOf(ds), w=parseD(ds).getDay();
   if(hol) return hol;
   if(w===0||w===6) return '주말';
+  if(onLeave(m,ds)) return '장기휴직';
   var e=S.sched[ds+'|'+m.id]||{};
   if(e.vacation==='annual') return '연차';
   if(ds!==t) return '';
   var tm=calcTimes(m,e); if(tm.allDay) return '연차';
   var d=new Date(), cur=d.getHours()*60+d.getMinutes();
-  if(cur<tm.start) return (e.vacation==='am_half'||e.vacation==='am_quarter')?(VMAP[e.vacation].label+' · '+toHM(tm.start)+' 출근'):'출근 전 · '+toHM(tm.start)+' 출근';
-  if(cur>=tm.end) return (e.vacation==='pm_half'||e.vacation==='pm_quarter')?(VMAP[e.vacation].label+' · '+toHM(tm.end)+' 퇴근'):'퇴근 · '+toHM(tm.end);
+  if(cur<tm.start) return (e.vacation==='am_half'||e.vacation==='am_quarter')?VMAP[e.vacation].label:'출근 전 · '+toHM(tm.start)+' 출근';
+  if(cur>=tm.end) return (e.vacation==='pm_half'||e.vacation==='pm_quarter')?VMAP[e.vacation].label:'퇴근 · '+toHM(tm.end);
   return '';
 }
 /* 점심 팻말 — 오늘 11:15 ~ 13:00 사이, 점심 일정(점약·도시락·간단히)이 있으면 팻말 든 캐릭터로 */
@@ -1729,6 +1738,7 @@ function teamLunchList(){
   if(cur<TL_FROM||cur>=LUNCH_TO) return null;
   return shownMembers().filter(function(m){
     var e=S.sched[t+'|'+m.id]||{};
+    if(onLeave(m,t)) return false;
     if(e.vacation==='annual'||e.vacation==='am_half') return false;
     if(e.lunch==='appt'||e.lunch==='bento'||e.lunch==='light'||e.lunch==='skip') return false;
     return true;
@@ -2258,16 +2268,38 @@ function presenceStart(){
   try{ if(S.pres) S.sb.removeChannel(S.pres); }catch(err){}
   try{
     S.pres=S.sb.channel('teamws-presence',{config:{presence:{key:clientId()}}});
-    S.pres.on('presence',{event:'sync'},function(){ renderPresence(); paintPeerCells(); })
+    S.pres.on('presence',{event:'sync'},function(){ renderPresence(); paintPeerCells(); paintPeerTabs(); })
           .subscribe(function(st){ if(st==='SUBSCRIBED') presenceTrack(); });
   }catch(err){}
 }
 function presenceTrack(){
   if(!S.pres) return;
-  try{ var pr=S.pres.track({mid:S.me||null,at:Date.now(),cell:PEER.my||null,bot:BOT.on?BOT.label:null}); if(pr&&pr.catch) pr.catch(function(){}); }catch(err){}
+  try{ var pr=S.pres.track({mid:S.me||null,at:Date.now(),cell:PEER.tab==='schedule'?(PEER.my||null):null,tab:PEER.tab||'schedule',bot:BOT.on?BOT.label:null}); if(pr&&pr.catch) pr.catch(function(){}); }catch(err){}
+}
+/* ── 다른 사람이 보고 있는 메뉴 — 팀 스케줄이 아닌 메뉴에 있으면 그 메뉴 버튼을 그 사람 색으로 표시 ── */
+var PEER_TAB_ON=false;   /* 메뉴 하이라이트 디자인 확정 전까지 꺼 둠 */
+function paintPeerTabs(){
+  if(!PEER_TAB_ON) return;
+  document.querySelectorAll('#tabs > button.peertab').forEach(function(b){
+    b.classList.remove('peertab'); b.style.removeProperty('--pc'); b.style.removeProperty('--pcs');
+    var d=b.querySelector('.peerdots'); if(d) d.remove(); b.removeAttribute('data-peers');
+  });
+  var st={}; try{ st=S.pres?S.pres.presenceState():{}; }catch(err){}
+  var me=clientId(), by={};
+  Object.keys(st).forEach(function(k){ if(k===me) return; (st[k]||[]).forEach(function(p){
+    if(!p||!p.mid||p.mid===S.me||!p.tab||p.tab==='schedule') return; var m=memberById(p.mid); if(!m) return;
+    (by[p.tab]=by[p.tab]||[]); if(by[p.tab].indexOf(m)<0) by[p.tab].push(m); }); });
+  Object.keys(by).forEach(function(t){
+    var b=el('#tabs > button[data-tab="'+t+'"]'); if(!b) return; var ms=by[t];
+    b.classList.add('peertab'); b.style.setProperty('--pc',sig(ms[0])); b.style.setProperty('--pcs',sig(ms[0],'soft'));
+    b.setAttribute('data-peers',ms.map(function(m){return m.name;}).join(', ')+' 님이 보는 중');
+    var d=document.createElement('span'); d.className='peerdots';
+    d.innerHTML=ms.slice(0,3).map(function(m){ return '<i style="background:'+sig(m)+'" title="'+esc(m.name)+'"></i>'; }).join('');
+    b.appendChild(d);
+  });
 }
 /* ── 다른 사람이 보고 있는 칸 (구글 시트처럼) — 마우스를 올린 칸·편집 중인 칸을 실시간 공유 ── */
-var PEER={my:null,t:null};
+var PEER={my:null,t:null,tab:'schedule'};
 /* 자동 업데이트 봇 — 시트 반영·매주 팀점 등록 중에는 접속자 명단에 봇 아이콘 표시 (작업 후 2분간 유지) */
 var BOT={on:false,label:'',t:null};
 function botStart(label){
@@ -2290,7 +2322,7 @@ function paintPeerCells(){
   var st={}; try{ st=S.pres?S.pres.presenceState():{}; }catch(err){}
   var me=clientId(), by={};
   Object.keys(st).forEach(function(k){ if(k===me) return; (st[k]||[]).forEach(function(p){
-    if(!p||!p.cell||!p.mid||p.mid===S.me) return; var m=memberById(p.mid); if(!m) return;
+    if(!p||!p.cell||!p.mid||p.mid===S.me||(p.tab&&p.tab!=='schedule')) return; var m=memberById(p.mid); if(!m) return;
     (by[p.cell]=by[p.cell]||[]); if(by[p.cell].indexOf(m)<0) by[p.cell].push(m); }); });
   Object.keys(by).forEach(function(k){
     var q=k.split('|'), c=el('#sTbody .cell[data-d="'+q[0]+'"][data-m="'+q[1]+'"]'); if(!c) return;
@@ -2356,8 +2388,10 @@ function todayHours(m){
   var t=today(), w=parseD(t).getDay();
   if(holidayOf(t)||w===0||w===6) return workHours(m);
   var e=S.sched[t+'|'+m.id];
+  if(onLeave(m,t)) return '장기휴직 중';
   if(!e||(!e.arrive&&!e.vacation)) return workHours(m);
-  var tm=calcTimes(m,e); return tm.allDay?'연차':tm.text;
+  if(e.vacation==='annual') return '연차';
+  return calcTimes(m,{arrive:e.arrive}).text;   /* 반차·반반차는 시간 조정 없이 */
 }
 function nameCardHtml(m){
   var ints=(m.interests||[]).slice(0,3);
@@ -2446,7 +2480,7 @@ function line(icon,val,cls){
 function cellInner(m,e,offday){
   var out='';
   /* 1) 출퇴근시간 — 기본 시간과 다를 때만 맨 위에 (휴일·주말·연차 제외) */
-  if(!offday){
+  if(!offday&&!(e&&e.vacation)){   /* 연차·반차·반반차가 있는 날은 시간 표시 안 함 — 본인이 알아서 조정 */
     var t=calcTimes(m,e||{}), b=calcTimes(m,{});
     if(!t.allDay&&(t.start!==b.start||t.end!==b.end)) out+=line(ICO.time,esc(t.text),'tm');
   }
@@ -2657,11 +2691,16 @@ function isBirthday(m,ds){
 function offdayOf(ds){ var w=parseD(ds).getDay(); return !!holidayOf(ds)||w===0||w===6; }
 
 /* 팀원 칸 내용 (실시간 반영 때도 이 함수로 그 칸만 다시 그립니다) */
+/* 장기 휴직 — 프로필 leave {from,to} (to 비우면 계속) */
+function onLeave(m,ds){
+  var lv=m&&m.profile&&m.profile.leave; if(!lv||!lv.from) return false;
+  return ds>=lv.from&&(!lv.to||ds<=lv.to);
+}
 function memberCellHtml(m,ds,offday){
   if(offday==null) offday=offdayOf(ds);
   var en=S.sched[ds+'|'+m.id];
   return (isBirthday(m,ds)?'<span class="bdcake" title="'+esc(m.name)+' 생일">'+ICO.cake+'</span>':'')+
-    '<div class="cellbody">'+cellInner(m,en,offday)+'</div>';
+    '<div class="cellbody">'+(onLeave(m,ds)?'<div class="leavetx">장기휴직 중</div>'+(en?cellInner(m,en,true):''):cellInner(m,en,offday))+'</div>';
 }
 function commonCellHtml(ds){
   var ct=S.commons[ds]||'';
@@ -2710,7 +2749,7 @@ function renderBody(){
        commonCellHtml(ds)+'</div></td>';
 
     vis.forEach(function(m){
-      r+='<td class="c-cell"><div class="cell" data-d="'+ds+'" data-m="'+m.id+'">'+
+      r+='<td class="c-cell'+(onLeave(m,ds)?' leave':'')+'"><div class="cell" data-d="'+ds+'" data-m="'+m.id+'">'+
          memberCellHtml(m,ds,offday)+'</div></td>';
     });
     r+='<td></td></tr>';
@@ -2898,7 +2937,7 @@ function openCell(node){
         LUNCH.map(function(l){return '<button class="chip'+(e.lunch===l.k?' on':'')+'" data-l="'+l.k+'">'+l.label+'</button>';}).join('')+
       '</div></div>'+
       '<div><div class="flbl">출근 타입 변경 <span>· 기본 '+esc(m.start_time)+'</span></div><div class="chips" id="fA">'+
-        ARRIVES.map(function(a){return '<button class="chip'+(e.arrive===a?' on':'')+'" data-a="'+a+'">'+a+'</button>';}).join('')+
+        ARRIVES.filter(function(a){return a!==m.start_time;}).map(function(a){return '<button class="chip'+(e.arrive===a?' on':'')+'" data-a="'+a+'">'+a+'</button>';}).join('')+
       '</div><div class="calc" id="fCalc"></div></div>'+
       '<div><div class="flbl">메모</div>'+
         '<textarea id="fM" placeholder="예) 건강검진, 설명회 참석">'+esc(e.memo||'')+'</textarea></div>';
@@ -2915,6 +2954,7 @@ function recalc(){
   var e={vacation:v?v.dataset.v:'', arrive:a?a.dataset.a:''};
   var t=calcTimes(m,e);
   if(t.allDay){ box.innerHTML='<b>연차</b> — 종일 부재'; return; }
+  if(e.vacation){ box.innerHTML='<span style="color:var(--tx3)">'+VMAP[e.vacation].label+' — 출퇴근 시간은 본인이 조정</span>'; return; }
   var parts=[];
   parts.push('출근 <b>'+toHM(t.start)+'</b>');
   parts.push('퇴근 <b>'+toHM(t.end)+'</b>');
@@ -3661,6 +3701,8 @@ function savePop(){
     var v=el('#fV .chip.on'), l=el('#fL .chip.on'), a=el('#fA .chip.on');
     var e={vacation:v?v.dataset.v:'', lunch:l?l.dataset.l:'', arrive:a?a.dataset.a:'',
            memo:($('fM').value||'').trim()};
+    /* 기본 출근시간과 같은 출근 타입은 따로 저장하지 않음 — 나중에 프로필 시간을 바꾸면 그대로 따라가도록 */
+    var _mm=memberById(mid); if(_mm&&e.arrive&&e.arrive===_mm.start_time) e.arrive='';
     var empty=!e.vacation&&!e.lunch&&!e.arrive&&!e.memo;
     if(empty){ delete S.sched[ds+'|'+mid]; sbDel('schedules',{date:ds,member_id:mid}); }
     else{
@@ -3840,6 +3882,10 @@ function openMember(id){
        '<select id="mS">'+ARRIVES.map(function(a){return '<option'+((m?m.start_time:'09:30')===a?' selected':'')+'>'+a+'</option>';}).join('')+'</select>'+
        '<span class="hint" id="mEnd" style="white-space:nowrap"></span></div></div>'+
    '</div>'+
+   '<div class="fld"><label>장기 휴직 <span style="font-weight:400">· 기간 동안 팀 스케줄에 회색으로 표시 · 비우면 해제 · 끝나는 날을 비우면 계속</span></label>'+
+     '<div style="display:flex;align-items:center;gap:7px">'+
+     '<input type="date" id="mLvF" value="'+esc((p.leave&&p.leave.from)||'')+'" style="max-width:170px"><span class="hint">~</span>'+
+     '<input type="date" id="mLvT" value="'+esc((p.leave&&p.leave.to)||'')+'" style="max-width:170px"></div></div>'+
    '<div class="fld"><label>시그니처 컬러 <span style="font-weight:400">· 고르지 않으면 오행 색 (목 초록 · 화 빨강 · 토 황토 · 금 금색 · 수 파랑)</span></label>'+
      '<div class="palette" id="mPal"></div></div>'+
    '<div class="fld"><label>아바타 (흉상)</label><div id="mAvBox"></div></div>'+
@@ -4076,15 +4122,34 @@ $('meOk').onclick=function(){
   var prof={birth:readBirth(),zodiac:$('pZodiac').value,mbti:$('pMbti').value,
     blood:$('pBlood').value,ilju:$('pIlju').value,ohaeng:$('pOhaeng').value,colorPicked:!!ME.picked,
     teto:($('pTeto').value||'').trim(),music:($('pMusic').value||'').trim()};
+  var lvF=($('mLvF')&&$('mLvF').value)||'', lvT=($('mLvT')&&$('mLvT').value)||'';
+  if(lvT&&!lvF){ toast('휴직 시작일을 넣어 주세요'); return; }
+  if(lvF&&lvT&&lvT<lvF){ toast('휴직 끝나는 날이 시작일보다 빨라요'); return; }
+  prof.leave=lvF?{from:lvF,to:lvT}:null;
+  if(ME.id&&memberById(ME.id)) prof=Object.assign({},memberById(ME.id).profile||{},prof);   /* 폼에 없는 기존 프로필 값은 유지 */
   var st=$('mS').value||'09:30';
   var rec={id:ME.id||uid('m_'),name:name,rank:($('mR').value||'').trim(),
     start_time:st,end_time:workEnd(st),
     hue:ME.hue,avatar:(ME.id&&AV_LOCK[ME.id])||ME.avatar,interests:ME.interests.slice(0,3),
     sort:ME.id?(memberById(ME.id).sort||0):S.members.length,profile:prof,
     hidden:ME.id?!!memberById(ME.id).hidden:false};
+  var _oldSt=ME.id&&memberById(ME.id)?memberById(ME.id).start_time:null;
   if(ME.id) S.members=S.members.map(function(m){return m.id===ME.id?rec:m;});
   else S.members.push(rec);
   sbUp('members',memberRow(rec),'id');
+  /* 기본 출근시간을 바꾸면, 오늘 이후 칸에 남아 있는 '예전 기본시간·새 기본시간과 같은 출근 타입'은 비워서 새 시간을 따르게 함 */
+  if(_oldSt&&_oldSt!==st){
+    var _t=today();
+    Object.keys(S.sched).forEach(function(k){
+      var q=k.split('|'), e=S.sched[k];
+      if(q[1]!==rec.id||q[0]<_t||!e||!e.arrive||(e.arrive!==_oldSt&&e.arrive!==st)) return;
+      var before=Object.assign({vacation:'',lunch:'',arrive:'',memo:''},e);
+      e.arrive='';
+      if(!e.vacation&&!e.lunch&&!e.memo){ delete S.sched[k]; sbDel('schedules',{date:q[0],member_id:q[1]}); }
+      else sbUp('schedules',{date:q[0],member_id:q[1],vacation:e.vacation,lunch:e.lunch,arrive:'',memo:e.memo,updated_at:new Date().toISOString()},'date,member_id');
+      histLog(q[0],q[1],histDiff(before,Object.assign({vacation:'',lunch:'',arrive:'',memo:''},S.sched[k]||{}),false));
+    });
+  }
   saveLocal(); renderHead(); renderBody();
   $('mMember').classList.remove('show'); openTeam();
 };
@@ -5294,6 +5359,11 @@ function goTab(name){
   if(name==='adnews'){ var af=$('adFrame'); if(af&&!af.getAttribute('src')) af.setAttribute('src',ADNEWS_URL); }
   queueYearRail(); renderTeamLunch();
   try{ localStorage.setItem(LS+'.tab',name); if(inArch) localStorage.setItem(LS+'.arch',name); }catch(err){}
+  /* 접속자 공유 — 지금 보는 메뉴 알리기 (팀 스케줄을 떠나면 칸 표시는 지움) */
+  if(typeof PEER==='object'&&PEER&&PEER.tab!==top){
+    PEER.tab=top; if(top!=='schedule') PEER.my=null;
+    clearTimeout(PEER.t); PEER.t=setTimeout(function(){ if(typeof presenceTrack==='function') presenceTrack(); },150);
+  }
 }
 /* 드롭다운 메뉴 (활용 툴 · 회사생활) */
 function closeDD(){ document.querySelectorAll('#tabs .ddwrap.open').forEach(function(w){ w.classList.remove('open','hot'); }); }
