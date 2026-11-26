@@ -928,15 +928,15 @@ table.data tr.picked td{background:#EDF1FF}
 
 /* ═════════ 비·눈 효과 — tsParticles(MIT 공개 라이브러리) 입자 애니메이션, 3초마다 은은하게 나타났다 사라짐 ═════════ */
 .wxfx{position:absolute;pointer-events:none;z-index:25;overflow:hidden;opacity:0;animation:wxfade 10s ease-in-out infinite}
-.wxfx.rain{background:linear-gradient(180deg,rgba(132,112,214,.26) 0%,rgba(168,140,222,.16) 55%,rgba(214,182,226,.07) 100%)}
+.wxfx.rain{background:linear-gradient(180deg,rgba(38,130,235,.30) 0%,rgba(60,158,245,.18) 55%,rgba(100,185,255,.08) 100%)}
 .wxfx.snow{background:linear-gradient(180deg,rgba(90,170,255,.30) 0%,rgba(150,205,255,.2) 60%,rgba(215,236,255,.12) 100%)}
 .wxfx .wxlbl{position:absolute;right:10px;top:6px;z-index:2;font-size:11px;font-weight:800;letter-spacing:-.2px;
-  padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.9);color:#6A52C4;box-shadow:0 1px 4px rgba(110,80,170,.22)}
+  padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.88);color:#1F71D1;box-shadow:0 1px 4px rgba(30,95,180,.25)}
 .wxfx.snow .wxlbl{color:#2C7BD6}
 /* 비·눈 행은 날짜 칸 왼쪽에 파란 띠를 늘 표시 — 주말 음영과 구분 */
-table.sched tr.wx-rain td.c-date{box-shadow:inset 4px 0 0 #9A86DB}
+table.sched tr.wx-rain td.c-date{box-shadow:inset 4px 0 0 #3B95F6}
 table.sched tr.wx-snow td.c-date{box-shadow:inset 4px 0 0 #7CC0FF}
-table.sched tr.today.wx-rain td.c-date{box-shadow:inset 2px 0 0 var(--today-line),inset 6px 0 0 #9A86DB,inset 0 2px 0 var(--today-line),inset 0 -2px 0 var(--today-line)}
+table.sched tr.today.wx-rain td.c-date{box-shadow:inset 2px 0 0 var(--today-line),inset 6px 0 0 #3B95F6,inset 0 2px 0 var(--today-line),inset 0 -2px 0 var(--today-line)}
 table.sched tr.today.wx-snow td.c-date{box-shadow:inset 2px 0 0 var(--today-line),inset 6px 0 0 #7CC0FF,inset 0 2px 0 var(--today-line),inset 0 -2px 0 var(--today-line)}
 .wxfx canvas{display:block}
 .mv-top .wxfx{inset:0;z-index:0}
@@ -2529,8 +2529,8 @@ function wxfxOpts(kind,h){
     pauseOnBlur:true,pauseOnOutsideViewport:true,
     particles: rain ? {
       number:{value:cnt(.7,36,140),density:{enable:false}},
-      color:{value:'#f7f0ff'},shape:{type:'line'},
-      stroke:{width:1.2,color:{value:'#f7f0ff'}},
+      color:{value:'#eef6ff'},shape:{type:'line'},
+      stroke:{width:1.2,color:{value:'#eef6ff'}},
       size:{value:{min:3,max:6}},rotate:{value:100},
       opacity:{value:{min:.5,max:.85}},
       move:{enable:true,direction:'bottom',straight:true,speed:{min:3,max:5},outModes:{default:'out'}}
