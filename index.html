@@ -259,7 +259,8 @@ table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-
 }
 table.sched tbody td.peercell{box-shadow:inset 0 0 0 2px var(--pc)}
 table.sched tbody td.c-cell.leave{background:#F0F2F5}
-.leavetx{font-size:11.5px;color:var(--tx4);letter-spacing:-.2px}
+.leavetx{font-size:11.5px;color:var(--tx4);letter-spacing:-.2px;display:none}
+td.c-cell.leave.lvtop .leavetx{display:block}
 .leavetx + .ph{display:none}
 .peertag{position:absolute;top:-9px;left:4px;z-index:8;display:flex;gap:2px;pointer-events:none}
 .peertag span{font-size:10px;font-weight:800;color:#fff;padding:1px 6px;border-radius:4px 4px 4px 0;box-shadow:0 1px 3px rgba(0,0,0,.2);white-space:nowrap}
@@ -1698,7 +1699,7 @@ function awayState(m,ds){
   var hol=holidayOf(ds), w=parseD(ds).getDay();
   if(hol) return hol;
   if(w===0||w===6) return '주말';
-  if(onLeave(m,ds)) return '장기휴직';
+  if(onLeave(m,ds)) return leaveKind(m);
   var e=S.sched[ds+'|'+m.id]||{};
   if(e.vacation==='annual') return '연차';
   if(ds!==t) return '';
@@ -2389,7 +2390,6 @@ function todayHours(m){
   var t=today(), w=parseD(t).getDay();
   if(holidayOf(t)||w===0||w===6) return workHours(m);
   var e=S.sched[t+'|'+m.id];
-  if(onLeave(m,t)) return '장기휴직 중';
   if(!e||(!e.arrive&&!e.vacation)) return workHours(m);
   if(e.vacation==='annual') return '연차';
   return calcTimes(m,{arrive:e.arrive}).text;   /* 반차·반반차는 시간 조정 없이 */
@@ -2693,6 +2693,7 @@ function offdayOf(ds){ var w=parseD(ds).getDay(); return !!holidayOf(ds)||w===0|
 
 /* 팀원 칸 내용 (실시간 반영 때도 이 함수로 그 칸만 다시 그립니다) */
 /* 장기 휴직 — 프로필 leave {from,to} (to 비우면 계속) */
+function leaveKind(m){ var lv=m&&m.profile&&m.profile.leave; return (lv&&(lv.kind||'').trim())||'장기휴직'; }
 function onLeave(m,ds){
   var lv=m&&m.profile&&m.profile.leave; if(!lv||!lv.from) return false;
   return ds>=lv.from&&(!lv.to||ds<=lv.to);
@@ -2701,13 +2702,26 @@ function memberCellHtml(m,ds,offday){
   if(offday==null) offday=offdayOf(ds);
   var en=S.sched[ds+'|'+m.id];
   return (isBirthday(m,ds)?'<span class="bdcake" title="'+esc(m.name)+' 생일">'+ICO.cake+'</span>':'')+
-    '<div class="cellbody">'+(onLeave(m,ds)?'<div class="leavetx">장기휴직 중</div>'+(en?cellInner(m,en,true):''):cellInner(m,en,offday))+'</div>';
+    '<div class="cellbody">'+(onLeave(m,ds)?'<div class="leavetx">'+esc(leaveKind(m))+' 중</div>'+(en?cellInner(m,en,true):''):cellInner(m,en,offday))+'</div>';
 }
 function commonCellHtml(ds){
   var ct=S.commons[ds]||'';
   return ct?'<div class="cellbody"><div class="commontx">'+esc(ct)+'</div></div>':'<span class="ph">＋</span>';
 }
 /* 칸 하나만 다시 그리기 — 다른 칸을 편집 중이어도 방해하지 않습니다 */
+/* 장기휴직 문구 — 사람마다 화면에 보이는 가장 위 휴직 칸에만 */
+function paintLeaveLabels(){
+  var w=$('gridwrap'); if(!w) return;
+  var head=w.querySelector('thead'), top=w.getBoundingClientRect().top+(head?head.offsetHeight:0);
+  var seen={};
+  w.querySelectorAll('td.c-cell.leave').forEach(function(td){
+    var c=td.querySelector('.cell'), mid=c&&c.dataset.m, r=td.getBoundingClientRect();
+    var on=!!mid&&!seen[mid]&&r.bottom>top+4;
+    if(on) seen[mid]=1;
+    td.classList.toggle('lvtop',on);
+  });
+}
+var LVQ=0; function queueLeaveLabels(){ if(LVQ) return; LVQ=requestAnimationFrame(function(){ LVQ=0; paintLeaveLabels(); }); }
 function patchCell(ds,mid,flash){
   var c=el('.cell[data-d="'+ds+'"][data-m="'+mid+'"]'); if(!c) return;
   if(EDIT&&EDIT.d===ds&&EDIT.m===mid) return;           /* 바로 그 칸을 편집 중이면 건드리지 않음 */
@@ -3886,7 +3900,10 @@ function openMember(id){
    '<div class="fld"><label>장기 휴직 <span style="font-weight:400">· 기간 동안 팀 스케줄에 회색으로 표시 · 비우면 해제 · 끝나는 날을 비우면 계속</span></label>'+
      '<div style="display:flex;align-items:center;gap:7px">'+
      '<input type="date" id="mLvF" value="'+esc((p.leave&&p.leave.from)||'')+'" style="max-width:170px"><span class="hint">~</span>'+
-     '<input type="date" id="mLvT" value="'+esc((p.leave&&p.leave.to)||'')+'" style="max-width:170px"></div></div>'+
+     '<input type="date" id="mLvT" value="'+esc((p.leave&&p.leave.to)||'')+'" style="max-width:170px">'+
+     '<input type="text" id="mLvK" value="'+esc((p.leave&&p.leave.kind)||'')+'" list="lvKinds" placeholder="종류 (예: 육아휴직)" style="max-width:190px">'+
+     '<datalist id="lvKinds">'+['육아휴직','출산휴가','병가','휴직','안식휴가','교육 파견'].map(function(k){return '<option>'+k+'</option>';}).join('')+'</datalist>'+
+     '</div></div>'+
    '<div class="fld"><label>시그니처 컬러 <span style="font-weight:400">· 고르지 않으면 오행 색 (목 초록 · 화 빨강 · 토 황토 · 금 금색 · 수 파랑)</span></label>'+
      '<div class="palette" id="mPal"></div></div>'+
    '<div class="fld"><label>아바타 (흉상)</label><div id="mAvBox"></div></div>'+
@@ -4126,7 +4143,8 @@ $('meOk').onclick=function(){
   var lvF=($('mLvF')&&$('mLvF').value)||'', lvT=($('mLvT')&&$('mLvT').value)||'';
   if(lvT&&!lvF){ toast('휴직 시작일을 넣어 주세요'); return; }
   if(lvF&&lvT&&lvT<lvF){ toast('휴직 끝나는 날이 시작일보다 빨라요'); return; }
-  prof.leave=lvF?{from:lvF,to:lvT}:null;
+  var lvK=(($('mLvK')&&$('mLvK').value)||'').trim().slice(0,20);
+  prof.leave=lvF?{from:lvF,to:lvT,kind:lvK}:null;
   if(ME.id&&memberById(ME.id)) prof=Object.assign({},memberById(ME.id).profile||{},prof);   /* 폼에 없는 기존 프로필 값은 유지 */
   var st=$('mS').value||'09:30';
   var rec={id:ME.id||uid('m_'),name:name,rank:($('mR').value||'').trim(),
@@ -5457,6 +5475,9 @@ window.addEventListener('resize',function(){
   if(m!==_wasMob){ _wasMob=m; renderHead(); }
 });
 $('gridwrap').addEventListener('scroll',queueYearRail,{passive:true});
+$('gridwrap').addEventListener('scroll',queueLeaveLabels,{passive:true});
+window.addEventListener('resize',queueLeaveLabels);
+(function(){ var _rb=renderBody; renderBody=function(){ var r=_rb.apply(this,arguments); queueLeaveLabels(); return r; }; })();
 
 /* 과거 날짜 1일 단위 */
 $('btnPastMore').onclick=function(){ S.pastDays++; saveLocal(); renderBody(); };
