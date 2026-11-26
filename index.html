@@ -928,15 +928,15 @@ table.data tr.picked td{background:#EDF1FF}
 
 /* ═════════ 비·눈 효과 — tsParticles(MIT 공개 라이브러리) 입자 애니메이션, 3초마다 은은하게 나타났다 사라짐 ═════════ */
 .wxfx{position:absolute;pointer-events:none;z-index:25;overflow:hidden;opacity:0;animation:wxfade 10s ease-in-out infinite}
-.wxfx.rain{background:linear-gradient(180deg,rgba(38,110,235,.30) 0%,rgba(60,140,245,.18) 55%,rgba(100,170,255,.08) 100%)}
+.wxfx.rain{background:linear-gradient(180deg,rgba(132,112,214,.26) 0%,rgba(168,140,222,.16) 55%,rgba(214,182,226,.07) 100%)}
 .wxfx.snow{background:linear-gradient(180deg,rgba(90,170,255,.30) 0%,rgba(150,205,255,.2) 60%,rgba(215,236,255,.12) 100%)}
 .wxfx .wxlbl{position:absolute;right:10px;top:6px;z-index:2;font-size:11px;font-weight:800;letter-spacing:-.2px;
-  padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.88);color:#1F5FD1;box-shadow:0 1px 4px rgba(30,80,180,.25)}
+  padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.9);color:#6A52C4;box-shadow:0 1px 4px rgba(110,80,170,.22)}
 .wxfx.snow .wxlbl{color:#2C7BD6}
 /* 비·눈 행은 날짜 칸 왼쪽에 파란 띠를 늘 표시 — 주말 음영과 구분 */
-table.sched tr.wx-rain td.c-date{box-shadow:inset 4px 0 0 #3B82F6}
+table.sched tr.wx-rain td.c-date{box-shadow:inset 4px 0 0 #9A86DB}
 table.sched tr.wx-snow td.c-date{box-shadow:inset 4px 0 0 #7CC0FF}
-table.sched tr.today.wx-rain td.c-date{box-shadow:inset 2px 0 0 var(--today-line),inset 6px 0 0 #3B82F6,inset 0 2px 0 var(--today-line),inset 0 -2px 0 var(--today-line)}
+table.sched tr.today.wx-rain td.c-date{box-shadow:inset 2px 0 0 var(--today-line),inset 6px 0 0 #9A86DB,inset 0 2px 0 var(--today-line),inset 0 -2px 0 var(--today-line)}
 table.sched tr.today.wx-snow td.c-date{box-shadow:inset 2px 0 0 var(--today-line),inset 6px 0 0 #7CC0FF,inset 0 2px 0 var(--today-line),inset 0 -2px 0 var(--today-line)}
 .wxfx canvas{display:block}
 .mv-top .wxfx{inset:0;z-index:0}
@@ -1088,6 +1088,54 @@ body.mv-table .mvback{display:block}
   .phgrid{grid-template-columns:repeat(2,1fr);gap:6px}
   .lightbox .nav{display:none}
 }
+
+/* ═════════ 2026-11-26 개편 ═════════ */
+.teamname{display:none!important}
+#btnBot,#botAct,#botMenu{display:none!important}
+.tbright .btn.sm,.tbright .iconbtn{height:32px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center}
+/* 이름 + 직급이 잘리지 않게 — 캐릭터 위로 겹쳐도 보이도록 */
+.nc:not(.lunch) > .l{z-index:3}
+.nc .nm{overflow:visible;text-overflow:clip;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+/* 기본 아바타(라이브러리)는 여백이 많아 작아 보임 — 키우고 아래를 잘라 다른 팀원과 맞춤 */
+.nc .bust img.clayimg.avlib{scale:1.25;translate:0 17%;transform-origin:50% 100%}
+/* 로그인 */
+body.locked #ov{background:rgba(24,22,30,.58);backdrop-filter:blur(10px)}
+.pwbox{display:flex;flex-direction:column;gap:12px}
+.pwwho{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg,#F7F8FA)}
+.pwwho .pav{width:40px;height:40px}
+.pwwho b{font-size:15.5px}.pwwho span{font-size:12px;color:var(--tx3);margin-left:5px}
+.pwbox input[type=password]{width:100%;font-size:15px;padding:10px 12px;letter-spacing:2px}
+.pwerr{min-height:16px;font-size:12px;color:#D2493E;font-weight:600}
+.pwfoot{display:flex;gap:8px;align-items:center}
+.whologout{margin-top:12px;display:flex;justify-content:flex-end}
+/* 운세 */
+.ftpage{display:flex;flex-direction:column;gap:16px;max-width:1180px}
+.fthero{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:16px;
+  background:linear-gradient(120deg,#FFF6EC 0%,#FBEFF6 55%,#F1EEFB 100%);border:1px solid #F0E2DC}
+.fthero .bustbig{width:72px;height:72px;flex:0 0 auto;border-radius:50%;overflow:hidden;background:#fff}
+.fthero .bustbig img{width:100%;height:100%}
+.fthero .who{font-size:12.5px;color:var(--tx3);font-weight:600}
+.fthero .one{font-size:19px;font-weight:800;letter-spacing:-.5px;margin-top:4px;line-height:1.45}
+.fthero .one em{font-style:normal;color:#C0594A}
+.ftseg{display:inline-flex;border:1px solid var(--line);border-radius:999px;background:#fff;padding:3px;gap:2px;flex:0 0 auto}
+.ftseg button{border:none;background:transparent;border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;color:var(--tx3);cursor:pointer}
+.ftseg button.on{background:#2B2F36;color:#fff}
+.ftcols{display:grid;grid-template-columns:1fr 1.15fr 1.15fr;gap:14px}
+.ftbox{border:1px solid var(--line);border-radius:14px;padding:14px 16px;background:#fff}
+.ftbox h4{margin:0 0 10px;font-size:13.5px;font-weight:800;display:flex;align-items:center;gap:6px}
+.ftbox h4 .s{font-weight:500;font-size:11px;color:var(--tx3)}
+.tarot{display:flex;gap:14px;align-items:flex-start}
+.tcard{width:96px;height:150px;flex:0 0 auto;border-radius:10px;border:2px solid #E7D7B8;
+  background:linear-gradient(160deg,#FFFBF2,#F6EAD3);display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  padding:8px 4px;box-shadow:0 3px 10px rgba(120,90,40,.15);font-family:Georgia,serif;color:#7A5A2B}
+.tcard .no{font-size:12px;font-weight:700}.tcard .sym{font-size:38px;line-height:1}.tcard .nm{font-size:10.5px;font-weight:700;text-align:center}
+.tcard.rev .sym{transform:rotate(180deg)}
+.tmean b{font-size:15px}.tmean .tag{display:inline-block;font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 6px;margin-left:6px;background:#F3EBDD;color:#8A6730}
+.tmean .tag.rev{background:#EEE9F6;color:#6B57A8}
+.tmean .kw{font-size:12px;color:var(--tx3);margin:5px 0 8px}
+.tmean p{margin:0;font-size:13px;line-height:1.6}
+.ftbox .ftcard,.ftbox .biocard{border:none;padding:0;background:transparent}
+@media (max-width:980px){ .ftcols{grid-template-columns:1fr} .fthero{flex-wrap:wrap} }
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous">
 </head>
@@ -1100,8 +1148,7 @@ body.mv-table .mvback{display:block}
   <button class="teamname" id="teamName" title="처음 화면(팀 스케줄)으로">Media 3팀</button>
   <nav class="tabbar" id="tabs">
     <button data-tab="schedule" class="on"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.2" width="11" height="10.3" rx="2"/><path d="M2.5 6.6h11M5.6 1.8v2.6M10.4 1.8v2.6"/></svg></i><span class="tl">팀 스케줄</span><span class="ts">스케줄</span></button>
-    <div class="ddwrap"><button data-dd="tools" data-tabs="tools"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 2.3a3 3 0 0 0-3.4 3.9L2.8 10.3a1.4 1.4 0 0 0 2 2l4.1-4.1a3 3 0 0 0 3.9-3.4l-1.7 1.7-1.7-.3-.3-1.7z"/></svg></i><span class="tl">활용 툴</span><span class="ts">활용툴</span><svg class="caret" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button><div class="dd" id="dd-tools"><div class="ddgrp">게시판</div><button class="dditem" data-go="tools"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 2.3a3 3 0 0 0-3.4 3.9L2.8 10.3a1.4 1.4 0 0 0 2 2l4.1-4.1a3 3 0 0 0 3.9-3.4l-1.7 1.7-1.7-.3-.3-1.7z"/></svg></i><span>활용 툴 모음 게시판</span></button><div class="ddgrp">우리 팀 툴</div><button class="dditem" data-url="https://keyword.jintar.co.kr"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="4.2"/><path d="M10.2 10.2L13.5 13.5"/></svg></i><span>네이버 키워드 분석 툴</span><span class="ddx">↗</span></button><button class="dditem" data-url="https://youtube.jintar.co.kr"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2.5 3.5h11v7.5H7l-3 2.5v-2.5H2.5z"/></svg></i><span>유튜브 댓글 분석 툴 <em>Beta</em></span><span class="ddx">↗</span></button><button class="dditem" data-url="https://dashboard.jintar.co.kr"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2.5" y="2.5" width="11" height="11" rx="2"/><path d="M5.5 10.5V8M8 10.5V5.5M10.5 10.5V7"/></svg></i><span>캠페인 대시보드 사이트 <em>Beta</em></span><span class="ddx">↗</span></button></div></div>
-    <div class="ddwrap"><button data-dd="life" data-tabs="food,market,adnews"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.3h8V10a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M11 7.3h1a1.5 1.5 0 0 1 0 3h-1M5.8 2.3v2M8.2 2.3v2"/></svg></i><span class="tl">회사생활</span><span class="ts">회사생활</span><svg class="caret" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg></button><div class="dd" id="dd-life"><div class="ddgrp">회사생활</div><button class="dditem" data-go="food"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 2v3a1.5 1.5 0 0 0 3 0V2M5 2v3M5 6.5V14M11.2 14V2c1.6 1 2.3 2.7 2.3 4.5 0 1.5-.8 2.6-2.3 3"/></svg></i><span>성수동 맛집</span></button><button class="dditem" data-go="market"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.3V3.5a1 1 0 0 1 1-1h4.8l5.2 5.2-5.8 5.8z"/><circle cx="5.6" cy="5.6" r="1"/></svg></i><span>삼당마켓 <em>3팀 당근마켓</em></span></button><button class="dditem" data-go="adnews"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h8v9.5a1 1 0 0 0 1 1H4a1 1 0 0 1-1-1z"/><path d="M11 6h2v6.5a1 1 0 0 1-2 0M5 5.8h4M5 8.2h4M5 10.6h2.5"/></svg></i><span>광고업계 뉴스</span></button><div class="ddgrp">업무</div><button class="dditem" data-go="weekly"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h5.5L12.5 5v9h-8.5z"/><path d="M6.5 11.5v-2M8.5 11.5v-4M10.5 11.5v-3"/></svg></i><span>주간업무보고</span><span class="ddx">↗</span></button><button class="dditem" data-go="drive"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.6a1 1 0 0 1 1-1h3.2l1.5 1.6H13a1 1 0 0 1 1 1v6.2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></svg></i><span>팀 드라이브</span><span class="ddx">↗</span></button></div></div>
+    <button data-tab="tools"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 2.3a3 3 0 0 0-3.4 3.9L2.8 10.3a1.4 1.4 0 0 0 2 2l4.1-4.1a3 3 0 0 0 3.9-3.4l-1.7 1.7-1.7-.3-.3-1.7z"/></svg></i><span class="tl">활용 툴</span><span class="ts">활용툴</span></button><button data-tab="food"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 2v3a1.5 1.5 0 0 0 3 0V2M5 2v3M5 6.5V14M11.2 14V2c1.6 1 2.3 2.7 2.3 4.5 0 1.5-.8 2.6-2.3 3"/></svg></i><span class="tl">맛집</span><span class="ts">맛집</span></button><button data-tab="market"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.3V3.5a1 1 0 0 1 1-1h4.8l5.2 5.2-5.8 5.8z"/><circle cx="5.6" cy="5.6" r="1"/></svg></i><span class="tl">당근</span><span class="ts">당근</span></button><button data-tab="adnews"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h8v9.5a1 1 0 0 0 1 1H4a1 1 0 0 1-1-1z"/><path d="M11 6h2v6.5a1 1 0 0 1-2 0M5 5.8h4M5 8.2h4M5 10.6h2.5"/></svg></i><span class="tl">뉴스</span><span class="ts">뉴스</span></button><button data-tab="weekly"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h5.5L12.5 5v9h-8.5z"/><path d="M6.5 11.5v-2M8.5 11.5v-4M10.5 11.5v-3"/></svg></i><span class="tl">주간업무</span><span class="ts">주간</span></button><button data-tab="drive"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4.6a1 1 0 0 1 1-1h3.2l1.5 1.6H13a1 1 0 0 1 1 1v6.2a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/></svg></i><span class="tl">공유폴더</span><span class="ts">폴더</span></button><button data-tab="fortune"><i class="ti"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7.2" r="4.6"/><path d="M4.6 13.6h6.8M6 11.6l-.6 2M10 11.6l.6 2M6.4 5.6l.9-.9"/></svg></i><span class="tl">운세</span><span class="ts">운세</span></button>
   </nav>
   <div class="tbright">
     <div class="presence" id="presence" title="지금 접속 중인 팀원"></div>
@@ -1126,6 +1173,9 @@ body.mv-table .mvback{display:block}
 <div class="schemabar" id="schemaBar"></div>
 
 <nav class="subnav" id="subnav"></nav>
+
+<!-- ══════════════ 운세 ══════════════ -->
+<section class="panel" id="p-fortune"><div class="pad"><div id="ftBody"></div></div></section>
 
 <!-- ══════════════ 광고업계 뉴스 (메뉴 아래에 그대로 열림) ══════════════ -->
 <section class="panel" id="p-adnews"><iframe id="adFrame" title="광고업계 뉴스" loading="lazy"
@@ -1224,7 +1274,7 @@ body.mv-table .mvback{display:block}
 <div class="modal" id="mMember">
   <div class="m-hd"><b id="meT">팀원 정보</b><div style="flex:1"></div><button class="btn sm ghost" data-close>✕</button></div>
   <div class="m-bd" id="meBody"></div>
-  <div class="m-ft"><button class="btn danger" id="meDel">삭제</button><div style="flex:1"></div>
+  <div class="m-ft"><button class="btn danger" id="meDel">삭제</button><button class="btn" id="mePwReset" style="display:none">비밀번호 초기화</button><div style="flex:1"></div>
     <button class="btn" data-close>취소</button><button class="btn primary" id="meOk">확인</button></div>
 </div>
 
@@ -1275,7 +1325,7 @@ body.mv-table .mvback{display:block}
 <!-- 접속자 선택 / 합류 요청 -->
 <div class="modal" id="mWho">
   <div class="m-hd"><b id="whoT">누구신가요?</b><div style="flex:1"></div>
-    <button class="btn sm ghost" id="whoLater" title="나중에 선택">나중에</button></div>
+    <button class="btn sm ghost" id="whoLater" title="나중에 선택" style="display:none">나중에</button></div>
   <div class="m-bd" id="whoBody"></div>
 </div>
 
@@ -1606,6 +1656,8 @@ function fallbackSvg(hue){
 }
 /* 그림 여백이 커서 작아 보이는 캐릭터는 살짝 키워서 다른 캐릭터와 크기를 맞춥니다 */
 var AV_FIT={'avatar-076':1,'avatar-144':1};
+/* 001~136 은 여백이 넉넉한 기본 아바타 — 네임카드에서 키워서 맞춤 */
+function avIsLib(id){ var n=+(String(id||'').match(/^avatar-(\d+)$/)||[])[1]; return n>0&&n<=136; }
 /* 팀원 캐릭터 고정 — 페이지에서는 바꿀 수 없고, 변경은 이 표를 고쳐서 배포합니다 */
 var AV_LOCK={m_leejang:'avatar-142',m_gunwoo:'avatar-137',m_yeji:'avatar-076',m_yeonju:'avatar-138',
   m_soyoung:'avatar-141',m_jiyoon:'avatar-139',m_seokjin:'avatar-143'};
@@ -1614,7 +1666,7 @@ function bustHtml(m,size){
   if(AV_LOCK[m.id]) m.avatar=AV_LOCK[m.id];
   var src=avatarSrc(m.avatar), px=size||48;
   if(src) return '<img src="'+esc(src)+'" alt="" loading="lazy" width="'+px+'" height="'+px+'" '+
-    'class="clayimg'+(AV_FIT[m.avatar]?' avfit':'')+'" onerror="this.onerror=null;this.src=fallbackSvg('+hueOf(m)+')">';
+    'class="clayimg'+(AV_FIT[m.avatar]?' avfit':(avIsLib(m.avatar)?' avlib':''))+'" onerror="this.onerror=null;this.src=fallbackSvg('+hueOf(m)+')">';
   return bustPlaceholder(m.hue,size);
 }
 /* 자리 비움 — 휴일·연차·출근 전·퇴근 후(반차 포함)에는 캐릭터 대신 빈 의자 */
@@ -2002,6 +2054,8 @@ function sbLoadAll(silent){
 
       var st=d.settings.filter(function(r){return r.key==='team';})[0];
       if(st&&st.value) S.team=Object.assign(S.team,st.value);
+      var au=d.settings.filter(function(r){return r.key==='auth';})[0];
+      S.auth=(au&&au.value)||{};
 
       S.online=true; setStat('on','연결됨'); saveLocal(); reconcileAssets(false); renderAll();
       setTimeout(autoTeamLunch,1500);
@@ -2298,7 +2352,7 @@ function todayHours(m){
 }
 function nameCardHtml(m){
   var ints=(m.interests||[]).slice(0,3);
-  var dd=daysToBirthday((m.profile||{}).birth);
+  var dd=canSeePrivate(m)?daysToBirthday((m.profile||{}).birth):null;
   var nc=0;   /* 알림은 네임카드에 표시하지 않음 — 본인 종 아이콘에서만 */
   var idx=S.members.indexOf(m); if(idx<0) idx=0;
   var away=awayState(m), lsrc=away?'':lunchSignSrc(m), le=S.sched[today()+'|'+m.id], lkey=le&&le.lunch;
@@ -2475,8 +2529,8 @@ function wxfxOpts(kind,h){
     pauseOnBlur:true,pauseOnOutsideViewport:true,
     particles: rain ? {
       number:{value:cnt(.7,36,140),density:{enable:false}},
-      color:{value:'#eef4ff'},shape:{type:'line'},
-      stroke:{width:1.2,color:{value:'#eef4ff'}},
+      color:{value:'#f7f0ff'},shape:{type:'line'},
+      stroke:{width:1.2,color:{value:'#f7f0ff'}},
       size:{value:{min:3,max:6}},rotate:{value:100},
       opacity:{value:{min:.5,max:.85}},
       move:{enable:true,direction:'bottom',straight:true,speed:{min:3,max:5},outModes:{default:'out'}}
@@ -2584,6 +2638,7 @@ document.addEventListener('visibilitychange',function(){ if(document.visibilityS
 
 /* 생일 — 해당 날짜가 팀원의 생일이면 true (2/29 생일은 평년엔 2/28) */
 function isBirthday(m,ds){
+  if(!canSeePrivate(m)) return false;
   var b=birthParts((m.profile||{}).birth); if(!b) return false;
   var mo=+ds.slice(5,7), da=+ds.slice(8,10), y=+ds.slice(0,4);
   if(b.m===2&&b.d===29&&!((y%4===0&&y%100!==0)||y%400===0)) return mo===2&&da===28;
@@ -3074,7 +3129,6 @@ function sheetSync(rows,names){
     });
   } finally { S.me=realMe; botEnd(); }
   saveLocal(); renderBody(); renderHead();
-  setTimeout(function(){ botSheetRun(touched); },300);
   return log;
 }
 
@@ -3465,7 +3519,7 @@ async function botMop(){
 (function idle(){
   setTimeout(function(){
     if(document.visibilityState==='visible'&&document.body.classList.contains('on-sched')&&!isEditing()&&!document.body.classList.contains('mv-on')){
-      (Math.random()<.5?botSweep():botMop());
+      /* 마스코트 제거 (2026-11-26) */
     }
     idle();
   },(4+Math.random()*4)*60000);
@@ -3753,6 +3807,7 @@ function memberRow(m){
 var ME={id:null,avatar:'',interests:[],hue:210,iconCat:null,avFilter:{}};
 
 function openMember(id){
+  if(id){ var mm0=memberById(id); if(mm0&&!canSeePrivate(mm0)){ toast('기존 팀원의 정보는 볼 수 없어요'); return; } }
   $('mTeam').classList.remove('show');
   var m=id?memberById(id):null;
   ME.id=m?m.id:null;
@@ -3763,6 +3818,8 @@ function openMember(id){
   var p=(m&&m.profile)||{};
   $('meT').textContent=m?'팀원 편집 — '+m.name:'팀원 추가';
   $('meDel').style.display=m?'':'none';
+  $('mePwReset').style.display=(m&&S.auth&&S.auth[m.id])?'':'none';
+  $('mePwReset').onclick=function(){ if(ME.id) resetPw(ME.id); };
   $('meBody').innerHTML=
    '<div class="grid3">'+
      '<div class="fld"><label>이름</label><input type="text" id="mN" value="'+esc(m?m.name:'')+'" placeholder="홍길동"></div>'+
@@ -4232,8 +4289,9 @@ function refreshNotifs(){
 function openHome(id){
   var m=memberById(id); if(!m) return;
   HOME=id;
-  var t=tempOf(id), p=m.profile||{};
-  var dd=daysToBirthday(p.birth);
+  var blind=!canSeePrivate(m);
+  var t=tempOf(id), p=blind?{}:(m.profile||{});
+  var dd=blind?null:daysToBirthday(p.birth);
   $('mhHead').innerHTML='<div class="mh-hd" style="--sig:'+hueOf(m)+'">'+
     '<div class="bustbig">'+bustHtml(m,84)+'</div>'+
     '<div style="min-width:0">'+
@@ -4245,7 +4303,7 @@ function openHome(id){
         return '<span data-tip="관심사 · '+esc(iconName(i))+' ('+esc(iconCat(i))+')">'+interestHtml(i,24)+'</span>';}).join('')+'</div>':'')+
     '</div>'+
     '<div style="flex:1"></div>'+
-    '<button class="btn sm" id="mhEdit" style="margin-right:36px;background:rgba(255,255,255,.14);border-color:transparent;color:#fff">정보 편집</button>'+
+    (blind?'<div style="margin-right:36px"></div>':'<button class="btn sm" id="mhEdit" style="margin-right:36px;background:rgba(255,255,255,.14);border-color:transparent;color:#fff">정보 편집</button>')+
     '<div class="sigbar" style="background:'+sig(m)+';height:4px"></div></div>';
 
   var rows=[['birth','생년월일',birthText(p.birth)],['zodiac','별자리',p.zodiac],['mbti','MBTI',p.mbti],
@@ -4264,7 +4322,8 @@ function openHome(id){
   $('mhBody').innerHTML=
     '<div id="nfBox">'+notifHtml(id)+'</div>'+
     '<div class="sect"><h4>💚 서로 이해하기 💙<span class="s">항목 이름이나 값에 마우스를 올리면 바로 설명이 나옵니다</span></h4>'+
-      (filled.length
+      (blind ? '<div class="hint">🔒 기존 팀원의 개인정보(생년월일 · 별자리 · MBTI · 혈액형 · 일주 · 오행 · 테토/에겐 · 좋아하는 음악)는 비공개입니다.</div>'
+      : filled.length
         ? '<div class="ulist">'+rows.map(function(r){
             var tip=esc(tipOf(r[0],r[2],m));
             return '<div class="k" data-tip="'+tip+'">'+r[1]+'</div>'+
@@ -4273,7 +4332,6 @@ function openHome(id){
         : '<div class="hint">아직 등록된 정보가 없습니다. 오른쪽 위 <b>정보 편집</b>에서 입력할 수 있습니다 (모두 선택 사항).</div>')+
     '</div>'+
 
-    fortuneHtml(m)+
     '<div class="sect"><h4>📅 앞으로의 일정<span class="s">오늘 이후</span></h4>'+
       (up.length? '<div style="display:flex;flex-direction:column;gap:5px">'+up.map(function(k){
           var ds=k.split('|')[0], e=S.sched[k];
@@ -4373,6 +4431,95 @@ function fortuneHtml(m){
   return '<div class="sect"><h4>🔮 오늘의 운세 · 바이오리듬<span class="s">재미로만 봐주세요 · 매일 바뀝니다</span></h4>'+
     '<div class="ftwrap">'+ft+bio+'</div></div>';
 }
+
+/* ==========================================================================
+   운세 메뉴 — 타로 · 오늘의 점 · 바이오리듬 + 한 줄 요약 (오늘/내일)
+   - 접속한 본인 기준, 날짜마다 같은 결과 (재미용)
+========================================================================== */
+var TAROT=[
+ [0,'바보','🌱','자유 · 새 출발','새로운 시작을 두려워하지 마세요. 가볍게 첫발을 떼면 길이 열려요.','준비 없이 뛰어들기보다 한 번만 더 확인해요.'],
+ [1,'마법사','✨','재능 · 실행력','가진 도구로 충분해요. 오늘은 생각을 바로 실행으로 옮기기 좋아요.','말보다 결과로 보여줄 때예요. 과한 약속은 줄이세요.'],
+ [2,'여사제','🌙','직관 · 통찰','조용히 관찰하면 답이 보여요. 직감을 믿어도 좋은 날.','정보가 아직 부족해요. 결정은 조금 미뤄도 괜찮아요.'],
+ [3,'여황제','🌸','풍요 · 돌봄','주변을 챙길수록 좋은 기운이 돌아와요. 맛있는 걸 나눠 보세요.','나 자신도 챙겨 주세요. 무리한 배려는 지쳐요.'],
+ [4,'황제','🏛️','안정 · 리더십','계획대로 밀고 나가면 깔끔하게 마무리돼요.','고집을 조금 내려놓으면 협업이 쉬워져요.'],
+ [5,'교황','📜','조언 · 원칙','선배나 동료의 조언이 지름길이 돼요.','관례만 따르기보다 새 방법을 한 번 시도해 봐요.'],
+ [6,'연인','💞','조화 · 선택','마음이 맞는 사람과의 협업 운이 좋아요.','선택을 미루면 더 헷갈려요. 기준을 하나만 정하세요.'],
+ [7,'전차','🏁','추진 · 승리','속도를 내도 좋은 날. 밀어붙이면 성과가 나요.','방향부터 점검하고 출발해요. 급할수록 돌아가요.'],
+ [8,'힘','🦁','인내 · 부드러운 힘','부드럽게 설득하면 강하게 밀 때보다 잘 풀려요.','감정이 앞설 수 있어요. 한 박자 쉬고 말해요.'],
+ [9,'은둔자','🏮','성찰 · 집중','혼자 집중하는 시간이 큰 성과를 만들어요.','너무 혼자 끌어안지 말고 도움을 청해요.'],
+ [10,'운명의 수레바퀴','🎡','전환 · 기회','흐름이 바뀌는 날. 뜻밖의 기회를 잡아요.','잠깐의 정체는 지나가요. 조급해하지 마세요.'],
+ [11,'정의','⚖️','균형 · 판단','공정하게 정리하면 모두가 납득해요. 숫자 확인 운 좋음.','한쪽 이야기만 듣지 말고 균형을 맞춰요.'],
+ [12,'매달린 사람','🪢','관점 전환 · 기다림','시선을 바꾸면 막힌 일이 풀려요.','기다림이 길어져도 헛되지 않아요. 조금만 더.'],
+ [13,'변화','🍂','정리 · 마무리','끝내야 할 일을 깔끔히 정리하면 새 일이 들어와요.','변화를 미루면 더 무거워져요. 작은 것부터 바꿔요.'],
+ [14,'절제','🫖','조율 · 균형','적당한 속도와 배분이 최고의 결과를 만들어요.','과하거나 모자란 곳이 없는지 살펴봐요.'],
+ [15,'유혹','🍫','욕심 · 유혹','작은 즐거움은 OK, 오늘은 달달한 간식이 행운.','충동구매·과식 주의! 지갑을 지켜요.'],
+ [16,'탑','⚡','돌발 · 리셋','예상 밖의 일이 오히려 더 나은 길을 보여줘요.','백업과 확인을 한 번 더. 돌발 상황에 대비해요.'],
+ [17,'별','⭐','희망 · 영감','좋은 아이디어가 반짝이는 날. 메모해 두세요.','기대치를 살짝 낮추면 만족도가 올라가요.'],
+ [18,'달','🌫️','불확실 · 상상','애매한 건 확인하고 넘어가요. 상상력은 기획에 도움.','오해가 생기기 쉬워요. 메시지는 명확하게.'],
+ [19,'태양','☀️','성공 · 활력','에너지 최고! 발표나 미팅에 강한 날이에요.','컨디션 관리만 하면 충분히 좋은 하루예요.'],
+ [20,'심판','📯','소식 · 재도약','기다리던 회신이나 좋은 소식이 와요.','지난 일을 너무 곱씹지 말고 다음으로 가요.'],
+ [21,'세계','🌍','완성 · 성취','하나를 멋지게 마무리하는 날. 스스로 칭찬해요.','마지막 1%를 챙기면 완성도가 확 올라가요.']];
+var FT_LEVEL=[[.70,'기운이 활짝 열린 날'],[.52,'순풍이 부는 하루'],[.36,'차분히 쌓아가면 좋은 날'],[0,'무리하지 말고 쉬어가는 날']];
+var FT={off:0};
+function ftData(m,ds){
+  var rnd=seeded(m.id+'|'+ds+'|ft'), pick=function(a){ return a[Math.floor(rnd()*a.length)]; };
+  var d={};
+  d.total=2+Math.floor(rnd()*4);
+  d.cats=[['업무운',1+Math.floor(rnd()*5)],['금전운',1+Math.floor(rnd()*5)],['인간관계',1+Math.floor(rnd()*5)],['건강',1+Math.floor(rnd()*5)]];
+  var foods=S.foods.filter(function(f){ return !f.closed; });
+  d.lunch=foods.length? pick(foods).name : '';
+  d.line=pick(FT_LINES); d.color=pick(FT_COLORS); d.num=1+Math.floor(rnd()*45); d.dir=pick(FT_DIRS);
+  var r2=seeded(m.id+'|'+ds+'|tarot');
+  d.tarot=TAROT[Math.floor(r2()*TAROT.length)]; d.rev=r2()<.3;
+  var bd=birthDate(canSeePrivate(m)?(m.profile||{}).birth:'');
+  if(bd){ d.days=Math.round((parseD(ds)-bd)/86400000);
+    d.bio=[23,28,33].map(function(p){ return bioVal(d.days,p); }); }
+  var sc=(d.total-1)/4*.5+(d.rev?.3:.75)*.2+(d.bio?((d.bio[0]+d.bio[1]+d.bio[2])/3+1)/2:.5)*.3;
+  d.score=sc; d.level=FT_LEVEL.filter(function(x){ return sc>=x[0]; })[0][1];
+  return d;
+}
+function ftBioHtml(d,lbl){
+  if(d.days==null) return '<div class="biocard noyear"><div class="hint">생일을 <b>연도까지</b> (예: 1990-11-28) 넣으면 신체·감성·지성 바이오리듬이 보여요.<br>'+
+    '<span style="font-size:11px">네임카드의 ✎ (팀원 정보 편집) → 생년월일</span></div></div>';
+  var rows=[[23,'신체','#E0655A'],[28,'감성','#3B8FD9'],[33,'지성','#2FA36B']].map(function(r,i){
+    var v=Math.round(d.bio[i]*100);
+    return '<div class="biorow"><span>'+r[1]+'</span><div class="biobar"><i style="'+(v>=0?'left:50%;width:'+(v/2)+'%':'right:50%;width:'+(-v/2)+'%')+';background:'+r[2]+'"></i></div>'+
+      '<b style="color:'+r[2]+'">'+(v>0?'+':'')+v+'</b></div>';
+  }).join('');
+  return '<div class="biocard">'+rows+bioSvg(d.days).replace('>오늘</text>','>'+lbl+'</text>')+
+    '<div class="hint" style="font-size:11px;margin-top:2px">태어난 지 '+d.days.toLocaleString('ko-KR')+'일째 · 앞뒤 7일 흐름</div></div>';
+}
+function renderFortune(){
+  var box=$('ftBody'); if(!box) return;
+  var m=meMember();
+  if(!m){ box.innerHTML='<div class="hint">로그인하면 내 운세를 볼 수 있어요.</div>'; return; }
+  var ds=FT.off?fmt(addDays(parseD(today()),1)):today(), lbl=FT.off?'내일':'오늘';
+  var d=ftData(m,ds), t=d.tarot, dt=parseD(ds);
+  var tip=d.rev?t[5]:t[4];
+  box.innerHTML='<div class="ftpage">'+
+    '<div class="fthero"><div class="bustbig">'+bustHtml(m,72)+'</div>'+
+      '<div style="flex:1;min-width:0"><div class="who">'+esc(m.name)+'님의 '+lbl+' 운세 · '+(dt.getMonth()+1)+'/'+dt.getDate()+' ('+DOW[dt.getDay()]+')</div>'+
+      '<div class="one"><em>'+d.level+'</em> — '+esc(tip)+'</div></div>'+
+      '<div class="ftseg"><button data-ft="0" class="'+(FT.off?'':'on')+'">오늘</button><button data-ft="1" class="'+(FT.off?'on':'')+'">내일 운세 보기</button></div></div>'+
+    '<div class="ftcols">'+
+      '<div class="ftbox"><h4>🃏 타로<span class="s">메이저 아르카나 한 장</span></h4><div class="tarot">'+
+        '<div class="tcard'+(d.rev?' rev':'')+'"><span class="no">'+['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI'][t[0]]+'</span>'+
+          '<span class="sym">'+t[2]+'</span><span class="nm">'+esc(t[1])+'</span></div>'+
+        '<div class="tmean"><b>'+esc(t[1])+'</b><span class="tag'+(d.rev?' rev':'')+'">'+(d.rev?'역방향':'정방향')+'</span>'+
+          '<div class="kw">'+esc(t[3])+'</div><p>'+esc(tip)+'</p></div></div></div>'+
+      '<div class="ftbox"><h4>🔮 '+lbl+'의 점<span class="s">재미로만 봐주세요</span></h4><div class="ftcard">'+
+        '<div class="fttop"><span class="ftsum">총운 '+starBar(d.total)+'</span>'+(canSeePrivate(m)&&(m.profile||{}).zodiac?'<span class="ftz">'+esc(m.profile.zodiac)+'</span>':'')+'</div>'+
+        '<div class="ftline">“'+esc(d.line)+'”</div>'+
+        '<div class="ftgrid">'+d.cats.map(function(c){ return '<span>'+c[0]+'</span>'+starBar(c[1]); }).join('')+'</div>'+
+        '<div class="ftlucky"><span>🎨 '+d.color+'</span><span>🔢 '+d.num+'</span><span>🧭 '+d.dir+'</span>'+
+          (d.lunch?'<span>🍽️ '+esc(d.lunch)+'</span>':'')+'</div></div></div>'+
+      '<div class="ftbox"><h4>📈 바이오리듬<span class="s">신체 23일 · 감성 28일 · 지성 33일</span></h4>'+ftBioHtml(d,lbl)+'</div>'+
+    '</div></div>';
+}
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest('[data-ft]'); if(!b||!b.closest('#ftBody')) return;
+  FT.off=+b.dataset.ft; renderFortune();
+});
 
 function renderGB(id){
   var list=S.guestbook.filter(function(g){return g.owner_id===id;})
@@ -5109,7 +5256,7 @@ function saveTeam(){ saveLocal(); sbUp('settings',{key:'team',value:S.team},'key
 /* ==========================================================================
    탭 / 공통 동작
 ========================================================================== */
-var TABS=['schedule','adnews','market','tools','food','photos'];
+var TABS=['schedule','adnews','market','tools','food','photos','fortune'];
 var ADNEWS_URL='https://yoonjintar2-ctrl.github.io/adsnews/';
 var ARCH=[];           /* 하위 메뉴 없음 — 맛집·삼당마켓·활용툴은 상단 메뉴로 */
 function lastArchive(){
@@ -5133,6 +5280,7 @@ function goTab(name){
   if(name==='tools')   renderTools();
   if(name==='food')    renderFoods();
   if(name==='photos')  renderPhotos();
+  if(name==='fortune') renderFortune();
   if(name==='adnews'){ var af=$('adFrame'); if(af&&!af.getAttribute('src')) af.setAttribute('src',ADNEWS_URL); }
   queueYearRail(); renderTeamLunch();
   try{ localStorage.setItem(LS+'.tab',name); if(inArch) localStorage.setItem(LS+'.arch',name); }catch(err){}
@@ -5200,10 +5348,12 @@ document.addEventListener('click',function(ev){ if(!ev.target.closest('.ddwrap')
 document.addEventListener('keydown',function(ev){ if(ev.key==='Escape') closeDD(); });
 function closeAll(){
   if(typeof miniKill==='function') miniKill();
+  var lk=document.body.classList.contains('locked');
   ['mMember','mHome','mItem','mRow','mSetup','mTeam','mWho','mSet'].forEach(function(id){
+    if(lk&&id==='mWho') return;
     var n=$(id); if(n) n.classList.remove('show'); });
   $('pop').classList.remove('show');
-  $('ov').classList.remove('show');
+  if(!lk) $('ov').classList.remove('show');
   document.querySelectorAll('.cell.editing').forEach(function(x){x.classList.remove('editing');});
   EDIT=null; HOME=null;
 }
@@ -5330,11 +5480,12 @@ function reconcileAssets(force){
 
     /* 관심사 3개 — 서로 다른 카테고리에서 하나씩 */
     var valid=(m.interests||[]).filter(function(i){ return ics.indexOf(i)>=0; });
+    if(!force && !valid.length && !AV_LOCK[m.id]){ m.interests=[]; return; }   /* 새 팀원은 관심사를 비워 두고 나중에 직접 고릅니다 */
     if(!force && !valid.length){
       var cast2=DEFAULT_CAST[m.id];
       if(cast2) valid=cast2.i.filter(function(i){ return ics.indexOf(i)>=0; });
     }
-    if(force || valid.length<3){
+    if(force){
       /* 이미 고른 유효한 값은 그대로 두고 모자란 만큼만 채웁니다 */
       var picked=force?[]:valid.slice(0,3), used={};
       picked.forEach(function(i){ used[i]=1; });
@@ -5958,6 +6109,7 @@ document.addEventListener('keydown',function(ev){
    - 승인되면 요청한 브라우저는 자동으로 그 사람으로 접속됩니다
 ========================================================================== */
 var JOIN_KEY=LS+'.joinReq';
+var ORIG7={m_leejang:1,m_gunwoo:1,m_yeji:1,m_yeonju:1,m_soyoung:1,m_jiyoon:1,m_seokjin:1};   /* 기존 7명 — 개인정보는 서로만 봄 */
 var WHO={mode:'pick'};
 function meMember(){ return S.me? memberById(S.me) : null; }
 function setMe(id,quiet){
@@ -5988,6 +6140,7 @@ function openWho(mode){
   $('ov').classList.add('show'); $('mWho').classList.add('show');
 }
 function closeWho(){
+  if(!authed()&&S.members.length&&GATE.ready) return;      /* 로그인 전에는 닫을 수 없음 */
   $('mWho').classList.remove('show');
   if(!anyModal()&&!$('pop').classList.contains('show')) $('ov').classList.remove('show');
 }
@@ -5997,6 +6150,7 @@ $('whoLater').onclick=function(){
 };
 function drawWho(){
   var body=$('whoBody'), jr=myJoinReq();
+  if(WHO.mode==='pw'){ drawPw(); return; }
   if(WHO.mode==='join'){
     $('whoT').textContent='합류 요청 보내기';
     body.innerHTML=
@@ -6033,11 +6187,15 @@ function drawWho(){
       return '<button class="whocard'+(m.id===S.me?' on':'')+(m.hidden?' hid':'')+'" data-who="'+m.id+'" '+
         'style="--c:'+sig(m)+';--bg:'+sig(m,'soft')+'">'+pavHtml(m)+
         '<b>'+esc(m.name)+'</b><span>'+esc(m.rank||'')+(m.hidden?' · 숨김':'')+(m.id===S.me?' · 지금 나':'')+'</span></button>';
-    }).join('')+'</div>'+alt;
+    }).join('')+'</div>'+alt+
+    (authed()?'<div class="whologout"><button class="btn sm" id="whoOut">로그아웃</button></div>':'');
 }
 $('whoBody').addEventListener('click',function(ev){
   var c=ev.target.closest('[data-who]');
-  if(c){ setMe(c.dataset.who); closeWho(); return; }
+  if(c){ WHO.target=c.dataset.who; WHO.mode='pw'; drawWho(); return; }
+  if(ev.target.id==='pwBack'){ WHO.mode='pick'; drawWho(); return; }
+  if(ev.target.id==='pwGo'){ pwSubmit(); return; }
+  if(ev.target.id==='whoOut'){ logout(); return; }
   if(ev.target.id==='whoJoin'){ WHO.mode='join'; drawWho(); return; }
   if(ev.target.id==='jBack'){ WHO.mode='pick'; drawWho(); return; }
   if(ev.target.id==='jSend'){ sendJoin(); return; }
@@ -6050,6 +6208,7 @@ $('whoBody').addEventListener('click',function(ev){
 });
 $('whoBody').addEventListener('keydown',function(ev){
   if(ev.key==='Enter'&&WHO.mode==='join'&&ev.target.tagName==='INPUT') sendJoin();
+  if(ev.key==='Enter'&&WHO.mode==='pw'&&ev.target.tagName==='INPUT'){ if(ev.target.id==='pw1'&&$('pw2')&&!$('pw2').value) $('pw2').focus(); else pwSubmit(); }
 });
 function sendJoin(){
   var name=($('jName').value||'').trim();
@@ -6075,9 +6234,9 @@ function checkMyJoin(){
   if(r.status==='approved'&&r.member_id){
     if(!memberById(r.member_id)){ queueReload(); return; }      /* 팀원 목록이 아직 안 들어왔으면 한 번 더 */
     try{ localStorage.removeItem(JOIN_KEY); }catch(err){}
-    setMe(r.member_id,true);
-    if($('mWho').classList.contains('show')) closeWho();
-    toast('합류 요청이 승인되었습니다 — 환영합니다, '+r.name+'님!');
+    S.me=r.member_id; saveLocal();
+    WHO.target=r.member_id; openWho('pw');
+    toast('합류 요청이 승인되었습니다 — 환영합니다, '+r.name+'님! 사용할 비밀번호를 정해 주세요');
   }else if(r.status==='rejected'){
     try{ localStorage.removeItem(JOIN_KEY); }catch(err){}
     toast('합류 요청이 반려되었습니다. 팀원에게 문의해 주세요');
@@ -6085,12 +6244,120 @@ function checkMyJoin(){
   }
 }
 /* 첫 접속 — 누군지 모르면 한 번 물어봅니다 */
-function askWhoIfNeeded(){
-  if(meMember()) return;
-  if(S.me&&!memberById(S.me)&&S.members.length) S.me=null;     /* 삭제된 팀원으로 기억돼 있던 경우 */
-  var later=null; try{ later=sessionStorage.getItem(LS+'.whoLater'); }catch(err){}
-  if(later) return;
-  openWho('pick');
+function askWhoIfNeeded(){ GATE.ready=true; gateCheck(); }
+
+/* ── 로그인 — 처음엔 이름을 고르고 비밀번호를 두 번 입력해 정함, 이후엔 비밀번호로 로그인.
+      로그인 정보는 이 브라우저(localStorage)에 저장해 매번 입력하지 않습니다.
+      비밀번호는 PBKDF2 로 해시해 settings 표의 'auth' 항목에만 저장합니다 (원문은 저장하지 않음). ── */
+var GATE={ready:false};
+var AUTH_KEY=LS+'.auth';
+if(S.auth===undefined) S.auth=null;
+function myToken(){ try{ return JSON.parse(localStorage.getItem(AUTH_KEY)||'null'); }catch(err){ return null; } }
+function authed(){
+  var m=meMember(), t=myToken();
+  if(!m||!t||t.id!==m.id) return false;
+  if(!S.auth) return true;                        /* 서버 연결 전 — 이 브라우저에 저장된 로그인 사용 */
+  var a=S.auth[m.id]; return !!(a&&a.h===t.h);     /* 비밀번호가 바뀌거나 초기화되면 다시 로그인 */
+}
+function gateCheck(){
+  if(!GATE.ready) return;
+  if(S.me==='sheet'||S.me==='auto') return;
+  if(!S.members.length){ document.body.classList.remove('locked'); return; }
+  var ok=authed();
+  document.body.classList.toggle('locked',!ok);
+  if(ok) return;
+  if($('mWho').classList.contains('show')) return;
+  if(S.me&&!memberById(S.me)) S.me=null;
+  WHO.target=S.me||null;
+  openWho(S.me?'pw':'pick');
+}
+function canSeePrivate(m){
+  if(!m||!ORIG7[m.id]) return true;
+  var v=meMember(); return !!(v&&ORIG7[v.id]);
+}
+async function pwHash(pw,salt){
+  var enc=new TextEncoder();
+  var key=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveBits']);
+  var bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:enc.encode(salt),iterations:150000,hash:'SHA-256'},key,256);
+  return Array.prototype.map.call(new Uint8Array(bits),function(b){ return ('0'+b.toString(16)).slice(-2); }).join('');
+}
+function randSalt(){ var a=new Uint8Array(12); crypto.getRandomValues(a); return Array.prototype.map.call(a,function(b){ return ('0'+b.toString(16)).slice(-2); }).join(''); }
+/* 서버의 최신 auth 를 다시 읽어 한 사람 것만 바꿉니다 (다른 사람이 동시에 바꿔도 덮어쓰지 않게) */
+async function authWrite(id,rec,mustBeNew){
+  if(!S.sb) throw new Error('서버에 연결되어 있지 않습니다');
+  var r=await S.sb.from('settings').select('value').eq('key','auth').maybeSingle();
+  if(r.error) throw new Error(r.error.message);
+  var v=(r.data&&r.data.value)||{};
+  if(mustBeNew&&v[id]) { S.auth=v; throw new Error('이미 비밀번호가 정해져 있어요. 비밀번호로 로그인해 주세요'); }
+  if(rec) v[id]=rec; else delete v[id];
+  var w=await S.sb.from('settings').upsert({key:'auth',value:v},{onConflict:'key'});
+  if(w.error) throw new Error(w.error.message);
+  S.auth=v;
+}
+function drawPw(){
+  var m=memberById(WHO.target); if(!m){ WHO.mode='pick'; drawWho(); return; }
+  var has=!!(S.auth&&S.auth[m.id]);
+  $('whoT').textContent=has?'로그인':'비밀번호 정하기';
+  $('whoBody').innerHTML='<div class="pwbox">'+
+    '<div class="pwwho">'+pavHtml(m)+'<div><b>'+esc(m.name)+'</b><span>'+esc(m.rank||'')+'</span></div></div>'+
+    (has?'<input type="password" id="pw1" placeholder="비밀번호" autocomplete="current-password">'
+        :'<div class="hint">처음이시네요! 앞으로 <b>'+esc(m.name)+'</b>(으)로 들어올 때 쓸 비밀번호를 정해 주세요. (4자 이상, 두 번 입력)</div>'+
+         '<input type="password" id="pw1" placeholder="비밀번호" autocomplete="new-password">'+
+         '<input type="password" id="pw2" placeholder="비밀번호 한 번 더" autocomplete="new-password">')+
+    '<div class="pwerr" id="pwErr"></div>'+
+    '<div class="pwfoot"><button class="btn" id="pwBack">← 다른 이름</button><div style="flex:1"></div>'+
+      '<button class="btn primary" id="pwGo">'+(has?'로그인':'설정하고 시작')+'</button></div>'+
+    (has?'<div class="hint" style="font-size:11.5px">비밀번호를 잊었다면 팀원에게 <b>팀원 편집 → 비밀번호 초기화</b>를 부탁하세요.</div>':'')+
+    '<div class="hint" style="font-size:11.5px">한 번 로그인하면 이 브라우저에 저장되어 다음부터는 바로 들어옵니다.</div>'+
+  '</div>';
+  setTimeout(function(){ var n=$('pw1'); if(n) n.focus(); },30);
+}
+var PWBUSY=false;
+async function pwSubmit(){
+  if(PWBUSY) return;
+  var m=memberById(WHO.target); if(!m) return;
+  var err=function(t){ var e=$('pwErr'); if(e) e.textContent=t; };
+  var p1=($('pw1')||{}).value||'', p2El=$('pw2');
+  if(!S.auth&&S.sb){ err('서버에서 정보를 불러오는 중이에요. 잠시 후 다시 눌러 주세요'); return; }
+  if(!S.sb){ err('서버에 연결되어 있지 않아 로그인할 수 없어요'); return; }
+  if(!window.crypto||!crypto.subtle){ err('이 브라우저에서는 로그인 기능을 쓸 수 없어요 (https 주소로 열어 주세요)'); return; }
+  var has=!!S.auth[m.id];
+  PWBUSY=true; var b=$('pwGo'); if(b) b.disabled=true;
+  try{
+    if(has){
+      if(!p1){ err('비밀번호를 입력해 주세요'); return; }
+      var a=S.auth[m.id], h=await pwHash(p1,a.s);
+      if(h!==a.h){ err('비밀번호가 맞지 않아요'); $('pw1').select(); return; }
+      loginDone(m.id,h);
+    }else{
+      var p2=p2El?p2El.value:'';
+      if(p1.length<4){ err('4자 이상으로 정해 주세요'); return; }
+      if(p1!==p2){ err('두 비밀번호가 서로 달라요'); p2El.value=''; p2El.focus(); return; }
+      var s0=randSalt(), h0=await pwHash(p1,s0);
+      await authWrite(m.id,{s:s0,h:h0,at:new Date().toISOString()},true);
+      loginDone(m.id,h0);
+      toast('비밀번호를 정했어요. 이 브라우저에서는 자동으로 로그인됩니다');
+    }
+  }catch(e){ err(e.message||String(e)); if(S.auth&&S.auth[m.id]) setTimeout(drawPw,1200); }
+  finally{ PWBUSY=false; var b2=$('pwGo'); if(b2) b2.disabled=false; }
+}
+function loginDone(id,h){
+  try{ localStorage.setItem(AUTH_KEY,JSON.stringify({id:id,h:h})); }catch(err){}
+  setMe(id); document.body.classList.remove('locked');
+  $('mWho').classList.remove('show'); if(!anyModal()) $('ov').classList.remove('show');
+  renderAll();
+}
+function logout(){
+  try{ localStorage.removeItem(AUTH_KEY); }catch(err){}
+  S.me=null; saveLocal(); presenceTrack(); renderMe(); renderBell(); renderAll();
+  WHO.mode='pick'; WHO.target=null; drawWho();
+  document.body.classList.add('locked');
+}
+async function resetPw(id){
+  var m=memberById(id); if(!m) return;
+  if(!confirm(m.name+'님의 비밀번호를 초기화할까요?\n다음 접속 때 새 비밀번호를 정하게 됩니다.')) return;
+  try{ await authWrite(id,null,false); toast(m.name+'님의 비밀번호를 초기화했어요'); var b=$('mePwReset'); if(b) b.style.display='none'; }
+  catch(e){ toast('초기화 실패: '+(e.message||e)); }
 }
 
 /* ── 알림 종 ─────────────────────────────────────────────────────────────── */
@@ -6200,6 +6467,7 @@ function renderAll(){
   var cur=el('.panel.on');
   goTab(cur?cur.id.replace(/^p-/,''):'schedule');
   renderMe(); renderBell(); renderPresence();
+  gateCheck();
 }
 
 function seedIfEmpty(){
