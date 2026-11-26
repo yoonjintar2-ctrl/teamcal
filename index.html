@@ -2489,7 +2489,7 @@ function cellInner(m,e,offday){
     if(!t.allDay&&(t.start!==b.start||t.end!==b.end)) out+=line(ICO.time,esc(t.text),'tm');
   }
   /* 반차·반반차 날에 출근 시간을 직접 지정했으면 그 시간만 그대로 표시 (자동 계산은 안 함) */
-  else if(!offday&&e&&e.vacation&&e.vacation!=='annual'&&e.arrive) out+=line(ICO.time,esc(calcTimes(m,{arrive:e.arrive}).text),'tm');
+  else if(!offday&&e&&e.vacation&&e.vacation!=='annual'&&e.arrive){ var tv=calcTimes(m,e); if(!tv.allDay) out+=line(ICO.time,esc(tv.text),'tm'); }   /* 반차·반반차 시간만큼 줄여서 */
   var PH='<span class="ph ph-h">＋</span>';
   if(!e) return out||PH;
   /* 2) 근태 3) 점심 4) 메모 */
