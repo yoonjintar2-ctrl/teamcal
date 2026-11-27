@@ -202,6 +202,21 @@ table.sched tbody td.histhl{outline:3px solid #FF8A00!important;outline-offset:-
 .ctxmenu button{display:flex;align-items:center;gap:7px;width:100%;border:none;background:none;padding:7px 10px;border-radius:7px;cursor:pointer;text-align:left;color:var(--tx)}
 .ctxmenu button:hover{background:var(--accent-soft);color:var(--accent)}
 .ctxmenu .cm-h{font-size:11px;color:var(--tx4);padding:4px 10px 2px}
+.ctxmenu .cm-emo{display:grid;grid-template-columns:repeat(6,34px);gap:2px;padding:4px 6px 6px}
+.ctxmenu .cm-emo button{justify-content:center;width:34px;height:32px;padding:0;font-size:19px;border-radius:8px;line-height:1}
+.ctxmenu .cm-emo button:hover{background:var(--line3);transform:scale(1.18)}
+/* 이모지 스티커 */
+.stk{position:absolute;z-index:6;transform:translate(-50%,-50%) rotate(var(--r,0deg));font-size:20px;line-height:1;cursor:default;
+  filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.18));transition:transform .12s}
+.stk i{font-style:normal;display:block}
+.stk:hover{transform:translate(-50%,-50%) rotate(0) scale(1.25);z-index:9}
+.stk::after{content:attr(data-who);position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;
+  font-size:11px;font-weight:600;color:#fff;background:rgba(22,24,29,.88);padding:3px 8px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .12s}
+.stk:hover::after{opacity:1}
+.stk .stk-x{position:absolute;right:-9px;top:-9px;width:15px;height:15px;border-radius:50%;background:#fff;border:1px solid var(--line);color:var(--tx3);
+  font-size:11px;line-height:13px;text-align:center;font-weight:700;display:none;cursor:pointer}
+.stk.mine:hover .stk-x{display:block}
+.stk .stk-x:hover{color:var(--red);border-color:#F0D6D3}
 .notepop{position:fixed;z-index:210;display:none;width:250px;max-height:70vh;overflow:auto}
 .notepop.show{display:flex;flex-direction:column;gap:8px}
 .npcard .np-close{position:absolute;top:5px;right:6px;width:22px;height:22px;border:none;border-radius:50%;background:rgba(255,255,255,.6);
@@ -1152,6 +1167,8 @@ body.locked #ov{background:rgba(24,22,30,.58);backdrop-filter:blur(10px)}
 .ln.vac > svg{color:#E0654F}
 .kbadge.vac{color:#D4553F}
 .kbadge.vac-a{background:#FDEBE6;border-radius:5px;padding:1px 7px}
+/* 좌우 여백 마케팅 캘린더 */
+#mkcal{position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:0;overflow:hidden}table.sched{position:relative;z-index:1}#mkcal .mk-bar{position:absolute;width:3px;border-radius:3px;background:#E6E9ED}#mkcal .mk-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#DDE1E6;transform:translateX(-50%)}#mkcal .mk-tx{position:absolute;transform:translateX(-100%);display:flex;flex-direction:column;align-items:flex-end;text-align:right;max-width:240px}#mkcal .mk-tx b{font-size:13px;font-weight:600;color:#BCC3CB;letter-spacing:-.3px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}#mkcal .mk-tx i{font-style:normal;font-size:11px;color:#CDD2D8;font-variant-numeric:tabular-nums}#mkcal .mk-vt{position:absolute;transform:translateX(-100%);writing-mode:vertical-rl;font-size:14px;font-weight:600;color:#C6CCD3;letter-spacing:2px;overflow:hidden;white-space:nowrap}#mkcal .mk-mo{position:absolute;display:flex;flex-direction:column;gap:6px}#mkcal .mk-num{font-size:64px;font-weight:800;color:#EFF1F4;line-height:1;letter-spacing:-2px}#mkcal .mk-num small{font-size:20px;letter-spacing:0;margin-left:2px}#mkcal .mk-kw{display:flex;flex-direction:column;gap:2px}#mkcal .mk-kw em{font-style:normal;font-size:12.5px;color:#C3C9D0;letter-spacing:-.2px;white-space:nowrap}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous">
 </head>
@@ -2182,7 +2199,7 @@ function onDbChange(p){
     if(ev==='DELETE'||!n.text) delete S.commons[d2]; else S.commons[d2]=n.text;
     saveLocalSoon(); patchCell(d2,'__c__',true); return;
   }
-  if(t==='join_requests'||t==='photos'||t==='edit_history'||t==='notes'){ reloadTable(t); return; }
+  if(t==='join_requests'||t==='photos'||t==='edit_history'||t==='notes'||t==='stickers'){ reloadTable(t); return; }
   queueReload();
 }
 var _slTimer=null;
@@ -2211,7 +2228,7 @@ window.addEventListener('online',function(){ if(S.sb){ sbRealtime(); queueReload
 
 /* ── 추가 테이블 (합류 요청 · 사진첩) ─────────────────────────────
    SQL 을 아직 다시 실행하지 않아 테이블이 없더라도 나머지 기능은 그대로 동작합니다 */
-var EXTRA={join_requests:'joinReqs',photos:'photos',edit_history:'hist',notes:'notes'};
+var EXTRA={join_requests:'joinReqs',photos:'photos',edit_history:'hist',notes:'notes',stickers:'stickers'};
 var MISSING={};
 function reloadTable(t){
   if(!S.sb) return Promise.resolve();
@@ -2219,6 +2236,7 @@ function reloadTable(t){
   if(t!=='join_requests') q=q.order('created_at',{ascending:false});
   if(t==='edit_history') q=q.limit(500);
   if(t==='notes') q=q.limit(1000);
+  if(t==='stickers') q=q.limit(3000);
   return q.then(function(r){
     if(r.error){ MISSING[t]=r.error.message; return; }
     delete MISSING[t];
@@ -2256,6 +2274,7 @@ function afterExtra(t){
   if(t==='photos'  && $('p-photos').classList.contains('on'))  renderPhotos();
   if(t==='edit_history') renderHist();
   if(t==='notes'){ paintNotes(); renderBell(); }
+  if(t==='stickers') paintStickers();
   if(t==='guestbook') renderBell();
 }
 
@@ -2482,12 +2501,12 @@ function line(icon,val,cls){
 function cellInner(m,e,offday){
   var out='';
   /* 1) 출퇴근시간 — 기본 시간과 다를 때만 맨 위에 (휴일·주말·연차 제외) */
-  if(!offday&&!(e&&e.vacation)){   /* 연차·반차·반반차가 있는 날은 시간 표시 안 함 — 본인이 알아서 조정 */
+  if(!offday&&!(e&&e.vacation)){   /* 근태 없는 날 — 기본과 다를 때만 시간 표시 */
     var t=calcTimes(m,e||{}), b=calcTimes(m,{});
     if(!t.allDay&&(t.start!==b.start||t.end!==b.end)) out+=line(ICO.time,esc(t.text),'tm');
   }
   /* 반차·반반차 날에 출근 시간을 직접 지정했으면 그 시간만 그대로 표시 (자동 계산은 안 함) */
-  else if(!offday&&e&&e.vacation&&e.vacation!=='annual'&&e.arrive){ var tv=calcTimes(m,e); if(!tv.allDay) out+=line(ICO.time,esc(tv.text),'tm'); }   /* 반차·반반차 시간만큼 줄여서 */
+  else if(!offday&&e&&e.vacation&&e.vacation!=='annual'){ var tv=calcTimes(m,e); if(!tv.allDay) out+=line(ICO.time,esc(tv.text),'tm'); }   /* 반차·반반차 — 근태만큼 줄인 출퇴근 시간 */
   var PH='<span class="ph ph-h">＋</span>';
   if(!e) return out||PH;
   /* 2) 근태 3) 점심 4) 메모 */
@@ -2972,7 +2991,6 @@ function recalc(){
   var e={vacation:v?v.dataset.v:'', arrive:a?a.dataset.a:''};
   var t=calcTimes(m,e);
   if(t.allDay){ box.innerHTML='<b>연차</b> — 종일 부재'; return; }
-  if(e.vacation){ box.innerHTML='<span style="color:var(--tx3)">'+VMAP[e.vacation].label+' — 출퇴근 시간은 본인이 조정</span>'; return; }
   var parts=[];
   parts.push('출근 <b>'+toHM(t.start)+'</b>');
   parts.push('퇴근 <b>'+toHM(t.end)+'</b>');
@@ -3356,23 +3374,61 @@ $('sTbody').addEventListener('contextmenu',function(ev){
   var td=ev.target.closest('td.c-cell'); if(!td) return;
   var c=td.querySelector('.cell'); if(!c) return;
   ev.preventDefault();
-  NOTE.ctx={d:c.dataset.d,m:c.dataset.m,td:td};
+  var tr0=td.getBoundingClientRect();
+  NOTE.ctx={d:c.dataset.d,m:c.dataset.m,td:td,fx:Math.min(.94,Math.max(.06,(ev.clientX-tr0.left)/tr0.width)),fy:Math.min(.9,Math.max(.1,(ev.clientY-tr0.top)/tr0.height))};
   var m=c.dataset.m==='__c__'?null:memberById(c.dataset.m), dd=parseD(c.dataset.d);
   var menu=$('ctxMenu');
   menu.innerHTML='<div class="cm-h">'+(dd.getMonth()+1)+'/'+dd.getDate()+'('+DOW[dd.getDay()]+') · '+esc(m?m.name:'공통 일정')+'</div>'+
     '<button data-cm="note">'+NOTE_ICO.replace('<svg','<svg width="14" height="14"')+' 쪽지 붙이기</button>'+
-    '<button data-cm="edit"><span style="width:14px;text-align:center">✎</span> 일정 편집</button>';
-  menu.style.left=Math.min(window.innerWidth-170,ev.clientX)+'px'; menu.style.top=Math.min(window.innerHeight-100,ev.clientY)+'px';
+    '<button data-cm="edit"><span style="width:14px;text-align:center">✎</span> 일정 편집</button>'+
+    (S.sb&&MISSING.stickers?'':'<div class="cm-h">이모지 붙이기 · 누른 자리에 붙어요</div><div class="cm-emo">'+STK_SET.map(function(e){ return '<button data-emo="'+e+'" title="'+e+'">'+e+'</button>'; }).join('')+'</div>');
+  menu.style.left=Math.min(window.innerWidth-250,ev.clientX)+'px'; menu.style.top=Math.min(window.innerHeight-260,ev.clientY)+'px';
   menu.classList.add('show');
 });
 $('ctxMenu').addEventListener('click',function(ev){
   ev.stopPropagation();
+  var eb=ev.target.closest('[data-emo]'); if(eb&&NOTE.ctx){ $('ctxMenu').classList.remove('show'); stickerAdd(NOTE.ctx,eb.dataset.emo); return; }
   var b=ev.target.closest('[data-cm]'); if(!b||!NOTE.ctx) return;
   $('ctxMenu').classList.remove('show');
   var cx=NOTE.ctx;
   if(b.dataset.cm==='edit'){ var c=cx.td.querySelector('.cell'); if(c) openCell(c); return; }
   openNoteWrite(cx);
 });
+/* ── 이모지 스티커 — 칸 아무 자리에 감정 이모지를 붙이고, 올리면 누가 붙였는지 ── */
+var STK_SET=['😀','😂','😅','🥰','😍','🤩','😎','🥳','🤗','😇','🤔','😮','😳','😢','😭','😡','🤯','😱','😴','🤒','👍','👏','🙏','💪','🔥','🎉','💯','❤️','☕','🍀'];
+S.stickers=S.stickers||[];
+function paintStickers(){
+  document.querySelectorAll('#sTbody .stk').forEach(function(x){ x.remove(); });
+  (S.stickers||[]).forEach(function(s){
+    var c=el('#sTbody .cell[data-d="'+normDate(s.date)+'"][data-m="'+s.member_id+'"]'); if(!c) return;
+    var td=c.closest('td'), w=memberById(s.sender_id), sp=document.createElement('span');
+    var rot=((hashStr(String(s.id))>>>0)%31)-15;
+    sp.className='stk'+(S.me&&s.sender_id===S.me?' mine':''); sp.dataset.sid=s.id;
+    sp.style.left=(+s.x*100).toFixed(1)+'%'; sp.style.top=(+s.y*100).toFixed(1)+'%'; sp.style.setProperty('--r',rot+'deg');
+    var dt=new Date(s.created_at||Date.now());
+    sp.setAttribute('data-who',(w?w.name:'알 수 없음')+' · '+(dt.getMonth()+1)+'/'+dt.getDate()+' '+('0'+dt.getHours()).slice(-2)+':'+('0'+dt.getMinutes()).slice(-2));
+    sp.innerHTML='<i>'+esc(s.emoji)+'</i>'+(S.me&&s.sender_id===S.me?'<b class="stk-x" data-sdel="'+esc(String(s.id))+'" title="떼기">×</b>':'');
+    td.appendChild(sp);
+  });
+}
+function stickerAdd(cx,emo){
+  if(!S.me){ toast('접속자를 먼저 선택해 주세요 (오른쪽 위 이름)'); return; }
+  var rec={date:cx.d,member_id:cx.m,sender_id:S.me,emoji:emo,x:+cx.fx.toFixed(3),y:+cx.fy.toFixed(3)};
+  var local=Object.assign({id:'s_'+Date.now(),created_at:new Date().toISOString()},rec);
+  S.stickers=(S.stickers||[]).concat([local]); paintStickers();
+  if(S.sb) S.sb.from('stickers').insert(rec).select().then(function(r){
+    if(r.error){ toast('이모지 저장 실패: '+r.error.message); return; }
+    var row=r.data&&r.data[0]; if(row){ S.stickers=S.stickers.map(function(x){ return x===local?row:x; }); paintStickers(); }
+  });
+}
+document.addEventListener('click',function(ev){
+  var x=ev.target.closest('[data-sdel]'); if(!x) return;
+  ev.stopPropagation(); ev.preventDefault();
+  var id=x.dataset.sdel, s=(S.stickers||[]).filter(function(k){ return String(k.id)===id; })[0]; if(!s||s.sender_id!==S.me) return;
+  S.stickers=S.stickers.filter(function(k){ return k!==s; }); paintStickers();
+  if(S.sb&&!/^s_/.test(id)) S.sb.from('stickers').delete().eq('id',s.id).eq('sender_id',S.me).then(function(r){ if(r.error) toast('떼기 실패: '+r.error.message); });
+},true);
+(function(){ var _rb3=renderBody; renderBody=function(){ var r=_rb3.apply(this,arguments); paintStickers(); return r; }; })();
 function openNoteWrite(cx){
   if(!S.me){ toast('접속자를 먼저 선택해 주세요 (오른쪽 위 이름)'); return; }
   var me=memberById(S.me), m=cx.m==='__c__'?null:memberById(cx.m), dd=parseD(cx.d), p=$('notePop');
@@ -5479,6 +5535,63 @@ window.addEventListener('resize',function(){
 });
 $('gridwrap').addEventListener('scroll',queueYearRail,{passive:true});
 $('gridwrap').addEventListener('scroll',queueLeaveLabels,{passive:true});
+/* ── 좌우 여백 마케팅 캘린더 (광고늬우스 마케팅 이슈 로드맵 · 아주 연한 회색) ── */
+/* ── 좌우 여백 마케팅 캘린더 (광고늬우스 마케팅 이슈 로드맵) — 아주 연한 회색, 배경처럼 ── */
+var MKCAL={rows:null,kw:null,at:0};
+function paintMkCal(){
+  var wrap=$('gridwrap'), tb=$('sched'); if(!wrap||!tb) return;
+  var lay=$('mkcal');
+  if(!lay){ lay=document.createElement('div'); lay.id='mkcal'; lay.setAttribute('aria-hidden','true'); wrap.insertBefore(lay,wrap.firstChild); }
+  var gut=tb.offsetLeft, tx=gut+tb.offsetWidth, gutR=wrap.scrollWidth-tx;
+  if(gut<90||!MKCAL.rows){ lay.style.display='none'; return; }
+  lay.style.display='block'; lay.style.height=(tb.offsetTop+tb.offsetHeight)+'px';
+  var rows=[].slice.call(tb.querySelectorAll('tbody tr[data-d]')), idx={};
+  rows.forEach(function(r){ idx[r.getAttribute('data-d')]=r; });
+  var top=function(ds){ var r=idx[ds]; if(r) return tb.offsetTop+r.offsetTop; for(var i=0;i<rows.length;i++) if(rows[i].getAttribute('data-d')>ds) return tb.offsetTop+rows[i].offsetTop; return null; };
+  var bot=function(ds){ var r=idx[ds]; return r?tb.offsetTop+r.offsetTop+r.offsetHeight:null; };
+  var h='', lane={}, lastY=-1e9;
+  /* 왼쪽 — 이슈 (기간은 세로 막대, 같은 날 겹치면 옆으로 한 칸) */
+  var lastTx=-1e9, B=false;
+  MKCAL.rows.slice().sort(function(a,b){ return a.s<b.s?-1:a.s>b.s?1:((b.e||b.s)>(a.e||a.s)?1:-1); }).forEach(function(it){
+    var y=top(it.s); if(y==null) return; var span=!!it.e&&it.e!==it.s, y2=span?(bot(it.e)||y+40):y+24;
+    var ln=0; if(span){ while(lane[ln]&&lane[ln]>y+2) ln++; lane[ln]=y2; }
+    var bx=gut-14-ln*(B?22:9);
+    var d=parseD(it.s), lbl=(d.getMonth()+1)+'/'+d.getDate()+(span?' – '+(parseD(it.e).getMonth()+1)+'/'+parseD(it.e).getDate():'');
+    if(span) h+='<span class="mk-bar" style="left:'+Math.round(bx)+'px;top:'+Math.round(y+4)+'px;height:'+Math.round(y2-y-8)+'px"></span>';
+    else h+='<span class="mk-dot" style="left:'+Math.round(gut-16)+'px;top:'+Math.round(y+10)+'px"></span>';
+    if(B&&span){ h+='<span class="mk-vt" style="left:'+Math.round(bx-6)+'px;top:'+Math.round(y+4)+'px;max-height:'+Math.round(y2-y-8)+'px">'+esc(it.t)+'</span>'; return; }
+    var ty=Math.max(y+2,lastTx+4); lastTx=ty+34;
+    var maxLn=0; Object.keys(lane).forEach(function(k){ if(lane[k]>ty) maxLn=Math.max(maxLn,+k); });
+    h+='<span class="mk-tx" style="left:'+Math.round(gut-30-maxLn*(B?22:9))+'px;top:'+Math.round(ty)+'px"><b>'+esc(it.t)+'</b><i>'+lbl+'</i></span>';
+  });
+  /* 오른쪽 — 달마다 큰 숫자 + 그달 검색 키워드 */
+  (MKCAL.kw||[]).forEach(function(k){
+    var y=top(k.m+'-01'); if(y==null){ var f=rows[0]&&rows[0].getAttribute('data-d'); if(f&&f.slice(0,7)===k.m) y=tb.offsetTop+rows[0].offsetTop; else return; }
+    var mo=+k.m.slice(5,7);
+    h+='<div class="mk-mo" style="top:'+Math.round(y)+'px;left:'+Math.round(tx+18)+'px">'+
+       '<span class="mk-num">'+mo+'<small>월</small></span>'+
+       '<span class="mk-kw">'+k.words.map(function(w){ return '<em>#'+esc(w)+'</em>'; }).join('')+'</span></div>';
+  });
+  lay.innerHTML=h;
+}
+
+/* 광고늬우스 데이터 — 처음 한 번, 이후 6시간마다 */
+function loadMkCal(){
+  fetch('https://news.jintar.co.kr/data.json?t='+Date.now(),{cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
+    MKCAL.rows=(d&&d.roadmap)||[]; MKCAL.kw=(d&&d.searchKeywords)||[]; MKCAL.at=Date.now(); MKCAL_KEY=''; queueMkCal();
+  }).catch(function(){});
+}
+var MKCAL_T=0, MKCAL_KEY='';
+function queueMkCal(){ clearTimeout(MKCAL_T); MKCAL_T=setTimeout(function(){
+  var tb=$('sched'), w=$('gridwrap'); if(!tb||!w) return;
+  var r=tb.querySelectorAll('tbody tr[data-d]'), k=[tb.offsetLeft,tb.offsetWidth,tb.offsetHeight,w.scrollWidth,r.length,r.length?r[0].getAttribute('data-d'):'',MKCAL.at].join('|');
+  if(k===MKCAL_KEY&&$('mkcal')) return; MKCAL_KEY=k; try{ paintMkCal(); }catch(err){}
+},250); }
+window.addEventListener('resize',queueMkCal);
+(function(){ var _rb4=renderBody; renderBody=function(){ var r=_rb4.apply(this,arguments); queueMkCal(); return r; }; })();
+if(window.ResizeObserver){ try{ new ResizeObserver(queueMkCal).observe($('sched')); }catch(err){} }
+loadMkCal(); setInterval(loadMkCal,6*3600*1000);
+
 
 window.addEventListener('resize',queueLeaveLabels);
 (function(){ var _rb=renderBody; renderBody=function(){ var r=_rb.apply(this,arguments); queueLeaveLabels(); return r; }; })();
